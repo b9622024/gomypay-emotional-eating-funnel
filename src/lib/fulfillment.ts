@@ -30,27 +30,35 @@ Facebook 粉絲專頁：https://www.facebook.com/couragewellnessinstitute
 
 export async function markPaid(orderNo:string,meta:{gomypayOrderId?:string;avcode?:string;cardLastNum?:string;payload:Record<string,string>;source:"callback"|"query"|"system"}){
   const canonicalToken=createAccessToken();
-  const transitioned=await prisma.$transaction(async tx=>{
-    const order=await tx.order.findUnique({where:{orderNo},include:{items:true,customer:true}});
-    if(!order)return null;
-    if(order.status==="paid")return {order,fresh:false};
-    if(order.status!=="pending")return null;
+  const order=await prisma.order.findUnique({where:{orderNo},include:{items:true,customer:true}});
+  if(!order)return null;
+  if(order.status!=="pending"&&order.status!=="paid")return null;
 
-    const changed=await tx.order.updateMany({
+  const changed=order.status==="pending"
+    ? await prisma.order.updateMany({
       where:{id:order.id,status:"pending"},
       data:{status:"paid",paidAt:new Date(),gomypayOrderId:meta.gomypayOrderId,avcode:meta.avcode,cardLastNum:meta.cardLastNum,rawCallbackPayload:meta.source==="callback"?meta.payload:undefined}
-    });
-    if(changed.count!==1)return {order,fresh:false};
+    })
+    : {count:0};
+  const fresh=changed.count===1;
 
-    for(const [index,item] of order.items.entries()){
-      await tx.entitlement.upsert({
-        where:{orderId_productCode:{orderId:order.id,productCode:item.productCode}},
-        update:index===0?{accessToken:canonicalToken}:{},
-        create:{orderId:order.id,customerId:order.customerId,productCode:item.productCode,accessToken:index===0?canonicalToken:null,downloadUrl:"#"}
-      });
-    }
-    return {order,fresh:true};
-  });
+  // 避免在 Vercel / 雲端資料庫連線池環境使用互動式 transaction。
+  // 付款狀態用 updateMany(status: pending) 保持原子性，權限用 upsert 保持可重複執行。
+  for(const [index,item] of order.items.entries()){
+    await prisma.entitlement.upsert({
+      where:{orderId_productCode:{orderId:order.id,productCode:item.productCode}},
+      update:{},
+      create:{orderId:order.id,customerId:order.customerId,productCode:item.productCode,accessToken:index===0?canonicalToken:null,downloadUrl:"#"}
+    });
+  }
+  const firstItem=order.items[0];
+  if(firstItem){
+    await prisma.entitlement.updateMany({
+      where:{orderId:order.id,productCode:firstItem.productCode,accessToken:null},
+      data:{accessToken:canonicalToken}
+    });
+  }
+  const transitioned={order,fresh};
 
   // 只有成功取得 pending -> paid 的 callback 會進入此區，因此不會重複寄信。
   if(transitioned?.fresh){
