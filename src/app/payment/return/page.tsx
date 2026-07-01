@@ -1,0 +1,4 @@
+import { prisma } from "@/lib/db";
+import { safePayload } from "@/lib/gomypay";
+import ReturnStatus from "./ReturnStatus";
+export default async function ReturnPage({searchParams}:{searchParams:Promise<Record<string,string>>}){const p=await searchParams,orderNo=p.e_orderno||p.Order_No||"",payload=safePayload(p);const order=orderNo?await prisma.order.findUnique({where:{orderNo}}):null;if(orderNo)await prisma.$transaction([prisma.paymentLog.create({data:{orderNo,source:"return",payload,isVerified:false,message:"Browser return recorded; not used for fulfillment"}}),...(order?[prisma.order.update({where:{orderNo},data:{rawReturnPayload:payload}})]:[])]);return <main className="section"><div className="container narrow"><h1 className="title">付款結果</h1>{order?<ReturnStatus orderNo={orderNo} initial={order.status}/>:<div className="card"><h2>找不到訂單</h2><p>請保留付款資訊並聯絡客服協助確認。</p></div>}</div></main>}

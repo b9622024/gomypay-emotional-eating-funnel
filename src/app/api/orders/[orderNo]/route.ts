@@ -1,0 +1,4 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import { rateLimit, requestIp } from "@/lib/rate-limit";
+export async function GET(req:Request,{params}:{params:Promise<{orderNo:string}>}){const {orderNo}=await params;if(!await rateLimit(`status:${requestIp(req)}`,60,60_000))return NextResponse.json({error:"too many requests"},{status:429});const order=await prisma.order.findUnique({where:{orderNo},include:{items:true,entitlements:{take:1}}});if(!order)return NextResponse.json({error:"not found"},{status:404});return NextResponse.json({orderNo:order.orderNo,status:order.status,amount:order.amount,items:order.items.map(x=>({productCode:x.productCode,name:x.name,price:x.price})),canDownload:order.status==="paid",accessToken:order.status==="paid"?order.entitlements[0]?.accessToken:null});}

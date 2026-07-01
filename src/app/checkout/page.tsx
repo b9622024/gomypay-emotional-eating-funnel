@@ -1,0 +1,2 @@
+import CheckoutForm from "./CheckoutForm";
+export default function Checkout(){return <main className="checkout-shell"><header className="checkout-header"><div className="container"><div className="brand-mark"><span>可</span><strong>可樂吉健康研究所</strong></div><small>GoMyPay 安全結帳</small></div></header><div className="checkout-main"><div className="container"><div className="checkout-title"><span className="eyebrow">最後一步</span><h1>確認你的工具包內容</h1><p>填寫基本資料、選擇需要的加購工具，再前往 GoMyPay 完成付款。</p></div><CheckoutForm/></div></div></main>}

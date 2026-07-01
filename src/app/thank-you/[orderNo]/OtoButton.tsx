@@ -1,0 +1,3 @@
+"use client";
+import { useState } from "react";
+export default function OtoButton({customer}:{customer:{name:string;email:string;phone:string;lineId:string|null}}){const [busy,setBusy]=useState(false),[error,setError]=useState("");async function buy(){setBusy(true);const r=await fetch("/api/orders",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({...customer,lineId:customer.lineId||undefined,productCodes:["coaching_deposit_3d"]})});const j=await r.json();if(r.ok)location.href=`/payment/redirect/${j.orderNo}`;else{setError(j.error||"建立訂單失敗");setBusy(false)}}return <><button className="btn" onClick={buy} disabled={busy}>{busy?"建立訂單中…":"我要加購 3 天嘴饞止損陪跑"}</button>{error&&<p>{error}</p>}</>}

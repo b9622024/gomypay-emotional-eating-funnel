@@ -1,0 +1,4 @@
+import { notFound } from "next/navigation";
+import { prisma } from "@/lib/db";
+import { paymentEndpoint, paymentFields } from "@/lib/gomypay";
+export default async function Redirect({params}:{params:Promise<{orderNo:string}>}){const {orderNo}=await params;const order=await prisma.order.findUnique({where:{orderNo},include:{customer:true}});if(!order||order.status!=="pending")notFound();const fields=paymentFields(order);return <main className="section"><div className="container narrow" style={{textAlign:"center"}}><h1>正在前往 GoMyPay 安全付款頁</h1><p>信用卡資料將直接在 GoMyPay 頁面輸入，本網站不會接觸或儲存卡號、有效期限或安全碼。</p><form action={paymentEndpoint()} method="POST"><input type="hidden" name="Send_Type" value={fields.Send_Type}/>{Object.entries(fields).filter(([k])=>k!=="Send_Type").map(([k,v])=><input key={k} type="hidden" name={k} value={v}/>) }<button className="btn" type="submit">繼續前往付款</button></form><script dangerouslySetInnerHTML={{__html:"document.forms[0].submit()"}}/></div></main>}

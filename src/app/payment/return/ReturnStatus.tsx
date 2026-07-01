@@ -1,0 +1,3 @@
+"use client";
+import { useEffect, useState } from "react";
+export default function ReturnStatus({orderNo,initial}:{orderNo:string;initial:string}){const [status,setStatus]=useState(initial);useEffect(()=>{if(status==="paid"||!orderNo)return;const id=setInterval(async()=>{const r=await fetch(`/api/orders/${encodeURIComponent(orderNo)}`);if(r.ok){const j=await r.json();setStatus(j.status);if(j.status==="paid"){clearInterval(id);location.href=`/thank-you/${orderNo}`}}},2500);return()=>clearInterval(id)},[orderNo,status]);return <div className="card"><h2>{status==="paid"?"付款完成":"付款確認中，請稍候"}</h2><p>{status==="paid"?"訂單已完成開通。":"我們正在等待 GoMyPay 的背景付款通知，這個頁面只顯示結果，不會單獨開通產品。"}</p>{status==="paid"&&<a className="btn" href={`/thank-you/${orderNo}`}>查看我的工具包</a>}</div>}

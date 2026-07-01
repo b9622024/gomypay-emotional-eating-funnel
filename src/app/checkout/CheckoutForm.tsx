@@ -1,0 +1,17 @@
+"use client";
+import { useEffect, useMemo, useState } from "react";
+import { CheckoutSummaryCard, OrderBumpCard, type Bump } from "@/components/checkout/CheckoutCards";
+const bumps:Bump[]=[
+  {code:"ai_energy_assessment",name:"AI 能量減脂初評",price:1,text:"填寫完整 AI 能量減脂初評，找出你目前最容易卡住的減脂盲點，包含情緒、壓力、睡眠、外食與營養缺口。",note:"此項目僅能與主商品一起購買。"},
+  {code:"sugary_drink_swap_pro",name:"含糖飲料替換清單 Pro",price:99,text:"如果你最戒不掉的是手搖飲、奶茶、含糖咖啡，這份清單會很適合你。包含手搖飲降糖選擇表、便利商店無糖飲選擇表、想喝奶茶時的替代選擇、下午提神飲料選擇與一週飲料規則設計表。"},
+  {code:"anti_binge_meal_plan_7d",name:"7 天外食防暴食菜單",price:199,text:"如果你最常卡在不知道外食怎麼吃，這份菜單可以幫你省下很多思考時間。包含早餐店、便利商店、便當店、速食店與晚餐後嘴饞替代組合。"}
+];
+export default function CheckoutForm(){
+ const [selected,setSelected]=useState<string[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState("");
+ const [lead,setLead]=useState({name:"",email:"",phone:"",lineId:""});
+ useEffect(()=>{try{const saved=JSON.parse(sessionStorage.getItem("emotionalEatingLead")||"{}");setLead(v=>({...v,...saved}))}catch{}},[]);
+ const selectedItems=useMemo(()=>bumps.filter(x=>selected.includes(x.code)),[selected]);
+ const total=useMemo(()=>199+selectedItems.reduce((n,x)=>n+x.price,0),[selectedItems]);
+ async function submit(e:React.FormEvent<HTMLFormElement>){e.preventDefault();setBusy(true);setError("");const fd=new FormData(e.currentTarget);const body={name:fd.get("name"),email:fd.get("email"),phone:fd.get("phone"),lineId:fd.get("lineId"),productCodes:["emotional_eating_reset_7d",...selected]};try{const r=await fetch("/api/orders",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(body)});const j=await r.json();if(!r.ok)throw new Error(j.error||"建立訂單失敗");location.href=`/payment/redirect/${j.orderNo}`;}catch(x){setError(x instanceof Error?x.message:"建立訂單失敗");setBusy(false)}}
+ return <form onSubmit={submit} className="checkout-layout"><div className="checkout-form-stack"><section className="form-card"><span className="card-kicker">購買者資料</span><h2>請填寫資料</h2><div className="form-grid"><label>姓名<input name="name" required pattern="[A-Za-z\u4e00-\u9fff ·]{2,50}" autoComplete="name" value={lead.name} onChange={e=>setLead({...lead,name:e.target.value})}/></label><label>Email<input name="email" required type="email" autoComplete="email" value={lead.email} onChange={e=>setLead({...lead,email:e.target.value})}/></label><label>手機號碼<input name="phone" required inputMode="numeric" autoComplete="tel" value={lead.phone} onChange={e=>setLead({...lead,phone:e.target.value})}/></label><label>LINE ID，可選填<input name="lineId" value={lead.lineId} onChange={e=>setLead({...lead,lineId:e.target.value})}/></label></div></section><section className="bump-section"><span className="card-kicker">選配工具</span><h2>加上這些工具，讓你的調整更完整</h2><div className="order-bumps">{bumps.map(x=><OrderBumpCard key={x.code} item={x} selected={selected.includes(x.code)} onChange={checked=>setSelected(s=>checked?[...s,x.code]:s.filter(v=>v!==x.code))}/>)}</div></section></div><CheckoutSummaryCard selected={selectedItems} total={total} busy={busy} error={error}/></form>
+}
