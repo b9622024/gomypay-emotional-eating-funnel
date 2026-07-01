@@ -91,6 +91,21 @@ DIGITAL_PRODUCT_PDF_URL=https://可公開下載或具長效授權的網址/handb
 
 信件主旨、正文、使用順序及官方聯絡資訊已內建，不需要另外撰寫。要讓信件真正寄到收件匣，仍須完整設定 `SMTP_HOST`、`SMTP_PORT`、`SMTP_USER`、`SMTP_PASS` 與 `SMTP_FROM`；若未設定，系統只會把信件留在資料庫 `EmailLog`，不會實際寄出。
 
+### SMTP 除錯
+
+不熟悉終端機時，可直接開啟 `/admin/email-test`，輸入 `ADMIN_SECRET` 與測試收件信箱後按下按鈕。頁面會顯示成功訊息或已去敏的 SMTP 錯誤原因。
+
+部署資料庫 migration 後，可用管理員測試端點單獨測試寄信，不需要再建立付款訂單：
+
+```bash
+curl -X POST "https://你的網域/api/admin/email/test" \
+  -H "x-admin-secret: 你的ADMIN_SECRET" \
+  -H "content-type: application/json" \
+  -d '{"to":"你的收件Email"}'
+```
+
+成功會回傳 `ok: true`；失敗會把已去除帳號與密碼的 SMTP 原因寫入最新一筆 `EmailLog.errorMessage`。常見原因包括 Gmail 未使用應用程式密碼、`SMTP_FROM` 與登入帳號不一致、Vercel 環境變數只套用到 Preview 而非 Production，或修改環境變數後尚未重新部署。
+
 建議附件控制在 10MB 內，並使用專用寄信服務或 Gmail 應用程式密碼。若檔案較大，建議只提供 Access Page 的下載按鈕，避免郵件被退信。
 
 若資料庫已建立，更新此版本後請執行：
