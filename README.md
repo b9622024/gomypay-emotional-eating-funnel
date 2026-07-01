@@ -51,6 +51,55 @@ curl -X POST "https://your-domain.example/api/admin/orders/EE.../sync" \
 
 此路由呼叫 TestCallOrder 或 CallOrder，只有回傳已付款且金額完全相符時才執行開通；重複同步不會重複建立權限或寄信。`ADMIN_SECRET` 不得放在前端。
 
+## 數位產品交付
+
+付款 callback 通過簽章、訂單與金額驗證後，系統會以條件更新將訂單由 `pending` 改為 `paid`，再依 OrderItem 建立 Entitlement。每筆新訂單只會有一個 canonical access token；重複 callback 不會重複開通或寄信。
+
+數位產品與 placeholder 連結集中在 `src/content/digitalProducts.ts`。將其中各項目的 `downloadUrl: "#"` 換成實際 Google Drive、Tally、Google Sheet 或 Notion 網址即可。
+
+若 SMTP 未設定，交付信會以 `queued` 狀態寫入 `EmailLog`，付款及產品開通仍會成功。Email 已包含 LINE、Instagram 與 Facebook 官方聯絡連結。
+
+### 自動寄送 Email 與 PDF 附件
+
+在部署平台設定 SMTP：
+
+```env
+SMTP_HOST=smtp.example.com
+SMTP_PORT=587
+SMTP_USER=你的SMTP帳號
+SMTP_PASS=你的SMTP密碼或應用程式密碼
+SMTP_FROM=可樂吉健康研究所 <你的寄件信箱>
+DIGITAL_PRODUCT_PDF_URL=https://可公開下載或具長效授權的網址/handbook.pdf
+```
+
+完成付款後，Email 會包含專屬 Access Page 連結；若有設定 `DIGITAL_PRODUCT_PDF_URL`，也會將 PDF 以「下班後嘴饞止損包-閱讀版.pdf」附加寄出。未設定 PDF URL 時仍會寄出 Access Page 連結。
+
+建議附件控制在 10MB 內，並使用專用寄信服務或 Gmail 應用程式密碼。若檔案較大，建議只提供 Access Page 的下載按鈕，避免郵件被退信。
+
+若資料庫已建立，更新此版本後請執行：
+
+```bash
+npm run db:push
+```
+
+## 手機互動版 7 天工作本
+
+已購買 `emotional_eating_reset_7d` 的 paid order 可由 `/access/[accessToken]` 進入 `/access/[accessToken]/workbook`。工作本每次欄位變更會在 500ms 後自動儲存至 `WorkbookEntry`，也可手動儲存或標記當天完成。
+
+新增或更新 WorkbookEntry schema 後請執行：
+
+```bash
+npm run db:push
+```
+
+工作本 API：
+
+- `GET /api/workbook/[accessToken]`
+- `POST /api/workbook/[accessToken]/day/[dayNumber]`
+- `POST /api/workbook/[accessToken]/day/[dayNumber]/complete`
+
+三個端點都會驗證 accessToken、paid 狀態及主商品 entitlement。PDF 閱讀版與互動填寫版會同時顯示在 Access page；實際 PDF 及 AI 初評連結仍由 `src/content/digitalProducts.ts` 的 placeholder 替換。
+
 交易查詢依 GoMyPay 文件直接傳送 `Order_No`、`CustomerId` 與環境變數中的交易驗證密碼 `Str_Check`；查詢回傳 JSON 的 `pay_result`、`result`、`e_money` 與 `e_orderno` 都會核對後才開通。
 
 ## 安全設計

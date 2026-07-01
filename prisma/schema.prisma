@@ -29,6 +29,7 @@ model Customer {
   lineId String?
   orders Order[]
   entitlements Entitlement[]
+  workbookEntries WorkbookEntry[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@index([email])
@@ -61,6 +62,7 @@ model Order {
   paidAt DateTime?
   items OrderItem[]
   entitlements Entitlement[]
+  workbookEntries WorkbookEntry[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   @@index([customerId])
@@ -85,7 +87,8 @@ model Entitlement {
   customerId String
   customer Customer @relation(fields: [customerId], references: [id])
   productCode String
-  accessToken String @unique
+  // 每筆訂單只有第一筆 entitlement 持有 canonical access token。
+  accessToken String? @unique
   downloadUrl String
   createdAt DateTime @default(now())
   @@unique([orderId, productCode])
@@ -117,4 +120,22 @@ model RateLimitEntry {
   key String @id
   count Int @default(1)
   windowStart DateTime @default(now())
+}
+
+model WorkbookEntry {
+  id String @id @default(cuid())
+  accessToken String
+  customerId String?
+  customer Customer? @relation(fields: [customerId], references: [id])
+  orderId String?
+  order Order? @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  dayNumber Int
+  data Json
+  isCompleted Boolean @default(false)
+  completedAt DateTime?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  @@unique([accessToken, dayNumber])
+  @@index([orderId])
+  @@index([customerId])
 }
