@@ -28,7 +28,7 @@ Facebook 粉絲專頁：https://www.facebook.com/couragewellnessinstitute
   };
 }
 
-export async function markPaid(orderNo:string,meta:{gomypayOrderId?:string;avcode?:string;cardLastNum?:string;payload:Record<string,string>;source:"callback"|"query"}){
+export async function markPaid(orderNo:string,meta:{gomypayOrderId?:string;avcode?:string;cardLastNum?:string;payload:Record<string,string>;source:"callback"|"query"|"system"}){
   const canonicalToken=createAccessToken();
   const transitioned=await prisma.$transaction(async tx=>{
     const order=await tx.order.findUnique({where:{orderNo},include:{items:true,customer:true}});

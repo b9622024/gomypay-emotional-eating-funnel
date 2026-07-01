@@ -23,6 +23,8 @@ Next.js App Router、TypeScript、Prisma、PostgreSQL 與 Tailwind CSS 建置。
 - `GOMYPAY_STR_CHECK`：驗證密碼
 - `ADMIN_SECRET`：後台手動同步 API 的高強度隨機密碼
 - `SMTP_*`：寄信設定；未設定時郵件會寫入 `EmailLog`，狀態為 `queued`
+- `ALLOW_ZERO_TEST_PURCHASE`：站長零元實測通道，預設必須為 `false`
+- `ZERO_TEST_PURCHASE_CODE`：站長專用高強度測試碼，只能放在伺服器環境變數
 
 切換正式環境前，必須把 `GOMYPAY_MODE=production`、`APP_BASE_URL` 與三個 GoMyPay 憑證換成正式值，並先以測試商店完成整套 callback 驗證。
 
@@ -39,6 +41,19 @@ Next.js App Router、TypeScript、Prisma、PostgreSQL 與 Tailwind CSS 建置。
 ### 含加購訂單
 
 在 `/checkout` 勾選加購：AI 初評 +1、飲料清單 +99、外食菜單 +199。可分別確認 200、298、398，全部勾選為 498。AI 初評不能單買，API 也會阻擋。付款後 `/thank-you/[orderNo]` 可建立獨立的 NT$399 OTO 訂單。
+
+### 上線後用 NT$0 實測完整交付
+
+先在 Vercel Production 環境變數設定：
+
+```env
+ALLOW_ZERO_TEST_PURCHASE=true
+ZERO_TEST_PURCHASE_CODE=請使用至少32字元、只有你知道的隨機測試碼
+```
+
+重新部署後進入 `/checkout`，填入自己的真實 Email，並在「站長測試通道」輸入測試碼。送出後系統會建立金額為 0 的 paid 訂單，跳過 GoMyPay，直接執行與真實付款相同的權限開通、Access Page 與 Email 流程。測試碼只在伺服器核對，不會寫入訂單或 log。
+
+測試完成後，立刻把 `ALLOW_ZERO_TEST_PURCHASE` 改回 `false`（或刪除 `ZERO_TEST_PURCHASE_CODE`）並重新部署。此通道採雙重開關，任一設定缺少都不能建立零元訂單。
 
 ## 手動同步付款狀態
 
@@ -73,6 +88,8 @@ DIGITAL_PRODUCT_PDF_URL=https://可公開下載或具長效授權的網址/handb
 ```
 
 完成付款後，Email 會包含專屬 Access Page 連結；若有設定 `DIGITAL_PRODUCT_PDF_URL`，也會將 PDF 以「下班後嘴饞止損包-閱讀版.pdf」附加寄出。未設定 PDF URL 時仍會寄出 Access Page 連結。
+
+信件主旨、正文、使用順序及官方聯絡資訊已內建，不需要另外撰寫。要讓信件真正寄到收件匣，仍須完整設定 `SMTP_HOST`、`SMTP_PORT`、`SMTP_USER`、`SMTP_PASS` 與 `SMTP_FROM`；若未設定，系統只會把信件留在資料庫 `EmailLog`，不會實際寄出。
 
 建議附件控制在 10MB 內，並使用專用寄信服務或 Gmail 應用程式密碼。若檔案較大，建議只提供 Access Page 的下載按鈕，避免郵件被退信。
 

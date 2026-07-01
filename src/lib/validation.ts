@@ -8,5 +8,6 @@ export const orderSchema = z.object({
   email:z.string().transform(normalize).pipe(z.string().email()).refine(v => /^[\x00-\x7F]+$/.test(v), "Email 不可含全形字元"),
   phone:z.string().transform(v => normalize(v).replace(/\D/g, "")).refine(v => /^\d{8,15}$/.test(v), "手機號碼格式不正確"),
   lineId:z.string().transform(normalize).optional(),
+  couponCode:z.string().transform(normalize).pipe(z.string().max(100)).optional(),
   productCodes:z.array(z.string()).min(1).max(4)
 });
