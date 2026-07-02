@@ -19,12 +19,12 @@ export const assetDeliveryLinks:Record<string,AssetDelivery>={
   "trigger-analysis":{interactivePath:"/trigger-analysis",pdfUrl:"/downloads/craving-trigger-analysis.pdf"},
   "drink-reset":{interactivePath:"/drink-reset",pdfUrl:"/downloads/7-day-drink-reset.pdf"},
   "mindful-nutrition":{interactivePath:"/mindful-nutrition-tracker",pdfUrl:"/downloads/mindful-nutrition-tracker.pdf"},
-  "craving-rescue":{interactivePath:"/craving-rescue",pdfUrl:"/downloads/10-minute-craving-rescue.pdf",imageUrl:placeholder},
-  "dinner-formula":{interactivePath:"/dinner-formula",pdfUrl:"/downloads/dinner-formula.pdf",imageUrl:placeholder},
-  "safe-swaps":{interactivePath:"/safe-swap-list",pdfUrl:"/downloads/safe-swap-list.pdf",imageUrl:placeholder},
-  "sugary-drink-swap-pro":{interactivePath:"/drink-swap-pro",pdfUrl:"/downloads/drink-swap-pro.pdf",imageUrl:placeholder},
+  "craving-rescue":{interactivePath:"/craving-rescue",pdfUrl:"/downloads/10-minute-craving-rescue.pdf",imageUrl:"/downloads/10-minute-craving-rescue-card.png"},
+  "dinner-formula":{interactivePath:"/dinner-formula",pdfUrl:"/downloads/dinner-formula.pdf",imageUrl:"/downloads/dinner-formula-card.png"},
+  "safe-swaps":{interactivePath:"/safe-swap-list",pdfUrl:"/downloads/safe-swap-list.pdf",imageUrl:"/downloads/safe-swap-list-card.png"},
+  "sugary-drink-swap-pro":{interactivePath:"/drink-swap-pro",pdfUrl:"/downloads/drink-swap-pro.pdf",imageUrl:"/downloads/drink-swap-pro-card.png"},
   "ai-energy-assessment":{interactivePath:"/ai-energy-assessment",pdfUrl:placeholder},
-  "anti-binge-meal-plan":{interactivePath:"/7-day-eating-out-menu",pdfUrl:"/downloads/7-day-eating-out-menu.pdf"},
+  "anti-binge-meal-plan":{interactivePath:"/7-day-eating-out-menu",pdfUrl:"/downloads/7-day-eating-out-menu.pdf",imageUrl:"/downloads/7-day-eating-out-menu-card.png"},
   "coaching-intake":{interactivePath:placeholder,pdfUrl:placeholder}
 };
 
@@ -41,7 +41,7 @@ export const digitalAssetsByProduct:Record<string,DigitalAsset[]>={
     {key:"safe-swaps",title:"安全零食與飲料替換清單",description:"想吃甜、想吃鹹、想喝飲料時，先選比較穩的版本。",kind:"清單",downloadUrl:placeholder}
   ],
   ai_energy_assessment:[
-    {key:"ai-energy-assessment",title:"AI 能量減脂初評表單",description:"從情緒、壓力、睡眠、外食與營養缺口完成初步盤點。",kind:"表單",downloadUrl:placeholder}
+    {key:"ai-energy-assessment",title:"AI 能量減脂測驗",description:"透過 5 分鐘 49 題的測驗填寫，了解目前的脈輪能量狀態與個人天賦優勢；由專人一對一解析測驗結果、找出問題並提供專屬對策方案。",kind:"表單",downloadUrl:placeholder}
   ],
   sugary_drink_swap_pro:[
     {key:"sugary-drink-swap-pro",title:"含糖飲料替換清單 Pro",description:"想喝飲料時，直接知道怎麼點、怎麼降階、怎麼停得住。",kind:"清單",downloadUrl:placeholder,badge:"NT$99 加購工具"}

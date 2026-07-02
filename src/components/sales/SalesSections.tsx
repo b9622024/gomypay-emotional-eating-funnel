@@ -1,5 +1,6 @@
+import Image from "next/image";
 import { salesPage as c } from "@/content/emotionalEatingSalesPage";
-import { PrimaryCTA, ProductBundleMockup, QuizPreview, SectionHeading, StickyCheckoutBar, TrustPill, WorkbookPreview } from "@/components/ui/BrandUI";
+import { PrimaryCTA, ProductBundleMockup, SectionHeading, StickyCheckoutBar, TrustPill } from "@/components/ui/BrandUI";
 import SalesLeadForm from "@/app/sales/emotional-eating/SalesLeadForm";
 
 const painIcons=["月","夜","壓","飲","餓","撐"];
@@ -17,7 +18,7 @@ export function AudienceSection(){return <section className="section audience-se
 
 export function TimelineSection(){return <section className="section timeline-section"><div className="container"><SectionHeading eyebrow={c.mainProduct.eyebrow} title={c.mainProduct.title} description="每天 5–10 分鐘，從看懂模式，到建立自己的止損流程。"/><div className="timeline">{c.days.map((x,i)=>{const [day,title]=x.split("：");return <article key={x}><div className="day-dot">{i+1}</div><span>{day}</span><h3>{title}</h3><p>{i<3?"先看見觸發點，不急著要求自己立刻改變。":i<6?"把看見的模式，轉成生活中可執行的小步驟。":"整理成一套屬於你的日常止損計畫。"}</p></article>})}</div></div></section>}
 
-export function ProductPreviewSection(){return <section className="section preview-section"><div className="container"><SectionHeading eyebrow="不是空泛知識，而是可以真的動手寫" title="先看看你的工具包會長什麼樣子" description="以下為內容版型示意，正式連結可在完成 PDF、Notion 或測驗表單後直接替換。"/><div className="preview-grid"><WorkbookPreview/><QuizPreview/></div></div></section>}
+export function ProductPreviewSection(){const previews=[{src:"/previews/action-workbook.png",title:"7 天嘴饞止損行動手冊",tag:"實際內頁"},{src:"/previews/quiz-guide.png",title:"情緒性進食 6 型解讀手冊",tag:"實際解讀頁"},{src:"/previews/drink-reset.png",title:"7 天含糖飲料重置表",tag:"實際填寫頁"}];return <section className="section preview-section"><div className="container"><SectionHeading eyebrow="不是空泛知識，而是可以真的動手寫" title="先看看你的工具包會長什麼樣子" description="以下皆為你購買後會取得的實際 PDF 內容，不是示意圖。"/><div className="real-preview-grid">{previews.map(item=><article key={item.src}><div><Image src={item.src} alt={`${item.title}${item.tag}`} width={706} height={999} sizes="(max-width: 640px) 88vw, 30vw"/></div><span>{item.tag}</span><h3>{item.title}</h3></article>)}</div><p className="preview-note">購買後可同時使用手機互動版與下載 PDF 閱讀版，依照當下情境選擇最方便的方式。</p></div></section>}
 
 export function BonusGridSection(){return <section className="section bonus-section"><div className="container"><SectionHeading eyebrow="完整工具組合" title={c.bonusTitle} description="不是一份薄薄的電子檔，而是一套能陪你看見、記錄、調整的行動工具。"/><div className="bonus-grid">{c.bonuses.map((b,i)=><article className="bonus-card" key={b[0]}><div className="bonus-top"><span className="bonus-icon">{bonusIcons[i]}</span><small>BONUS {String(i+1).padStart(2,"0")}</small></div><h3>{b[0]}</h3><p>{b[1]}</p><div className="bonus-value"><span>工具包內含</span><strong>{b[2]}</strong></div></article>)}</div><div className="value-stack"><div><span>主計畫＋8 份實用工具</span><strong>{c.offer.totalValue}</strong></div><div><s>{c.offer.originalPrice}</s><strong>{c.offer.price}</strong></div></div></div></section>}
 
