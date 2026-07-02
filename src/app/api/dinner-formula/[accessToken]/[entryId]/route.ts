@@ -1,0 +1,7 @@
+import { NextResponse } from "next/server";
+import { z } from "zod";
+import { prisma } from "@/lib/db";
+import { authorizeWorkbook } from "@/lib/workbook";
+import { rateLimit,requestIp } from "@/lib/rate-limit";
+const body=z.object({fullnessAfterDinner:z.number().int().min(0).max(10),cravingAfterDinner:z.enum(["有","沒有","一點點"]),hadSweetDrink:z.boolean(),didClosingAction:z.enum(["有","沒有","部分有"]),reflection:z.string().trim().max(1000).optional().nullable()});
+export async function PATCH(req:Request,{params}:{params:Promise<{accessToken:string;entryId:string}>}){const {accessToken,entryId}=await params;if(!await rateLimit(`dinner-report:${requestIp(req)}`,60,60_000))return NextResponse.json({error:"請稍後再試"},{status:429});if(!await authorizeWorkbook(accessToken))return NextResponse.json({error:"無法更新晚餐回報"},{status:404});const parsed=body.safeParse(await req.json().catch(()=>null));if(!parsed.success)return NextResponse.json({error:"請完成晚餐後回報"},{status:400});const entry=await prisma.dinnerFormulaEntry.findFirst({where:{id:entryId,accessToken},select:{id:true}});if(!entry)return NextResponse.json({error:"找不到這筆晚餐紀錄"},{status:404});const updated=await prisma.dinnerFormulaEntry.update({where:{id:entryId},data:{...parsed.data,reflection:parsed.data.reflection||null},select:{id:true,fullnessAfterDinner:true,cravingAfterDinner:true,hadSweetDrink:true,didClosingAction:true,reflection:true,updatedAt:true}});return NextResponse.json({entry:updated});}

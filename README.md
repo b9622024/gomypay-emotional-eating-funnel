@@ -198,6 +198,16 @@ API 路由：
 
 部署後執行 `npx prisma migrate deploy`。測試可手動點擊「下一步」略過等待，完成替代動作與回報後，確認結果及最近紀錄出現。
 
+## 下班後防暴食晚餐公式
+
+已付款且擁有主商品的使用者，可由 Access Page 進入 `/access/[accessToken]/dinner-formula`。使用者依狀態與外食場景建立 3-1-1 晚餐，結果儲存在 `DinnerFormulaEntry`，並可稍後補填晚餐後回報。
+
+- `GET /api/dinner-formula/[accessToken]`：最近 7 筆紀錄與摘要
+- `POST /api/dinner-formula/[accessToken]`：建立晚餐選擇
+- `PATCH /api/dinner-formula/[accessToken]/[entryId]`：更新同一 token 的晚餐後回報
+
+部署後執行 `npx prisma migrate deploy`。測試時建立一筆晚餐、補填回報並重新整理；累積 3 筆後確認摘要、搭配工具與 AI 初評 CTA 顯示正常。
+
 交易查詢依 GoMyPay 文件直接傳送 `Order_No`、`CustomerId` 與環境變數中的交易驗證密碼 `Str_Check`；查詢回傳 JSON 的 `pay_result`、`result`、`e_money` 與 `e_orderno` 都會核對後才開通。
 
 ## 安全設計

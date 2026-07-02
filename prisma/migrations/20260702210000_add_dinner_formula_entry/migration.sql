@@ -1,0 +1,6 @@
+CREATE TABLE "DinnerFormulaEntry" ("id" TEXT NOT NULL,"accessToken" TEXT NOT NULL,"customerId" TEXT,"orderId" TEXT,"hungerScore" INTEGER NOT NULL,"fatigueScore" INTEGER NOT NULL,"stressScore" INTEGER NOT NULL,"currentStates" JSONB NOT NULL,"mealScene" TEXT NOT NULL,"proteinChoice" TEXT NOT NULL,"vegetableChoice" TEXT NOT NULL,"carbChoice" TEXT NOT NULL,"drinkChoice" TEXT NOT NULL,"closingAction" TEXT NOT NULL,"generatedSuggestion" TEXT NOT NULL,"fullnessAfterDinner" INTEGER,"cravingAfterDinner" TEXT,"hadSweetDrink" BOOLEAN,"didClosingAction" TEXT,"reflection" TEXT,"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,"updatedAt" TIMESTAMP(3) NOT NULL,CONSTRAINT "DinnerFormulaEntry_pkey" PRIMARY KEY ("id"));
+CREATE INDEX "DinnerFormulaEntry_accessToken_createdAt_idx" ON "DinnerFormulaEntry"("accessToken", "createdAt");
+CREATE INDEX "DinnerFormulaEntry_customerId_idx" ON "DinnerFormulaEntry"("customerId");
+CREATE INDEX "DinnerFormulaEntry_orderId_idx" ON "DinnerFormulaEntry"("orderId");
+ALTER TABLE "DinnerFormulaEntry" ADD CONSTRAINT "DinnerFormulaEntry_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "Customer"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "DinnerFormulaEntry" ADD CONSTRAINT "DinnerFormulaEntry_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE CASCADE ON UPDATE CASCADE;

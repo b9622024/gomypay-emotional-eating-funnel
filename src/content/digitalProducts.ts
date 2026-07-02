@@ -18,7 +18,7 @@ export const digitalAssetsByProduct:Record<string,DigitalAsset[]>={
     {key:"drink-reset",title:"7 天含糖飲料重置表",description:"循序記錄、降糖、補水與替換選擇。",kind:"追蹤表",downloadUrl:placeholder},
     {key:"mindful-nutrition",title:"正念營養追蹤器",description:"不算熱量，也能找出你晚上嘴饞的營養缺口。",kind:"追蹤表",downloadUrl:placeholder},
     {key:"craving-rescue",title:"10 分鐘嘴饞急救流程卡",description:"快失控前，先幫自己多一個暫停鍵。",kind:"流程卡",downloadUrl:placeholder},
-    {key:"dinner-formula",title:"下班後防暴食晚餐公式",description:"外食族也能快速套用的晚餐搭配方式。",kind:"清單",downloadUrl:placeholder},
+    {key:"dinner-formula",title:"下班後防暴食晚餐公式",description:"外食族也能用的 3-1-1 穩定晚餐選擇法。",kind:"清單",downloadUrl:placeholder},
     {key:"safe-swaps",title:"安全零食與飲料替換清單",description:"想吃甜、鹹或喝奶茶時的溫和替代選項。",kind:"清單",downloadUrl:placeholder}
   ],
   ai_energy_assessment:[
