@@ -1,0 +1,1 @@
+import {describe,expect,it} from "vitest";import {buildDrinkProPlan} from "./drinkSwapPro";describe("drink swap pro",()=>{it("builds direct ordering advice",()=>{const x=buildDrinkProPlan("奶茶","珍珠奶茶","全糖",["珍珠"],"大杯");expect(x.suggestedSwap).toContain("鮮奶茶");expect(x.orderScript).toContain("微糖");expect(x.nextStep).toContain("半糖");expect(x.nextStep).toContain("拿掉加料")})});

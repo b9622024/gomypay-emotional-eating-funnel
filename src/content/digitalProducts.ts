@@ -4,26 +4,27 @@ export type DigitalAsset={
   description:string;
   kind:"測驗"|"行動手冊"|"工作本"|"分析表"|"追蹤表"|"流程卡"|"清單"|"表單"|"菜單";
   downloadUrl:string;
+  badge?:string;
 };
 
 const placeholder="#";
-export const emotionalEatingDownloadLinks={actionGuidePdf:placeholder,quizGuidePdf:placeholder};
+export const emotionalEatingDownloadLinks={actionGuidePdf:"/downloads/7-day-craving-reset-workbook.pdf",quizGuidePdf:"/downloads/emotional-eating-quiz-guide.pdf"};
 
 export type AssetDelivery={interactivePath:string;pdfUrl:string;imageUrl?:string};
 // 所有交付連結集中在這裡。收到正式檔案或雲端網址後，只需替換對應的 #。
 export const assetDeliveryLinks:Record<string,AssetDelivery>={
   "emotional-eating-quiz":{interactivePath:"/quiz/emotional-eating",pdfUrl:emotionalEatingDownloadLinks.quizGuidePdf},
   "reset-action-guide":{interactivePath:"/workbook",pdfUrl:emotionalEatingDownloadLinks.actionGuidePdf},
-  "three-minute-workbook":{interactivePath:"/three-minute-check",pdfUrl:placeholder},
-  "trigger-analysis":{interactivePath:"/trigger-analysis",pdfUrl:placeholder},
-  "drink-reset":{interactivePath:"/drink-reset",pdfUrl:placeholder},
-  "mindful-nutrition":{interactivePath:"/mindful-nutrition-tracker",pdfUrl:placeholder},
-  "craving-rescue":{interactivePath:"/craving-rescue",pdfUrl:placeholder,imageUrl:placeholder},
-  "dinner-formula":{interactivePath:"/dinner-formula",pdfUrl:placeholder,imageUrl:placeholder},
-  "safe-swaps":{interactivePath:"/safe-swap-list",pdfUrl:placeholder,imageUrl:placeholder},
-  "sugary-drink-swap-pro":{interactivePath:"/drink-reset",pdfUrl:placeholder,imageUrl:placeholder},
+  "three-minute-workbook":{interactivePath:"/three-minute-check",pdfUrl:"/downloads/3-minute-mind-body-workbook.pdf"},
+  "trigger-analysis":{interactivePath:"/trigger-analysis",pdfUrl:"/downloads/craving-trigger-analysis.pdf"},
+  "drink-reset":{interactivePath:"/drink-reset",pdfUrl:"/downloads/7-day-drink-reset.pdf"},
+  "mindful-nutrition":{interactivePath:"/mindful-nutrition-tracker",pdfUrl:"/downloads/mindful-nutrition-tracker.pdf"},
+  "craving-rescue":{interactivePath:"/craving-rescue",pdfUrl:"/downloads/10-minute-craving-rescue.pdf",imageUrl:placeholder},
+  "dinner-formula":{interactivePath:"/dinner-formula",pdfUrl:"/downloads/dinner-formula.pdf",imageUrl:placeholder},
+  "safe-swaps":{interactivePath:"/safe-swap-list",pdfUrl:"/downloads/safe-swap-list.pdf",imageUrl:placeholder},
+  "sugary-drink-swap-pro":{interactivePath:"/drink-swap-pro",pdfUrl:"/downloads/drink-swap-pro.pdf",imageUrl:placeholder},
   "ai-energy-assessment":{interactivePath:"/ai-energy-assessment",pdfUrl:placeholder},
-  "anti-binge-meal-plan":{interactivePath:placeholder,pdfUrl:placeholder},
+  "anti-binge-meal-plan":{interactivePath:"/7-day-eating-out-menu",pdfUrl:"/downloads/7-day-eating-out-menu.pdf"},
   "coaching-intake":{interactivePath:placeholder,pdfUrl:placeholder}
 };
 
@@ -43,10 +44,10 @@ export const digitalAssetsByProduct:Record<string,DigitalAsset[]>={
     {key:"ai-energy-assessment",title:"AI 能量減脂初評表單",description:"從情緒、壓力、睡眠、外食與營養缺口完成初步盤點。",kind:"表單",downloadUrl:placeholder}
   ],
   sugary_drink_swap_pro:[
-    {key:"sugary-drink-swap-pro",title:"含糖飲料替換清單 Pro",description:"手搖飲降糖、便利商店無糖飲與一週飲料規則設計。",kind:"清單",downloadUrl:placeholder}
+    {key:"sugary-drink-swap-pro",title:"含糖飲料替換清單 Pro",description:"想喝飲料時，直接知道怎麼點、怎麼降階、怎麼停得住。",kind:"清單",downloadUrl:placeholder,badge:"NT$99 加購工具"}
   ],
   anti_binge_meal_plan_7d:[
-    {key:"anti-binge-meal-plan",title:"7 天外食防暴食菜單",description:"早餐店、便利商店、便當店與速食店的省力搭配。",kind:"菜單",downloadUrl:placeholder}
+    {key:"anti-binge-meal-plan",title:"7 天外食防暴食菜單",description:"不用自己煮，外食族也能照著吃的 7 天穩定晚餐與嘴饞止損菜單。",kind:"菜單",downloadUrl:placeholder,badge:"NT$99 加購工具"}
   ],
   coaching_deposit_3d:[
     {key:"coaching-intake",title:"三天陪跑資料填寫表單",description:"提交飲食、嘴饞紀錄與希望教練協助的問題。",kind:"表單",downloadUrl:placeholder}

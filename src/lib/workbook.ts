@@ -17,3 +17,11 @@ export function validDay(value:string|number){
   const day=Number(value);
   return Number.isInteger(day)&&day>=1&&day<=7?day:null;
 }
+
+export async function authorizeProductAccess(accessToken:string,productCode:string){
+  if(!accessToken||accessToken.length>200)return null;
+  const entitlement=await prisma.entitlement.findUnique({where:{accessToken},include:{order:true}});
+  if(!entitlement||entitlement.order.status!=="paid")return null;
+  const owned=await prisma.entitlement.findFirst({where:{customerId:entitlement.customerId,productCode,order:{status:"paid"}},select:{id:true,orderId:true}});
+  return owned?{customerId:entitlement.customerId,orderId:owned.orderId}:null;
+}

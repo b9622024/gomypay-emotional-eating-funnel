@@ -369,3 +369,63 @@ model SafeSwapFavorite {
 
   @@index([accessToken, createdAt])
 }
+
+model DrinkSwapProRecord {
+  id              String   @id @default(cuid())
+  accessToken     String
+  category        String
+  originalChoice  String
+  sugarHabit      String
+  toppingsHabit   Json
+  cupSize         String
+  suggestedSwap   String
+  suggestedReason String
+  orderScript     String
+  nextStep        String
+  createdAt       DateTime @default(now())
+
+  @@index([accessToken, createdAt])
+}
+
+model DrinkSwapProFavorite {
+  id               String   @id @default(cuid())
+  accessToken      String
+  favoriteCategory String
+  title            String
+  content          String
+  orderScript      String
+  createdAt        DateTime @default(now())
+
+  @@index([accessToken, createdAt])
+}
+
+model EatingOutMenuLog {
+  id                      String   @id @default(cuid())
+  accessToken             String
+  dayNumber               Int
+  eatingOutScene          String
+  currentStates           Json
+  recommendedMeal         Json
+  dinnerSatisfactionScore Int?
+  afterDinnerCravingScore Int?
+  hadSugaryDrink          Boolean?
+  didClosingRoutine       Boolean?
+  mainAdjustmentNeeded    String?
+  notes                   String?
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@index([accessToken, createdAt])
+}
+
+model EatingOutMenuFavorite {
+  id             String   @id @default(cuid())
+  accessToken    String
+  title          String
+  scene          String
+  mealContent    String
+  closingRoutine String
+  createdAt      DateTime @default(now())
+
+  @@index([accessToken, createdAt])
+}

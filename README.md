@@ -224,6 +224,17 @@ Access Page 的所有產品卡統一顯示「手機互動版」與「下載 PDF 
 
 所有網址集中在 `src/content/digitalProducts.ts` 的 `assetDeliveryLinks`。尚未提供的檔案使用 `#`，前端會顯示停用的「連結準備中」按鈕；取得正式檔案網址後只需替換對應的 `pdfUrl` 或 `imageUrl`。
 
+目前收到的 11 份 PDF 已放在 `public/downloads/` 並接上正式下載按鈕。PDF 是公開靜態檔案，網址可被轉傳；若未來需要更嚴格的存取保護，應改用私人物件儲存與短效簽署網址。
+
+## 付費加購互動工具
+
+- `/access/[accessToken]/drink-swap-pro`：含糖飲料替換清單 Pro，僅限 `sugary_drink_swap_pro` entitlement。
+- `/access/[accessToken]/7-day-eating-out-menu`：7 天外食防暴食菜單，僅限 `anti_binge_meal_plan_7d` entitlement。
+- `/api/drink-swap-pro/[accessToken]`、`/favorites`：Pro 紀錄與收藏。
+- `/api/eating-out-menu/[accessToken]`、`/[entryId]`、`/favorites`：外食紀錄、回報與收藏。
+
+此版本將 `anti_binge_meal_plan_7d` 價格調整為 NT$99。正式部署後除了 `npx prisma migrate deploy`，還要執行 `npx prisma db seed`，讓正式資料庫商品價格同步。
+
 交易查詢依 GoMyPay 文件直接傳送 `Order_No`、`CustomerId` 與環境變數中的交易驗證密碼 `Str_Check`；查詢回傳 JSON 的 `pay_result`、`result`、`e_money` 與 `e_orderno` 都會核對後才開通。
 
 ## 安全設計
