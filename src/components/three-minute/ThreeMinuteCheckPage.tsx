@@ -1,0 +1,23 @@
+"use client";
+import { useEffect,useRef,useState } from "react";
+import Link from "next/link";
+import { emptyThreeMinuteData,threeMinuteCheckContent as c,type ThreeMinuteData } from "@/content/threeMinuteCheck";
+import { ThreeMinuteBodyScanStep,ThreeMinuteChooseStep,ThreeMinuteContextStep,ThreeMinuteEmotionStep,ThreeMinuteStartStep } from "./ThreeMinuteSteps";
+import { ThreeMinuteResultCard } from "./ThreeMinuteResultCard";
+import { ThreeMinuteHistoryList } from "./ThreeMinuteHistoryList";
+
+export default function ThreeMinuteCheckPage({accessToken}:{accessToken:string}){
+  const [records,setRecords]=useState<ThreeMinuteData[]>([]),[data,setData]=useState<ThreeMinuteData>({...emptyThreeMinuteData}),[step,setStep]=useState(0),[loading,setLoading]=useState(true),[busy,setBusy]=useState(false),[saveState,setSaveState]=useState<"idle"|"saving"|"saved"|"error">("idle"),[error,setError]=useState("");
+  const timer=useRef<ReturnType<typeof setTimeout>|null>(null);
+  useEffect(()=>{fetch(`/api/three-minute-check/${accessToken}`).then(async response=>{const body=await response.json();if(!response.ok)throw new Error(body.error);setRecords(body.records.map(normalize))}).catch(()=>setError(c.errors.load)).finally(()=>setLoading(false));return()=>{if(timer.current)clearTimeout(timer.current)}},[accessToken]);
+  function normalize(record:ThreeMinuteData):ThreeMinuteData{return {...emptyThreeMinuteData,...record,bodySignals:Array.isArray(record.bodySignals)?record.bodySignals:[],emotionTags:Array.isArray(record.emotionTags)?record.emotionTags:[]}}
+  async function requestSave(next:ThreeMinuteData,complete=false,applyResult=true){setSaveState("saving");try{const response=await fetch(`/api/three-minute-check/${accessToken}`,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({...next,complete})});const body=await response.json();if(!response.ok)throw new Error(body.error);const saved=normalize(body.record);if(applyResult)setData(saved);setSaveState("saved");return saved}catch{setSaveState("error");setError(c.errors.save);return null}}
+  async function startNew(){setBusy(true);setError("");const saved=await requestSave({...emptyThreeMinuteData});if(saved){setStep(1);setRecords(current=>[saved,...current].slice(0,10))}setBusy(false)}
+  function resume(){const draft=records.find(record=>!record.resultType);if(draft){setData(normalize(draft));setStep(1)}}
+  function update<K extends keyof ThreeMinuteData>(key:K,value:ThreeMinuteData[K]){const next={...data,[key]:value};setData(next);setSaveState("saving");if(timer.current)clearTimeout(timer.current);timer.current=setTimeout(()=>requestSave(next,false,false),500)}
+  async function finish(){if(timer.current)clearTimeout(timer.current);setBusy(true);const saved=await requestSave(data,true);if(saved){setRecords(current=>[saved,...current.filter(record=>record.id!==saved.id)].slice(0,10));setStep(5)}setBusy(false)}
+  function reset(){setData({...emptyThreeMinuteData});setStep(0);setSaveState("idle");setError("")}
+  if(loading)return <main className="tm-shell"><div className="tm-loading">正在準備 3 分鐘工具…</div></main>;
+  const draft=records.find(record=>!record.resultType);
+  return <main className="tm-shell"><header className="tm-header"><Link href={`/access/${accessToken}`}>← 回到工具包</Link><div><span>{step===0?"準備開始":step===5?"已完成":`${step} / 4`}</span><i><b style={{width:`${step===5?100:step/4*100}%`}}/></i></div></header><div className="tm-main">{step===0&&<><ThreeMinuteStartStep onStart={startNew} busy={busy}/>{draft&&<button className="tm-resume" type="button" onClick={resume}>{c.start.resumeButton} →</button>}<ThreeMinuteHistoryList records={records}/></>}{step===1&&<ThreeMinuteContextStep data={data} update={update}/>} {step===2&&<ThreeMinuteBodyScanStep data={data} update={update}/>} {step===3&&<ThreeMinuteEmotionStep data={data} update={update}/>} {step===4&&<ThreeMinuteChooseStep data={data} update={update}/>} {step===5&&<><ThreeMinuteResultCard accessToken={accessToken} data={data} onNew={reset}/><ThreeMinuteHistoryList records={records}/></>}{step>0&&step<5&&<><div className={`tm-save ${saveState}`}>{saveState==="saving"?c.nav.saving:saveState==="saved"?`✓ ${c.nav.saved}`:saveState==="error"?c.errors.save:"填寫內容會自動儲存"}</div>{error&&<p className="tm-error">{error}</p>}<nav className="tm-nav"><button type="button" disabled={step===1} onClick={()=>setStep(value=>value-1)}>← {c.nav.back}</button><button className="primary" type="button" disabled={busy} onClick={()=>step===4?finish():setStep(value=>value+1)}>{busy?c.nav.saving:step===4?c.nav.finish:`${c.nav.next} →`}</button></nav></>}</div></main>;
+}

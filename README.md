@@ -132,6 +132,20 @@ npm run db:push
 
 三個端點都會驗證 accessToken、paid 狀態及主商品 entitlement。PDF 閱讀版與互動填寫版會同時顯示在 Access page；實際 PDF 及 AI 初評連結仍由 `src/content/digitalProducts.ts` 的 placeholder 替換。
 
+## 嘴饞前 3 分鐘身心連結工作本
+
+已付款並擁有 `emotional_eating_reset_7d` 的使用者，可由 Access Page 進入 `/access/[accessToken]/three-minute-check`。這是一個嘴饞當下使用的 S.E.C. 快速工具，分成 Stop、Examine、Choose 三階段；欄位變更後 500ms 會自動儲存至 `ThreeMinuteCheckIn`。
+
+完成後由伺服器依分數與情緒標籤判斷真餓、壓力、疲憊、情緒安慰、無聊習慣、含糖飲料、混合或不確定型。結果僅供自我觀察，不是醫療診斷。頁面會顯示最近 10 筆紀錄，未完成的草稿也可以繼續填寫。
+
+API：
+
+- `GET /api/three-minute-check/[accessToken]`：最近 10 筆紀錄
+- `POST /api/three-minute-check/[accessToken]`：建立草稿、更新或完成紀錄
+- `GET /api/three-minute-check/[accessToken]/latest`：最近一筆紀錄
+
+部署此版本時必須執行 `npx prisma migrate deploy`，建立 `ThreeMinuteCheckIn` 資料表。
+
 交易查詢依 GoMyPay 文件直接傳送 `Order_No`、`CustomerId` 與環境變數中的交易驗證密碼 `Str_Check`；查詢回傳 JSON 的 `pay_result`、`result`、`e_money` 與 `e_orderno` 都會核對後才開通。
 
 ## 安全設計

@@ -40,7 +40,8 @@ export function assetsForProducts(productCodes:string[]){
 }
 
 export const recommendedUsage=[
-  {step:"01",title:"先完成情緒性進食 6 型測驗",description:"用 24 題手機互動測驗，先找到主要與次要的觸發模式。"},
-  {step:"02",title:"開始 7 天計畫",description:"每天花 5–10 分鐘，跟著行動手冊完成一個小步驟。"},
-  {step:"03",title:"搭配追蹤工具",description:"使用工作本與追蹤表，觀察什麼方法最適合你的生活。"}
+  {step:"01",action:"quiz",title:"先完成情緒性進食 6 型測驗",description:"用 24 題手機互動測驗，先找到主要與次要的觸發模式。"},
+  {step:"02",action:"three-minute",title:"嘴饞前 3 分鐘身心連結工作本",description:"嘴饞剛出現時，先用這個工具做 3 分鐘檢查，分辨自己是真的餓，還是壓力、疲憊、委屈、無聊或想喝飲料。"},
+  {step:"03",action:"workbook",title:"開始 7 天計畫",description:"每天花 5–10 分鐘，跟著行動手冊完成一個小步驟。"},
+  {step:"04",action:"tools",title:"搭配追蹤工具",description:"使用工作本與追蹤表，觀察什麼方法最適合你的生活。"}
 ];
