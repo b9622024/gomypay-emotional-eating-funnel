@@ -60,8 +60,6 @@ export function assetsForProducts(productCodes:string[]){
 
 export const recommendedUsage=[
   {step:"01",action:"quiz",title:"先完成情緒性進食 6 型測驗",description:"用 24 題手機互動測驗，先找到主要與次要的觸發模式。"},
-  {step:"02",action:"three-minute",title:"嘴饞前 3 分鐘身心連結工作本",description:"嘴饞剛出現時，先用這個工具做 3 分鐘檢查，分辨自己是真的餓，還是壓力、疲憊、委屈、無聊或想喝飲料。"},
-  {step:"03",action:"trigger-analysis",title:"下班後嘴饞觸發點分析器",description:"回推每次嘴饞前 30 分鐘的時間、情緒、場景與身體線索，找出你最常被啟動的破功開關。"},
-  {step:"04",action:"workbook",title:"開始 7 天計畫",description:"每天花 5–10 分鐘，跟著行動手冊完成一個小步驟。"},
-  {step:"05",action:"tools",title:"搭配追蹤工具",description:"使用工作本與追蹤表，觀察什麼方法最適合你的生活。"}
+  {step:"02",action:"workbook",title:"開始 7 天計畫",description:"每天花 5–10 分鐘，跟著行動手冊完成一個小步驟。"},
+  {step:"03",action:"tools",title:"搭配追蹤工具",description:"依照當下需要使用 3 分鐘檢查、觸發點分析、飲料重置、營養追蹤或急救工具。"}
 ];
