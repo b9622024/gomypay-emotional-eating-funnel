@@ -178,6 +178,17 @@ API 路由：
 
 部署後執行 `npx prisma migrate deploy`。測試時依序填寫任一天、等待「已儲存」後重新整理，確認內容仍在；完成 Day 7 後確認結果報告與 AI 初評按鈕出現。
 
+## 正念營養追蹤器
+
+已付款並擁有主商品的使用者，可由 Access Page 進入 `/access/[accessToken]/mindful-nutrition-tracker`。資料儲存在 `MindfulNutritionEntry`，同一 accessToken 與 dayNumber 只有一筆。完成至少 3 天顯示初步觀察，完成 7 天顯示完整報告。
+
+- `GET /api/mindful-nutrition/[accessToken]`：7 天資料、完成狀態與摘要
+- `POST /api/mindful-nutrition/[accessToken]/day/[dayNumber]`：儲存每日資料
+- `POST /api/mindful-nutrition/[accessToken]/day/[dayNumber]/complete`：完成每日紀錄
+- `GET /api/mindful-nutrition/[accessToken]/summary`：取得最新摘要
+
+部署後執行 `npx prisma migrate deploy`。測試時完成至少 3 天，確認初步觀察出現；重新整理後確認欄位及完成狀態仍保留。
+
 交易查詢依 GoMyPay 文件直接傳送 `Order_No`、`CustomerId` 與環境變數中的交易驗證密碼 `Str_Check`；查詢回傳 JSON 的 `pay_result`、`result`、`e_money` 與 `e_orderno` 都會核對後才開通。
 
 ## 安全設計
