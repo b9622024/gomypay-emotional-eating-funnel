@@ -26,7 +26,7 @@ export const emotionalEatingQuestions:QuizQuestion[]=[
 ];
 
 export const quizCopy={
-  eyebrow:"FIRST STEP · 6 TYPE QUIZ",title:"情緒性進食 6 型測驗",intro:"用 24 題看見自己最常出現的嘴饞與進食觸發模式。請依照最近一個月的真實狀況作答，沒有標準答案。",start:"開始測驗",previous:"上一題",next:"下一題",finish:"查看我的結果",required:"請先選擇一個最符合你的答案",resultTitle:"你的情緒性進食傾向",mixed:"混合型傾向",primary:"主要類型",secondary:"次要類型",description:"類型說明",scenario:"容易破功情境",firstStep:"第一步建議",task:"建議搭配的手冊任務",dayOneCta:"開始 Day 1 工作本",aiCta:"完成 AI 能量減脂初評",disclaimer:"這份結果是一般健康教育與自我觀察工具，不是醫療或心理診斷。"
+  eyebrow:"FIRST STEP · 6 TYPE QUIZ",title:"情緒性進食 6 型測驗",intro:"用 24 題看見自己最常出現的嘴饞與進食觸發模式。請依照最近一個月的真實狀況作答，沒有標準答案。",start:"開始測驗",previous:"上一題",next:"下一題",finish:"查看我的結果",required:"請先選擇一個最符合你的答案",resultTitle:"你的情緒性進食傾向",mixed:"混合型傾向",primary:"主要類型",secondary:"次要類型",description:"類型說明",scenario:"容易破功情境",firstStep:"第一步建議",task:"建議搭配的手冊任務",workbookCta:"開始七日紀錄手冊",aiCta:"領取 AI 能量減脂測驗",aiTitle:"想知道自己的能量狀態如何影響減脂嗎？",aiDescription:"透過 5 分鐘 49 題的測驗填寫，能夠知道現在的脈輪能量狀態以及個人天賦優勢，會有專人一對一解析測驗結果找出問題，並且提供專屬對策方案。",disclaimer:"這份結果是一般健康教育與自我觀察工具，不是醫療或心理診斷。"
 } as const;
 
 export type QuizAnswers=Record<string,number>;

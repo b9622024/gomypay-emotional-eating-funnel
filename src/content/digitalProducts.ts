@@ -7,6 +7,7 @@ export type DigitalAsset={
 };
 
 const placeholder="#";
+export const emotionalEatingDownloadLinks={actionGuidePdf:placeholder,quizGuidePdf:placeholder};
 
 export const digitalAssetsByProduct:Record<string,DigitalAsset[]>={
   emotional_eating_reset_7d:[
