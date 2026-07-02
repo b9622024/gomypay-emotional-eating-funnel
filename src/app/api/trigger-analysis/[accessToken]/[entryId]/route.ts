@@ -1,0 +1,8 @@
+import { NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import { authorizeWorkbook } from "@/lib/workbook";
+import { rateLimit,requestIp } from "@/lib/rate-limit";
+import { triggerDbData,triggerEntrySchema } from "@/lib/trigger-analysis";
+
+export async function PATCH(req:Request,{params}:{params:Promise<{accessToken:string;entryId:string}>}){const {accessToken,entryId}=await params;if(!await rateLimit(`trigger-update:${requestIp(req)}`,60,60_000))return NextResponse.json({error:"請稍後再試"},{status:429});if(!await authorizeWorkbook(accessToken))return NextResponse.json({error:"這個工具包連結無效或尚未開通"},{status:404});if(!await prisma.cravingTriggerEntry.findFirst({where:{id:entryId,accessToken},select:{id:true}}))return NextResponse.json({error:"找不到這筆紀錄"},{status:404});const parsed=triggerEntrySchema.safeParse(await req.json().catch(()=>null));if(!parsed.success)return NextResponse.json({error:"紀錄格式不正確"},{status:400});const entry=await prisma.cravingTriggerEntry.update({where:{id:entryId},data:triggerDbData(parsed.data)});return NextResponse.json({entry})}
+export async function DELETE(req:Request,{params}:{params:Promise<{accessToken:string;entryId:string}>}){const {accessToken,entryId}=await params;if(!await rateLimit(`trigger-delete:${requestIp(req)}`,20,60_000))return NextResponse.json({error:"請稍後再試"},{status:429});if(!await authorizeWorkbook(accessToken))return NextResponse.json({error:"這個工具包連結無效或尚未開通"},{status:404});const removed=await prisma.cravingTriggerEntry.deleteMany({where:{id:entryId,accessToken}});if(!removed.count)return NextResponse.json({error:"找不到這筆紀錄"},{status:404});return NextResponse.json({ok:true})}

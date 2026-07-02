@@ -22,18 +22,20 @@ enum PaymentSource {
 }
 
 model Customer {
-  id                  String               @id @default(cuid())
-  name                String
-  email               String
-  phone               String
-  lineId              String?
-  orders              Order[]
-  entitlements        Entitlement[]
-  workbookEntries     WorkbookEntry[]
-  quizResults         QuizResult[]
-  threeMinuteCheckIns ThreeMinuteCheckIn[]
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
+  id                    String                @id @default(cuid())
+  name                  String
+  email                 String
+  phone                 String
+  lineId                String?
+  orders                Order[]
+  entitlements          Entitlement[]
+  workbookEntries       WorkbookEntry[]
+  quizResults           QuizResult[]
+  threeMinuteCheckIns   ThreeMinuteCheckIn[]
+  cravingTriggerEntries CravingTriggerEntry[]
+  drinkResetEntries     DrinkResetEntry[]
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
 
   @@index([email])
 }
@@ -50,26 +52,28 @@ model Product {
 }
 
 model Order {
-  id                  String               @id @default(cuid())
-  orderNo             String               @unique @db.VarChar(25)
-  customerId          String
-  customer            Customer             @relation(fields: [customerId], references: [id])
-  amount              Int
-  status              OrderStatus          @default(pending)
-  buyerMemo           String               @db.VarChar(500)
-  gomypayOrderId      String?
-  avcode              String?
-  cardLastNum         String?
-  rawReturnPayload    Json?
-  rawCallbackPayload  Json?
-  paidAt              DateTime?
-  items               OrderItem[]
-  entitlements        Entitlement[]
-  workbookEntries     WorkbookEntry[]
-  quizResults         QuizResult[]
-  threeMinuteCheckIns ThreeMinuteCheckIn[]
-  createdAt           DateTime             @default(now())
-  updatedAt           DateTime             @updatedAt
+  id                    String                @id @default(cuid())
+  orderNo               String                @unique @db.VarChar(25)
+  customerId            String
+  customer              Customer              @relation(fields: [customerId], references: [id])
+  amount                Int
+  status                OrderStatus           @default(pending)
+  buyerMemo             String                @db.VarChar(500)
+  gomypayOrderId        String?
+  avcode                String?
+  cardLastNum           String?
+  rawReturnPayload      Json?
+  rawCallbackPayload    Json?
+  paidAt                DateTime?
+  items                 OrderItem[]
+  entitlements          Entitlement[]
+  workbookEntries       WorkbookEntry[]
+  quizResults           QuizResult[]
+  threeMinuteCheckIns   ThreeMinuteCheckIn[]
+  cravingTriggerEntries CravingTriggerEntry[]
+  drinkResetEntries     DrinkResetEntry[]
+  createdAt             DateTime              @default(now())
+  updatedAt             DateTime              @updatedAt
 
   @@index([customerId])
   @@index([status, createdAt])
@@ -199,6 +203,62 @@ model ThreeMinuteCheckIn {
   updatedAt         DateTime  @updatedAt
 
   @@index([accessToken, createdAt])
+  @@index([customerId])
+  @@index([orderId])
+}
+
+model CravingTriggerEntry {
+  id             String    @id @default(cuid())
+  accessToken    String
+  customerId     String?
+  customer       Customer? @relation(fields: [customerId], references: [id])
+  orderId        String?
+  order          Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  occurredAt     DateTime?
+  location       String?
+  cravingItem    String?
+  cravingScore   Int?
+  hungerScore    Int?
+  stressScore    Int?
+  fatigueScore   Int?
+  didEatOrDrink  Boolean?
+  consumedItem   String?
+  afterFeeling   Json?
+  beforeActivity String?
+  beforeEvent    String?
+  beforeEmotion  String?
+  bodyState      String?
+  lastMealTime   String?
+  lastMealEnough String?
+  waterEnough    String?
+  sleepPoor      Boolean?
+  triggerTypes   Json?
+  mainTrigger    String?
+  notes          String?
+  nextStrategy   String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  @@index([accessToken, createdAt])
+  @@index([customerId])
+  @@index([orderId])
+}
+
+model DrinkResetEntry {
+  id          String    @id @default(cuid())
+  accessToken String
+  customerId  String?
+  customer    Customer? @relation(fields: [customerId], references: [id])
+  orderId     String?
+  order       Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  dayNumber   Int
+  data        Json
+  isCompleted Boolean   @default(false)
+  completedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([accessToken, dayNumber])
   @@index([customerId])
   @@index([orderId])
 }

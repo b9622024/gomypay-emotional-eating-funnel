@@ -146,6 +146,38 @@ API：
 
 部署此版本時必須執行 `npx prisma migrate deploy`，建立 `ThreeMinuteCheckIn` 資料表。
 
+## 下班後嘴饞觸發點分析器
+
+已付款並擁有主商品的使用者，可由 Access Page 進入 `/access/[accessToken]/trigger-analysis`。每筆紀錄分為事件、前 30 分鐘回推、觸發分類與下次策略四步驟，可新增、編輯及二次確認後刪除。
+
+新增 Prisma model：`CravingTriggerEntry`。部署後執行：
+
+```bash
+npx prisma migrate deploy
+```
+
+API 路由：
+
+- `GET /api/trigger-analysis/[accessToken]`：全部紀錄與摘要
+- `POST /api/trigger-analysis/[accessToken]`：新增紀錄
+- `PATCH /api/trigger-analysis/[accessToken]/[entryId]`：更新同一 token 的紀錄
+- `DELETE /api/trigger-analysis/[accessToken]/[entryId]`：刪除同一 token 的紀錄
+- `GET /api/trigger-analysis/[accessToken]/summary`：重新產生摘要
+
+測試方式：新增一筆事件並選擇觸發點，儲存後確認列表卡片出現。累積至少 3 筆後，摘要應顯示平均分數、前三名觸發點／場景／食物、實際吃喝比例與高風險模式；重新整理後資料仍應存在。
+
+## 手機互動版 7 天含糖飲料重置表
+
+已付款並擁有主商品的使用者，可由 Access Page 進入 `/access/[accessToken]/drink-reset`。每日欄位會在變更 500ms 後自動儲存，也可手動儲存或標記完成；完成 Day 7 後會依填寫資料顯示自我觀察報告。
+
+新增 Prisma model：`DrinkResetEntry`。API 路由：
+
+- `GET /api/drink-reset/[accessToken]`
+- `POST /api/drink-reset/[accessToken]/day/[dayNumber]`
+- `POST /api/drink-reset/[accessToken]/day/[dayNumber]/complete`
+
+部署後執行 `npx prisma migrate deploy`。測試時依序填寫任一天、等待「已儲存」後重新整理，確認內容仍在；完成 Day 7 後確認結果報告與 AI 初評按鈕出現。
+
 交易查詢依 GoMyPay 文件直接傳送 `Order_No`、`CustomerId` 與環境變數中的交易驗證密碼 `Str_Check`；查詢回傳 JSON 的 `pay_result`、`result`、`e_money` 與 `e_orderno` 都會核對後才開通。
 
 ## 安全設計
