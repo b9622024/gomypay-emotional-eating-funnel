@@ -9,7 +9,8 @@ export async function authorizeWorkbook(accessToken:string){
   if(!entitlement||entitlement.order.status!=="paid")return null;
   const ownsMain=entitlement.order.entitlements.some(item=>item.productCode==="emotional_eating_reset_7d");
   if(!ownsMain)return null;
-  return {orderId:entitlement.order.id,customerId:entitlement.order.customerId};
+  const ownsAiAssessment=Boolean(await prisma.entitlement.findFirst({where:{customerId:entitlement.order.customerId,productCode:"ai_energy_assessment",order:{status:"paid"}},select:{id:true}}));
+  return {orderId:entitlement.order.id,customerId:entitlement.order.customerId,ownsAiAssessment};
 }
 
 export function validDay(value:string|number){

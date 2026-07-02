@@ -1,9 +1,9 @@
 import { LockMark } from "@/components/ui/BrandUI";
 
-export type Bump={code:string;name:string;price:number;text:string;note?:string};
+export type Bump={code:string;name:string;price:number;text:string;note?:string;popularity?:string;priceNote?:string};
 
 export function OrderBumpCard({item,selected,onChange}:{item:Bump;selected:boolean;onChange:(checked:boolean)=>void}){
-  return <label className={`order-bump ${selected?"selected":""}`}><input type="checkbox" checked={selected} onChange={e=>onChange(e.target.checked)}/><span><span className="bump-heading"><strong>{item.name}</strong><b>＋NT${item.price}</b></span><p>{item.text}</p>{item.note&&<small>{item.note}</small>}</span></label>;
+  return <label className={`order-bump ${selected?"selected":""}`}><input type="checkbox" checked={selected} onChange={e=>onChange(e.target.checked)}/><span>{item.popularity&&<span className="bump-popularity">{item.popularity}</span>}<span className="bump-heading"><strong>{item.name}</strong><b>＋NT${item.price}</b></span>{item.priceNote&&<strong className="bump-price-note">{item.priceNote}</strong>}<p>{item.text}</p>{item.note&&<small>{item.note}</small>}</span></label>;
 }
 
 export function CheckoutSummaryCard({selected,total,busy,error}:{selected:Bump[];total:number;busy:boolean;error:string}){

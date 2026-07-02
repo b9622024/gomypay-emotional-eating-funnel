@@ -4,6 +4,7 @@ import WorkbookClient from "@/components/workbook/WorkbookClient";
 
 export default async function WorkbookPage({params}:{params:Promise<{accessToken:string}>}){
   const {accessToken}=await params;
-  if(!await authorizeWorkbook(accessToken))notFound();
-  return <WorkbookClient accessToken={accessToken}/>;
+  const authorization=await authorizeWorkbook(accessToken);
+  if(!authorization)notFound();
+  return <WorkbookClient accessToken={accessToken} ownsAiAssessment={authorization.ownsAiAssessment}/>;
 }

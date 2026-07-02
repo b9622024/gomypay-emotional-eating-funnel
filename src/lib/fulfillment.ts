@@ -4,7 +4,22 @@ import { emailService } from "./email";
 
 const createAccessToken=()=>randomBytes(32).toString("base64url");
 
-export function fulfillmentEmail(input:{name:string;accessUrl:string}){
+export function fulfillmentEmail(input:{name:string;accessUrl:string;productCodes?:string[]}){
+  const aiOnly=input.productCodes?.length===1&&input.productCodes[0]==="ai_energy_assessment";
+  if(aiOnly)return {
+    subject:"你的 AI 能量減脂初評已準備好了",
+    body:`${input.name}，你好：
+
+感謝你購買「AI 能量減脂初評」！
+
+請由以下專屬連結查看已購買內容：
+${input.accessUrl}
+
+接著請透過 LINE 官方帳號與我們聯繫，我們會提供 49 題測驗，並安排專人一對一解析測驗結果：
+https://lin.ee/UKTsrwq
+
+可樂吉健康研究所｜崇銘老師`
+  };
   return {
     subject:"你的《下班後嘴饞止損包》已準備好了",
     body:`${input.name}，你好：
@@ -65,9 +80,10 @@ export async function markPaid(orderNo:string,meta:{gomypayOrderId?:string;avcod
     const access=await prisma.entitlement.findFirst({where:{orderId:transitioned.order.id,accessToken:{not:null}},select:{accessToken:true}});
     if(access?.accessToken){
       const baseUrl=(process.env.APP_BASE_URL??"").replace(/\/$/,"");
-      const mail=fulfillmentEmail({name:transitioned.order.customer.name,accessUrl:`${baseUrl}/access/${access.accessToken}`});
+      const productCodes=transitioned.order.items.map(item=>item.productCode);
+      const mail=fulfillmentEmail({name:transitioned.order.customer.name,accessUrl:`${baseUrl}/access/${access.accessToken}`,productCodes});
       try{
-        const pdfUrl=process.env.DIGITAL_PRODUCT_PDF_URL;
+        const pdfUrl=productCodes.includes("emotional_eating_reset_7d")?process.env.DIGITAL_PRODUCT_PDF_URL:undefined;
         await emailService.send({to:transitioned.order.customer.email,...mail,attachments:pdfUrl?[{filename:"下班後嘴饞止損包-閱讀版.pdf",path:pdfUrl}]:undefined});
       }catch{
         // EmailService 已留下 failed EmailLog；寄信失敗不回滾付款與產品權限。
