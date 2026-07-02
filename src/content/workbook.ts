@@ -13,14 +13,7 @@ const emotions=["壓力","疲憊","委屈","無聊","習慣","營養不足","睡
 
 export const workbookPreparation={
   reminder:{title:"開始前，先給你一個提醒",lead:"你不是要變成完全不嘴饞的人，你只是要在失控前，多一個選擇。",body:"這 7 天不是要求你完全不能吃零食，也不是要你立刻戒掉所有含糖飲料。我們先透過記錄，看懂最容易嘴饞的時間、情緒、場景、飲料習慣與營養缺口。"},
-  steps:["看完當天簡短說明，理解今天要觀察什麼","填寫當天表格，不用完美，只要誠實記錄","做一個小行動，讓生活開始一點點改變"],
-  fields:[
-    {key:"baselineWeeklyCravingDays",label:"一週大概幾天會在下班後或晚上嘴饞？",type:"text",placeholder:"例如：5 天"},
-    {key:"baselineWeeklySugaryDrinks",label:"一週大概喝幾杯含糖飲料？",type:"text",placeholder:"例如：3 杯"},
-    {key:"baselineCravingTime",label:"最容易嘴饞的時間",type:"checkbox",options:["下午","下班後","晚餐後","睡前","半夜"]},
-    {key:"baselineCravingItems",label:"最常想吃或想喝",type:"checkbox",options:["甜食","炸物","餅乾零食","宵夜","手搖飲","含糖咖啡","其他"]},
-    score("baselineAfterWorkCraving","下班後嘴饞程度"),score("baselineSugaryDrinkDependence","含糖飲料依賴程度"),score("baselineStressEating","壓力想吃程度"),score("baselineFatigue","疲憊程度"),score("baselineAfterDinnerCraving","晚餐後想吃東西的程度"),score("baselineFrustration","對飲食失控的挫折感")
-  ] as WorkbookField[]
+  steps:["看完當天簡短說明，理解今天要觀察什麼","填寫當天表格，不用完美，只要誠實記錄","做一個小行動，讓生活開始一點點改變"]
 };
 
 export const workbookDays:WorkbookDay[]=[
