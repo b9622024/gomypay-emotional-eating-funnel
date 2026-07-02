@@ -189,6 +189,15 @@ API 路由：
 
 部署後執行 `npx prisma migrate deploy`。測試時完成至少 3 天，確認初步觀察出現；重新整理後確認欄位及完成狀態仍保留。
 
+## 10 分鐘嘴饞急救器
+
+已付款且擁有主商品的使用者，可由 Access Page 進入 `/access/[accessToken]/craving-rescue`。開始急救時建立 `CravingRescueSession`，完成後更新同一筆紀錄；結果頁顯示最近 5 筆，累積 3 筆後顯示常見情境、常見想吃喝項目及平均嘴饞變化。
+
+- `GET /api/craving-rescue/[accessToken]`：最近紀錄與摘要
+- `POST /api/craving-rescue/[accessToken]`：建立或完成急救 session
+
+部署後執行 `npx prisma migrate deploy`。測試可手動點擊「下一步」略過等待，完成替代動作與回報後，確認結果及最近紀錄出現。
+
 交易查詢依 GoMyPay 文件直接傳送 `Order_No`、`CustomerId` 與環境變數中的交易驗證密碼 `Str_Check`；查詢回傳 JSON 的 `pay_result`、`result`、`e_money` 與 `e_orderno` 都會核對後才開通。
 
 ## 安全設計

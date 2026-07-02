@@ -35,6 +35,7 @@ model Customer {
   cravingTriggerEntries   CravingTriggerEntry[]
   drinkResetEntries       DrinkResetEntry[]
   mindfulNutritionEntries MindfulNutritionEntry[]
+  cravingRescueSessions   CravingRescueSession[]
   createdAt               DateTime                @default(now())
   updatedAt               DateTime                @updatedAt
 
@@ -74,6 +75,7 @@ model Order {
   cravingTriggerEntries   CravingTriggerEntry[]
   drinkResetEntries       DrinkResetEntry[]
   mindfulNutritionEntries MindfulNutritionEntry[]
+  cravingRescueSessions   CravingRescueSession[]
   createdAt               DateTime                @default(now())
   updatedAt               DateTime                @updatedAt
 
@@ -280,6 +282,34 @@ model MindfulNutritionEntry {
   updatedAt   DateTime  @updatedAt
 
   @@unique([accessToken, dayNumber])
+  @@index([customerId])
+  @@index([orderId])
+}
+
+model CravingRescueSession {
+  id              String    @id @default(cuid())
+  accessToken     String
+  customerId      String?
+  customer        Customer? @relation(fields: [customerId], references: [id])
+  orderId         String?
+  order           Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  desiredItem     String?
+  initialCraving  Int
+  initialHunger   Int
+  initialStress   Int
+  initialFatigue  Int
+  primaryStates   Json
+  selectedActions Json
+  finalCraving    Int?
+  consumedResult  String?
+  finalChoice     String?
+  helpfulness     String?
+  reminderNote    String?
+  startedAt       DateTime  @default(now())
+  completedAt     DateTime?
+  createdAt       DateTime  @default(now())
+
+  @@index([accessToken, createdAt])
   @@index([customerId])
   @@index([orderId])
 }

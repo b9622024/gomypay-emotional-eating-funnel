@@ -1,0 +1,4 @@
+import { describe,expect,it } from "vitest";
+import { buildRescueSummary,type RescueRecord } from "./cravingRescue";
+const record=(item:string,initial:number,final:number,state:string):RescueRecord=>({id:item,desiredItem:item,initialCraving:initial,initialHunger:1,initialStress:8,initialFatigue:5,primaryStates:[state],selectedActions:["喝水"],finalCraving:final,consumedResult:"沒有",finalChoice:null,helpfulness:"有一些幫助",reminderNote:null,startedAt:new Date(),completedAt:new Date(),createdAt:new Date()});
+describe("craving rescue summary",()=>{it("finds common state, item and average drop",()=>{const summary=buildRescueSummary([record("奶茶",8,5,"壓力大"),record("奶茶",7,5,"壓力大"),record("餅乾",6,5,"很無聊")]);expect(summary.commonState).toBe("壓力大");expect(summary.commonItem).toBe("奶茶");expect(summary.averageDrop).toBe(2)});it("handles empty records",()=>expect(buildRescueSummary([]).count).toBe(0))});

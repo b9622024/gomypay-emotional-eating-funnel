@@ -1,0 +1,6 @@
+CREATE TABLE "CravingRescueSession" ("id" TEXT NOT NULL,"accessToken" TEXT NOT NULL,"customerId" TEXT,"orderId" TEXT,"desiredItem" TEXT,"initialCraving" INTEGER NOT NULL,"initialHunger" INTEGER NOT NULL,"initialStress" INTEGER NOT NULL,"initialFatigue" INTEGER NOT NULL,"primaryStates" JSONB NOT NULL,"selectedActions" JSONB NOT NULL,"finalCraving" INTEGER,"consumedResult" TEXT,"finalChoice" TEXT,"helpfulness" TEXT,"reminderNote" TEXT,"startedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,"completedAt" TIMESTAMP(3),"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,CONSTRAINT "CravingRescueSession_pkey" PRIMARY KEY ("id"));
+CREATE INDEX "CravingRescueSession_accessToken_createdAt_idx" ON "CravingRescueSession"("accessToken", "createdAt");
+CREATE INDEX "CravingRescueSession_customerId_idx" ON "CravingRescueSession"("customerId");
+CREATE INDEX "CravingRescueSession_orderId_idx" ON "CravingRescueSession"("orderId");
+ALTER TABLE "CravingRescueSession" ADD CONSTRAINT "CravingRescueSession_customerId_fkey" FOREIGN KEY ("customerId") REFERENCES "Customer"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE "CravingRescueSession" ADD CONSTRAINT "CravingRescueSession_orderId_fkey" FOREIGN KEY ("orderId") REFERENCES "Order"("id") ON DELETE CASCADE ON UPDATE CASCADE;
