@@ -22,121 +22,149 @@ enum PaymentSource {
 }
 
 model Customer {
-  id String @id @default(cuid())
-  name String
-  email String
-  phone String
-  lineId String?
-  orders Order[]
-  entitlements Entitlement[]
+  id              String          @id @default(cuid())
+  name            String
+  email           String
+  phone           String
+  lineId          String?
+  orders          Order[]
+  entitlements    Entitlement[]
   workbookEntries WorkbookEntry[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  quizResults     QuizResult[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
   @@index([email])
 }
 
 model Product {
-  id String @id @default(cuid())
-  code String @unique
-  name String
-  price Int
+  id          String   @id @default(cuid())
+  code        String   @unique
+  name        String
+  price       Int
   description String
-  isActive Boolean @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 
 model Order {
-  id String @id @default(cuid())
-  orderNo String @unique @db.VarChar(25)
-  customerId String
-  customer Customer @relation(fields: [customerId], references: [id])
-  amount Int
-  status OrderStatus @default(pending)
-  buyerMemo String @db.VarChar(500)
-  gomypayOrderId String?
-  avcode String?
-  cardLastNum String?
-  rawReturnPayload Json?
+  id                 String          @id @default(cuid())
+  orderNo            String          @unique @db.VarChar(25)
+  customerId         String
+  customer           Customer        @relation(fields: [customerId], references: [id])
+  amount             Int
+  status             OrderStatus     @default(pending)
+  buyerMemo          String          @db.VarChar(500)
+  gomypayOrderId     String?
+  avcode             String?
+  cardLastNum        String?
+  rawReturnPayload   Json?
   rawCallbackPayload Json?
-  paidAt DateTime?
-  items OrderItem[]
-  entitlements Entitlement[]
-  workbookEntries WorkbookEntry[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  paidAt             DateTime?
+  items              OrderItem[]
+  entitlements       Entitlement[]
+  workbookEntries    WorkbookEntry[]
+  quizResults        QuizResult[]
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
   @@index([customerId])
   @@index([status, createdAt])
 }
 
 model OrderItem {
-  id String @id @default(cuid())
-  orderId String
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  id          String @id @default(cuid())
+  orderId     String
+  order       Order  @relation(fields: [orderId], references: [id], onDelete: Cascade)
   productCode String
-  name String
-  price Int
-  quantity Int @default(1)
+  name        String
+  price       Int
+  quantity    Int    @default(1)
+
   @@index([orderId])
 }
 
 model Entitlement {
-  id String @id @default(cuid())
-  orderId String
-  order Order @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  customerId String
-  customer Customer @relation(fields: [customerId], references: [id])
+  id          String   @id @default(cuid())
+  orderId     String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  customerId  String
+  customer    Customer @relation(fields: [customerId], references: [id])
   productCode String
   // 每筆訂單只有第一筆 entitlement 持有 canonical access token。
-  accessToken String? @unique
+  accessToken String?  @unique
   downloadUrl String
-  createdAt DateTime @default(now())
+  createdAt   DateTime @default(now())
+
   @@unique([orderId, productCode])
   @@index([customerId])
 }
 
 model PaymentLog {
-  id String @id @default(cuid())
-  orderNo String
-  source PaymentSource
-  payload Json
+  id         String        @id @default(cuid())
+  orderNo    String
+  source     PaymentSource
+  payload    Json
   isVerified Boolean
-  message String
-  createdAt DateTime @default(now())
+  message    String
+  createdAt  DateTime      @default(now())
+
   @@index([orderNo, createdAt])
 }
 
 model EmailLog {
-  id String @id @default(cuid())
-  to String
-  subject String
-  body String
-  status String
+  id           String    @id @default(cuid())
+  to           String
+  subject      String
+  body         String
+  status       String
   errorMessage String?
-  createdAt DateTime @default(now())
-  sentAt DateTime?
+  createdAt    DateTime  @default(now())
+  sentAt       DateTime?
 }
 
 model RateLimitEntry {
-  key String @id
-  count Int @default(1)
+  key         String   @id
+  count       Int      @default(1)
   windowStart DateTime @default(now())
 }
 
 model WorkbookEntry {
-  id String @id @default(cuid())
+  id          String    @id @default(cuid())
   accessToken String
-  customerId String?
-  customer Customer? @relation(fields: [customerId], references: [id])
-  orderId String?
-  order Order? @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  dayNumber Int
-  data Json
-  isCompleted Boolean @default(false)
+  customerId  String?
+  customer    Customer? @relation(fields: [customerId], references: [id])
+  orderId     String?
+  order       Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  dayNumber   Int
+  data        Json
+  isCompleted Boolean   @default(false)
   completedAt DateTime?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
   @@unique([accessToken, dayNumber])
   @@index([orderId])
   @@index([customerId])
+}
+
+model QuizResult {
+  id            String    @id @default(cuid())
+  accessToken   String
+  customerId    String?
+  customer      Customer? @relation(fields: [customerId], references: [id])
+  orderId       String?
+  order         Order?    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  quizType      String
+  answers       Json
+  scores        Json
+  primaryType   String
+  secondaryType String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([accessToken, quizType])
+  @@index([customerId])
+  @@index([orderId])
 }

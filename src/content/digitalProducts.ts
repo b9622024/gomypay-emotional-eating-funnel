@@ -39,7 +39,7 @@ export function assetsForProducts(productCodes:string[]){
 }
 
 export const recommendedUsage=[
-  {step:"01",title:"先完成測驗",description:"用情緒性進食 6 型測驗，先找到最可能的觸發模式。"},
+  {step:"01",title:"先完成情緒性進食 6 型測驗",description:"用 24 題手機互動測驗，先找到主要與次要的觸發模式。"},
   {step:"02",title:"開始 7 天計畫",description:"每天花 5–10 分鐘，跟著行動手冊完成一個小步驟。"},
   {step:"03",title:"搭配追蹤工具",description:"使用工作本與追蹤表，觀察什麼方法最適合你的生活。"}
 ];
