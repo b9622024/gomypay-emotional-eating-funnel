@@ -218,6 +218,12 @@ API 路由：
 
 部署後執行 `npx prisma migrate deploy`。測試時完成一次替換並收藏，重新整理確認資料仍在；累積 3 筆後確認個人摘要與三個優先備案出現。
 
+## 數位產品下載連結
+
+Access Page 的所有產品卡統一顯示「手機互動版」與「下載 PDF 版」。`10 分鐘嘴饞急救流程卡`、`下班後防暴食晚餐公式`、`安全零食與飲料替換清單`、`含糖飲料替換清單 Pro` 另外顯示「下載單張圖片」。
+
+所有網址集中在 `src/content/digitalProducts.ts` 的 `assetDeliveryLinks`。尚未提供的檔案使用 `#`，前端會顯示停用的「連結準備中」按鈕；取得正式檔案網址後只需替換對應的 `pdfUrl` 或 `imageUrl`。
+
 交易查詢依 GoMyPay 文件直接傳送 `Order_No`、`CustomerId` 與環境變數中的交易驗證密碼 `Str_Check`；查詢回傳 JSON 的 `pay_result`、`result`、`e_money` 與 `e_orderno` 都會核對後才開通。
 
 ## 安全設計

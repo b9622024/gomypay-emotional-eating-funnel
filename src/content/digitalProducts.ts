@@ -9,6 +9,24 @@ export type DigitalAsset={
 const placeholder="#";
 export const emotionalEatingDownloadLinks={actionGuidePdf:placeholder,quizGuidePdf:placeholder};
 
+export type AssetDelivery={interactivePath:string;pdfUrl:string;imageUrl?:string};
+// 所有交付連結集中在這裡。收到正式檔案或雲端網址後，只需替換對應的 #。
+export const assetDeliveryLinks:Record<string,AssetDelivery>={
+  "emotional-eating-quiz":{interactivePath:"/quiz/emotional-eating",pdfUrl:emotionalEatingDownloadLinks.quizGuidePdf},
+  "reset-action-guide":{interactivePath:"/workbook",pdfUrl:emotionalEatingDownloadLinks.actionGuidePdf},
+  "three-minute-workbook":{interactivePath:"/three-minute-check",pdfUrl:placeholder},
+  "trigger-analysis":{interactivePath:"/trigger-analysis",pdfUrl:placeholder},
+  "drink-reset":{interactivePath:"/drink-reset",pdfUrl:placeholder},
+  "mindful-nutrition":{interactivePath:"/mindful-nutrition-tracker",pdfUrl:placeholder},
+  "craving-rescue":{interactivePath:"/craving-rescue",pdfUrl:placeholder,imageUrl:placeholder},
+  "dinner-formula":{interactivePath:"/dinner-formula",pdfUrl:placeholder,imageUrl:placeholder},
+  "safe-swaps":{interactivePath:"/safe-swap-list",pdfUrl:placeholder,imageUrl:placeholder},
+  "sugary-drink-swap-pro":{interactivePath:"/drink-reset",pdfUrl:placeholder,imageUrl:placeholder},
+  "ai-energy-assessment":{interactivePath:"/ai-energy-assessment",pdfUrl:placeholder},
+  "anti-binge-meal-plan":{interactivePath:placeholder,pdfUrl:placeholder},
+  "coaching-intake":{interactivePath:placeholder,pdfUrl:placeholder}
+};
+
 export const digitalAssetsByProduct:Record<string,DigitalAsset[]>={
   emotional_eating_reset_7d:[
     {key:"emotional-eating-quiz",title:"情緒性進食 6 型測驗",description:"先找出你最常出現的嘴饞與進食觸發模式。",kind:"測驗",downloadUrl:placeholder},

@@ -1,5 +1,5 @@
 import { describe,expect,it } from "vitest";
-import { assetsForProducts } from "./digitalProducts";
+import { assetDeliveryLinks, assetsForProducts, digitalAssetsByProduct } from "./digitalProducts";
 import { fulfillmentEmail } from "../lib/fulfillment";
 
 describe("digital fulfillment content",()=>{
@@ -19,4 +19,9 @@ describe("digital fulfillment content",()=>{
     expect(email.body).toContain("建議使用順序");
     expect(email.body).toContain("LINE");
   });
+});
+
+describe("asset delivery buttons",()=>{
+  it("provides interactive and PDF destinations for every asset",()=>{for(const asset of Object.values(digitalAssetsByProduct).flat()){expect(assetDeliveryLinks[asset.key]).toBeTruthy();expect(assetDeliveryLinks[asset.key].interactivePath).toBeTruthy();expect(assetDeliveryLinks[asset.key].pdfUrl).toBeTruthy()}});
+  it("provides image downloads for the four requested tools",()=>{for(const key of ["craving-rescue","dinner-formula","safe-swaps","sugary-drink-swap-pro"])expect(assetDeliveryLinks[key].imageUrl).toBeDefined()});
 });
