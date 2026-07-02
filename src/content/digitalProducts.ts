@@ -19,7 +19,7 @@ export const digitalAssetsByProduct:Record<string,DigitalAsset[]>={
     {key:"mindful-nutrition",title:"正念營養追蹤器",description:"不算熱量，也能找出你晚上嘴饞的營養缺口。",kind:"追蹤表",downloadUrl:placeholder},
     {key:"craving-rescue",title:"10 分鐘嘴饞急救流程卡",description:"快失控前，先幫自己多一個暫停鍵。",kind:"流程卡",downloadUrl:placeholder},
     {key:"dinner-formula",title:"下班後防暴食晚餐公式",description:"外食族也能用的 3-1-1 穩定晚餐選擇法。",kind:"清單",downloadUrl:placeholder},
-    {key:"safe-swaps",title:"安全零食與飲料替換清單",description:"想吃甜、鹹或喝奶茶時的溫和替代選項。",kind:"清單",downloadUrl:placeholder}
+    {key:"safe-swaps",title:"安全零食與飲料替換清單",description:"想吃甜、想吃鹹、想喝飲料時，先選比較穩的版本。",kind:"清單",downloadUrl:placeholder}
   ],
   ai_energy_assessment:[
     {key:"ai-energy-assessment",title:"AI 能量減脂初評表單",description:"從情緒、壓力、睡眠、外食與營養缺口完成初步盤點。",kind:"表單",downloadUrl:placeholder}

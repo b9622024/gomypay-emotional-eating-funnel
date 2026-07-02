@@ -1,0 +1,4 @@
+CREATE TABLE "SafeSwapRecord" ("id" TEXT NOT NULL,"accessToken" TEXT NOT NULL,"cravingCategory" TEXT NOT NULL,"originalChoice" TEXT NOT NULL,"cravingIntensity" INTEGER NOT NULL,"recommendedOptions" JSONB NOT NULL,"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,CONSTRAINT "SafeSwapRecord_pkey" PRIMARY KEY ("id"));
+CREATE INDEX "SafeSwapRecord_accessToken_createdAt_idx" ON "SafeSwapRecord"("accessToken", "createdAt");
+CREATE TABLE "SafeSwapFavorite" ("id" TEXT NOT NULL,"accessToken" TEXT NOT NULL,"favoriteCategory" TEXT NOT NULL,"title" TEXT NOT NULL,"content" TEXT NOT NULL,"createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,CONSTRAINT "SafeSwapFavorite_pkey" PRIMARY KEY ("id"));
+CREATE INDEX "SafeSwapFavorite_accessToken_createdAt_idx" ON "SafeSwapFavorite"("accessToken", "createdAt");

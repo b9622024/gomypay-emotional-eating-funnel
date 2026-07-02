@@ -346,3 +346,26 @@ model DinnerFormulaEntry {
   @@index([customerId])
   @@index([orderId])
 }
+
+model SafeSwapRecord {
+  id                 String   @id @default(cuid())
+  accessToken        String
+  cravingCategory    String
+  originalChoice     String
+  cravingIntensity   Int
+  recommendedOptions Json
+  createdAt          DateTime @default(now())
+
+  @@index([accessToken, createdAt])
+}
+
+model SafeSwapFavorite {
+  id               String   @id @default(cuid())
+  accessToken      String
+  favoriteCategory String
+  title            String
+  content          String
+  createdAt        DateTime @default(now())
+
+  @@index([accessToken, createdAt])
+}

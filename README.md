@@ -208,6 +208,16 @@ API 路由：
 
 部署後執行 `npx prisma migrate deploy`。測試時建立一筆晚餐、補填回報並重新整理；累積 3 筆後確認摘要、搭配工具與 AI 初評 CTA 顯示正常。
 
+## 安全零食與飲料替換清單
+
+已付款且擁有主商品的使用者，可由 Access Page 進入 `/access/[accessToken]/safe-swap-list`。每次選擇會建立 `SafeSwapRecord`；收藏內容儲存在 `SafeSwapFavorite`，並依 accessToken 隔離。
+
+- `GET /api/safe-swap/[accessToken]`：最近紀錄、收藏與摘要
+- `POST /api/safe-swap/[accessToken]`：建立替換紀錄並由伺服器產生推薦
+- `POST /api/safe-swap/[accessToken]/favorites`：加入常用安全清單
+
+部署後執行 `npx prisma migrate deploy`。測試時完成一次替換並收藏，重新整理確認資料仍在；累積 3 筆後確認個人摘要與三個優先備案出現。
+
 交易查詢依 GoMyPay 文件直接傳送 `Order_No`、`CustomerId` 與環境變數中的交易驗證密碼 `Str_Check`；查詢回傳 JSON 的 `pay_result`、`result`、`e_money` 與 `e_orderno` 都會核對後才開通。
 
 ## 安全設計
