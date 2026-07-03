@@ -1,0 +1,1 @@
+import { redirect } from "next/navigation";export default async function Page({params}:{params:Promise<{accessToken:string}>}){const {accessToken}=await params;redirect(`/access/${accessToken}/breakthrough-plan`)}

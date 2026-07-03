@@ -31,11 +31,11 @@ export const assetDeliveryLinks:Record<string,AssetDelivery>={
 export const digitalAssetsByProduct:Record<string,DigitalAsset[]>={
   emotional_eating_reset_7d:[
     {key:"emotional-eating-quiz",title:"情緒性進食 6 型測驗",description:"先找出你最常出現的嘴饞與進食觸發模式。",kind:"測驗",downloadUrl:placeholder},
-    {key:"reset-action-guide",title:"7 天嘴饞止損行動手冊",description:"每天花 5–10 分鐘，依序完成看見、記錄與調整。",kind:"行動手冊",downloadUrl:placeholder},
+    {key:"reset-action-guide",title:"7 天嘴饞破關計畫",description:"每天完成一個小任務，解鎖你的減脂止損地圖。",kind:"行動手冊",downloadUrl:placeholder},
     {key:"three-minute-workbook",title:"嘴饞前 3 分鐘身心連結工作本",description:"在想吃之前先停下來，分辨身體與情緒訊號。",kind:"工作本",downloadUrl:placeholder},
     {key:"trigger-analysis",title:"下班後嘴饞觸發點分析表",description:"整理時間、情境、情緒與想吃的食物。",kind:"分析表",downloadUrl:placeholder},
-    {key:"drink-reset",title:"7 天含糖飲料重置表",description:"循序記錄、降糖、補水與替換選擇。",kind:"追蹤表",downloadUrl:placeholder},
-    {key:"mindful-nutrition",title:"正念營養追蹤器",description:"不算熱量，也能找出你晚上嘴饞的營養缺口。",kind:"追蹤表",downloadUrl:placeholder},
+    {key:"drink-reset",title:"7 天含糖飲料重置表",description:"飲料降糖支線道具；如果平常不太喝含糖飲料，可以跳過這個支線。",kind:"追蹤表",downloadUrl:placeholder},
+    {key:"mindful-nutrition",title:"正念營養缺口掃描",description:"快速檢查白天吃得穩不穩，找出晚上嘴饞可能的營養缺口。",kind:"追蹤表",downloadUrl:placeholder},
     {key:"craving-rescue",title:"10 分鐘嘴饞急救流程卡",description:"快失控前，先幫自己多一個暫停鍵。",kind:"流程卡",downloadUrl:placeholder},
     {key:"dinner-formula",title:"下班後防暴食晚餐公式",description:"外食族也能用的 3-1-1 穩定晚餐選擇法。",kind:"清單",downloadUrl:placeholder},
     {key:"safe-swaps",title:"安全零食與飲料替換清單",description:"想吃甜、想吃鹹、想喝飲料時，先選比較穩的版本。",kind:"清單",downloadUrl:placeholder}

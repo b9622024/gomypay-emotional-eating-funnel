@@ -429,3 +429,59 @@ model EatingOutMenuFavorite {
 
   @@index([accessToken, createdAt])
 }
+
+model BreakthroughPlanProgress {
+  id               String   @id @default(cuid())
+  accessToken      String   @unique
+  currentLevel     Int      @default(1)
+  completedLevels  Json
+  collectedClues   Json
+  earnedBadges     Json
+  actionPoints     Int      @default(0)
+  primaryType      String?
+  secondaryType    String?
+  recommendedRoute String?
+  selectedBranch   String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model BreakthroughDailyEntry {
+  id                 String    @id @default(cuid())
+  accessToken        String
+  levelNumber        Int
+  levelName          String
+  taskName           String
+  selectedTool       String
+  completed          Boolean   @default(false)
+  collectedClue      Json
+  earnedBadge        String
+  actionPointsEarned Int       @default(0)
+  userNotes          String?
+  completedAt        DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  @@unique([accessToken, levelNumber])
+  @@index([accessToken])
+}
+
+model PersonalRescueMap {
+  id                   String   @id @default(cuid())
+  accessToken          String   @unique
+  primaryType          String
+  secondaryType        String?
+  recommendedRoute     String
+  highRiskTime         String?
+  highRiskScene        String?
+  mainEmotion          String?
+  nutritionGap         String?
+  highRiskDrinkOrSnack String?
+  safeSwapOptions      Json
+  dinnerBackups        Json
+  rescuePlan           String?
+  nextWeekAction       String?
+  generatedAt          DateTime @default(now())
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+}

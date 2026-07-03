@@ -235,6 +235,19 @@ Access Page 的所有產品卡統一顯示「手機互動版」與「下載 PDF 
 
 此版本將 `anti_binge_meal_plan_7d` 價格調整為 NT$99。正式部署後除了 `npx prisma migrate deploy`，還要執行 `npx prisma db seed`，讓正式資料庫商品價格同步。
 
+## 7 天嘴饞破關計畫
+
+主商品 Access Page 現在是破關儀表板：依測驗結果顯示推薦路線、今日關卡、徽章、線索、行動點數與預設收合的任務道具箱。
+
+- `/access/[accessToken]/breakthrough-plan`：7 關主流程與個人止損地圖。
+- `/access/[accessToken]/clue-plan`：舊網址相容轉址。
+- `GET /api/breakthrough/[accessToken]`：取得／初始化進度、測驗角色、Pro 權限與額外點數。
+- `POST /api/breakthrough/[accessToken]`：完成關卡、寫入線索／徽章／點數，或產生個人止損地圖。
+
+新增資料表：`BreakthroughPlanProgress`、`BreakthroughDailyEntry`、`PersonalRescueMap`。部署後執行 `npx prisma migrate deploy`。
+
+測試流程：使用已付款主商品 accessToken 進入 Access Page；完成 6 型測驗後回到首頁確認推薦路線，再依序完成 1–7 關。第 4 關可切換支線，第 7 關完成後應顯示個人止損地圖。未購買 Pro 時，道具箱只顯示解鎖提示；購買後才顯示使用與下載按鈕。
+
 交易查詢依 GoMyPay 文件直接傳送 `Order_No`、`CustomerId` 與環境變數中的交易驗證密碼 `Str_Check`；查詢回傳 JSON 的 `pay_result`、`result`、`e_money` 與 `e_orderno` 都會核對後才開通。
 
 ## 安全設計
