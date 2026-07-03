@@ -1,7 +1,7 @@
 import {Prisma} from "@prisma/client";
 import {prisma} from "./db";
 import {authorizeWorkbook} from "./workbook";
-import {branches,levels,recommendation} from "@/content/breakthroughPlan";
+import {branches,levels,recommendation,validateBreakthroughLevel} from "@/content/breakthroughPlan";
 import {quizType} from "@/content/emotionalEatingQuiz";
 import {getCravingCharacter} from "@/content/cravingCharacters";
 const array=(v:unknown)=>Array.isArray(v)?v:[];
@@ -24,7 +24,8 @@ export async function getBreakthroughState(accessToken:string){
 }
 
 export async function completeBreakthroughLevel(accessToken:string,input:{levelNumber:number;userNotes?:string;selectedBranch?:keyof typeof branches;userInputs?:Record<string,unknown>;map?:Record<string,unknown>}){
-  const state=await getBreakthroughState(accessToken);if(!state)throw new Error("無權存取");const level=levels[input.levelNumber-1];if(!level)throw new Error("關卡不存在");if(!state.progress.characterCreated)throw new Error("請先完成第 0 天角色創建");if(input.levelNumber>state.progress.currentLevel)throw new Error("請先完成前一關");
+  const owner=await authorizeWorkbook(accessToken);if(!owner)throw new Error("無權存取");const [progressRaw,quiz]=await Promise.all([prisma.breakthroughPlanProgress.findUnique({where:{accessToken}}),prisma.quizResult.findUnique({where:{accessToken_quizType:{accessToken,quizType}},select:{primaryType:true,secondaryType:true}})]);if(!progressRaw)throw new Error("破關進度不存在");const profile=recommendation(quiz?.primaryType),state={progress:{...progressRaw,completedLevels:array(progressRaw.completedLevels).map(Number),collectedClues:array(progressRaw.collectedClues),earnedBadges:array(progressRaw.earnedBadges)},quiz,profile,characters:{primary:getCravingCharacter(quiz?.primaryType),secondary:getCravingCharacter(quiz?.secondaryType)}};const level=levels[input.levelNumber-1];if(!level)throw new Error("關卡不存在");if(!state.progress.characterCreated)throw new Error("請先完成第 0 天角色創建");if(input.levelNumber>state.progress.currentLevel)throw new Error("請先完成前一關");
+  const validationError=validateBreakthroughLevel(input.levelNumber,input.userInputs,input.map);if(validationError)throw new Error(validationError);
   const branch=input.selectedBranch??(state.progress.selectedBranch as keyof typeof branches)??state.profile?.branch??"swap",chosen=input.levelNumber===4?branches[branch]:null,clues=chosen?[...chosen.clues]:[...level.clues],badge=level.badge,points=level.points;
   await prisma.$transaction(async tx=>{
     await tx.breakthroughDailyEntry.upsert({where:{accessToken_levelNumber:{accessToken,levelNumber:input.levelNumber}},update:{completed:true,collectedClue:clues as Prisma.InputJsonValue,earnedBadge:badge,actionPointsEarned:points,userNotes:input.userNotes||null,userInputs:(input.userInputs??{}) as Prisma.InputJsonValue,selectedBranch:input.levelNumber===4?branch:null,completedAt:new Date(),selectedTool:chosen?.tool??level.tool},create:{accessToken,levelNumber:input.levelNumber,levelName:level.name,taskName:level.task,selectedTool:chosen?.tool??level.tool,selectedBranch:input.levelNumber===4?branch:null,completed:true,collectedClue:clues as Prisma.InputJsonValue,earnedBadge:badge,actionPointsEarned:points,userNotes:input.userNotes||null,userInputs:(input.userInputs??{}) as Prisma.InputJsonValue,completedAt:new Date()}});
@@ -32,5 +33,12 @@ export async function completeBreakthroughLevel(accessToken:string,input:{levelN
     await tx.breakthroughPlanProgress.update({where:{accessToken},data:{completedLevels:completed as Prisma.InputJsonValue,collectedClues:allClues as Prisma.InputJsonValue,earnedBadges:badges as Prisma.InputJsonValue,selectedBranch:branch,currentLevel:completed.length>=7?7:Math.min(7,input.levelNumber+1)}});
     if(input.levelNumber===7&&input.map){const m=input.map as any,data={primaryType:state.quiz?.primaryType??"unknown",secondaryType:state.quiz?.secondaryType??null,recommendedRoute:state.profile?.route??"自選路線",primaryCharacterName:state.characters.primary?.characterName??null,primaryOriginalTypeName:state.characters.primary?.originalTypeName??null,secondaryCharacterName:state.characters.secondary?.characterName??null,secondaryOriginalTypeName:state.characters.secondary?.originalTypeName??null,highRiskTime:m.highRiskTime||null,highRiskScene:m.highRiskScene||null,mainEmotion:m.mainEmotion||null,bodySignal:m.bodySignal||null,selectedBranch:state.progress.selectedBranch||null,nutritionGap:m.nutritionGap||null,highRiskDrinkOrSnack:m.highRiskDrinkOrSnack||null,safeSwapOptions:(m.safeSwapOptions??[]) as Prisma.InputJsonValue,dinnerBackups:(m.dinnerBackups??[]) as Prisma.InputJsonValue,rescuePlan:m.rescuePlan||null,firstRescueAction:m.firstRescueAction||null,nextWeekAction:m.nextWeekAction||null,rewardUnlocked:true,rewardUnlockedAt:new Date(),generatedAt:new Date()};await tx.personalRescueMap.upsert({where:{accessToken},update:data,create:{accessToken,...data}})}
   });
-  return getBreakthroughState(accessToken);
+  return {ok:true,levelNumber:input.levelNumber,badge,clues,points,mapUnlocked:input.levelNumber===7};
+}
+
+export async function resetBreakthroughFromLevel(accessToken:string,fromLevel=1){
+  const state=await getBreakthroughState(accessToken);if(!state)throw new Error("無權存取");
+  const retained=state.entries.filter(entry=>entry.levelNumber<fromLevel&&entry.completed),completed=retained.map(entry=>entry.levelNumber),clues=[...new Set(retained.flatMap(entry=>array(entry.collectedClue).map(String)))],badges=["角色創建徽章",...retained.map(entry=>entry.earnedBadge)];
+  await prisma.$transaction([prisma.breakthroughDailyEntry.deleteMany({where:{accessToken,levelNumber:{gte:fromLevel}}}),prisma.personalRescueMap.deleteMany({where:{accessToken}}),prisma.breakthroughPlanProgress.update({where:{accessToken},data:{currentLevel:Math.max(1,fromLevel),completedLevels:completed as Prisma.InputJsonValue,collectedClues:clues as Prisma.InputJsonValue,earnedBadges:[...new Set(badges)] as Prisma.InputJsonValue,actionPoints:retained.reduce((sum,entry)=>sum+entry.actionPointsEarned,0)}})]);
+  return {ok:true,currentLevel:Math.max(1,fromLevel)};
 }

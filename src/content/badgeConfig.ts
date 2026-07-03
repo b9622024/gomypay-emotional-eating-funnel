@@ -8,6 +8,6 @@ export const badgeConfig:BadgeConfig[]=[
   {id:"branch-route",name:"專屬支線徽章",imageUrl:`${base}/badge-branch-route.png`,description:"完成第 4 關後解鎖",lockedDescription:"選擇專屬支線後解鎖",levelNumber:4},
   {id:"nutrition-gap",name:"營養補洞徽章",imageUrl:`${base}/badge-nutrition-gap.png`,description:"完成第 5 關後解鎖",lockedDescription:"完成營養缺口掃描後解鎖",levelNumber:5},
   {id:"dinner-stable",name:"晚餐穩定徽章",imageUrl:`${base}/badge-dinner-stable.png`,description:"完成第 6 關後解鎖",lockedDescription:"建立晚餐防線後解鎖",levelNumber:6},
-  {id:"rescue-map",name:"止損地圖徽章",imageUrl:`${base}/badge-rescue-map.png`,description:"完成第 7 關後解鎖",lockedDescription:"生成個人止損地圖後解鎖",levelNumber:7},
+  {id:"rescue-map",name:"止損地圖完成徽章",imageUrl:`${base}/badge-rescue-map.png`,description:"完成第 7 關後解鎖",lockedDescription:"生成個人止損地圖後解鎖",levelNumber:7},
 ];
 export function badgeForLevel(level:number){return badgeConfig.find(b=>b.levelNumber===level)}

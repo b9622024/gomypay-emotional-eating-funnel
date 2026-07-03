@@ -1,0 +1,3 @@
+"use client";
+import {useState} from "react";
+export default function ReplayPlanButton({token}:{token:string}){const [busy,setBusy]=useState(false);async function replay(){if(!confirm("確定要重新開始 7 天嘴饞破關計畫嗎？角色會保留，但第 1～7 關的進度與止損地圖會清除。"))return;setBusy(true);const response=await fetch(`/api/breakthrough/${token}/reset`,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({fromLevel:1})});if(response.ok)location.href=`/access/${token}/breakthrough-plan/level/1`;else{alert("目前無法重新開始，請稍後再試");setBusy(false)}}return <button className="bt-reset bt-replay" disabled={busy} onClick={replay}>{busy?"正在重置計畫…":"重新玩一次 7 天破關計畫"}</button>}

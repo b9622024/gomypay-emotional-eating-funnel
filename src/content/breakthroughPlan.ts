@@ -20,3 +20,14 @@ export function completionFeedback(levelNumber:number){
   const insight=levelNumber===3?"你正在把「想吃就吃」改成「先看懂自己」。":level.feedback;
   return `恭喜完成第 ${level.level} 關。你已經解鎖「${level.badge}」，並收集到${level.clues.join("與")}。獲得 ${level.points} 行動點數。${insight}${next?` 下一關預告：第 ${next.level} 關｜${next.name}。`:" 你的個人止損地圖已完成。"}`;
 }
+
+const filled=(value:unknown)=>typeof value==="string"&&value.trim().length>0;
+export function validateBreakthroughLevel(levelNumber:number,userInputs:Record<string,unknown>={},map:Record<string,unknown>={}){
+  if(levelNumber===1&&!filled(userInputs.occurredTime))return "請填寫最近一次嘴饞發生時間";
+  if(levelNumber===2){if(!filled(userInputs.scene))return "請選擇一個高風險場景";if(userInputs.scene==="其他"&&!filled(userInputs.otherScene))return "請補充其他場景"}
+  if(levelNumber===3&&(!filled(userInputs.mainEmotion)||!filled(userInputs.bodySignal)))return "請填寫主要情緒與身體訊號";
+  if(levelNumber===5&&["breakfastProtein","lunchEnough","waterEnough","afternoonDrink","tooHungryBeforeDinner"].some(key=>!filled(userInputs[key])))return "請完成 5 項營養缺口掃描";
+  if(levelNumber===6){const backups=Array.isArray(userInputs.dinnerBackups)?userInputs.dinnerBackups:[];if(backups.length<3||backups.some(item=>!filled(item)))return "請完成 3 個晚餐備案"}
+  if(levelNumber===7){const required=["highRiskTime","highRiskScene","mainEmotion","bodySignal","nutritionGap","firstRescueAction","nextWeekAction"];if(required.some(key=>!filled(map[key])))return "請完成止損地圖的 7 個核心欄位";const backups=Array.isArray(map.dinnerBackups)?map.dinnerBackups:[];if(backups.length<3||backups.some(item=>!filled(item)))return "請填寫 3 個晚餐備案"}
+  return null;
+}

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { completionFeedback, levels, normalizeType, recommendation, typeName } from "./breakthroughPlan";
+import { completionFeedback, levels, normalizeType, recommendation, typeName, validateBreakthroughLevel } from "./breakthroughPlan";
 
 describe("breakthrough routes", () => {
   it.each([
@@ -16,6 +16,21 @@ describe("breakthrough routes", () => {
   it("uses primary type from mixed string", () => expect(normalizeType("fatigue_loss_control,sugary_drink_dependency")).toBe("fatigue_loss_control"));
   it("shows localized type", () => expect(typeName("nutrition_gap")).toBe("營養不足型"));
   it("is safe before quiz", () => expect(recommendation(null)).toBeNull());
+});
+
+describe("關卡最低完成條件",()=>{
+  it("不允許空白資料直接通過",()=>{
+    expect(validateBreakthroughLevel(1,{})).toContain("時間");
+    expect(validateBreakthroughLevel(2,{})).toContain("場景");
+    expect(validateBreakthroughLevel(3,{})).toContain("情緒");
+    expect(validateBreakthroughLevel(5,{})).toContain("5 項");
+    expect(validateBreakthroughLevel(6,{dinnerBackups:["","",""]})).toContain("3 個");
+    expect(validateBreakthroughLevel(7,{},{})).toContain("核心欄位");
+  });
+  it("完整填寫後可通過",()=>{
+    expect(validateBreakthroughLevel(1,{occurredTime:"20:00",period:"晚餐後",cravingScore:8,fatigueScore:7})).toBeNull();
+    expect(validateBreakthroughLevel(6,{dinnerBackups:["便當","滷味","超商雞胸"]})).toBeNull();
+  });
 });
 
 describe("成熟版破關文案", () => {
