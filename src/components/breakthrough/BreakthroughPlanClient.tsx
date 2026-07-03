@@ -1,7 +1,8 @@
 "use client";
 import Link from "next/link";
 import {useEffect,useState} from "react";
-import {analyzeLevel,branches as branchSource,completionFeedback,kingdomCopy,levels,recommendation,typeName,validateBreakthroughLevel} from "@/content/breakthroughPlan";
+import {branches as branchSource,completionFeedback,kingdomCopy,levels,recommendation,typeName,validateBreakthroughLevel} from "@/content/breakthroughPlan";
+import {analyzeBreakthroughLevel as analyzeLevel} from "@/lib/breakthrough-analysis";
 import {badgeForLevel} from "@/content/badgeConfig";
 
 const emptyMap:any={highRiskTime:"",highRiskScene:"",mainEmotion:"",bodySignal:"",nutritionGap:"",highRiskDrinkOrSnack:"",safeSwapOptions:["","",""],dinnerBackups:["","",""],rescuePlan:"",firstRescueAction:"",nextWeekAction:""};
@@ -30,7 +31,7 @@ export default function BreakthroughPlanClient({token,initialLevel=null}:{token:
 
 function Score({label,value,onChange}:{label:string;value:number;onChange:(n:number)=>void}){return <label className="bt-score"><span>{label}</span><b>{value}</b><input type="range" min="0" max="10" value={value} onChange={e=>onChange(Number(e.target.value))}/></label>}
 function Cards({items,selected,onToggle,max=99}:{items:string[];selected:string[];onToggle:(v:string)=>void;max?:number}){return <div className="bt-choice-grid">{items.map(x=><button type="button" className={selected.includes(x)?"selected":""} key={x} onClick={()=>onToggle(x)}>{selected.includes(x)?"✓ ":""}{x}</button>)}</div>}
-function Analysis({level,values}:{level:number;values:any}){const result=analyzeLevel(level,values);return <section className="bt-analysis"><span>系統分析結果</span><h3>{result.title}</h3><p>{result.text}</p></section>}
+function Analysis({level,values}:{level:number;values:any}){const result=analyzeLevel(level,values);return <section className="bt-analysis"><span>系統分析結果 · 信心度 {result.confidence}</span><h3>{result.primaryResult}</h3><p>{result.explanation}</p><p><b>分析線索：</b>{result.insight}</p><p><b>建議先做：</b>{result.suggestedAction}</p></section>}
 
 function LevelInputs({level,values,setInput,map,setMap,branch,setBranch,state,prepareMap}:any){
  if(level===1){const times=["上午","午餐後","下午 3～5 點","下班前","晚餐前","晚餐後","睡前","其他"];return <div className="bt-inputs"><h3>時間雷達</h3><p>先選出最近最常嘴饞的時間，可複選，再指定最明顯的一個熱區。</p><Cards items={times} selected={values.selectedTimes} onToggle={v=>setInput("selectedTimes",toggle(values.selectedTimes,v))}/><label>主要高風險時間<select value={values.primaryTime} onChange={e=>setInput("primaryTime",e.target.value)}><option value="">請選擇</option>{values.selectedTimes.map((x:string)=><option key={x}>{x}</option>)}</select></label>{[["嘴饞強度","cravingScore"],["飢餓感","hungerScore"],["疲憊感","fatigueScore"],["壓力感","stressScore"]].map(([l,k])=><Score key={k} label={l} value={values[k]} onChange={n=>setInput(k,n)}/>)}<Analysis level={1} values={values}/></div>}

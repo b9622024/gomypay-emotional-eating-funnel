@@ -29,12 +29,3 @@ export function validateBreakthroughLevel(n:number,u:Record<string,unknown>={},m
  if(n===7){const required=["highRiskTime","highRiskScene","mainEmotion","nutritionGap","firstRescueAction","nextWeekAction"];if(required.some(k=>!filled(map[k])))return "請確認止損地圖的六張線索卡與下週任務";const b=arr(map.dinnerBackups);if(b.length<3||b.some(x=>!filled(x)))return "請確認 3 組晚餐備案"}
  return null;
 }
-export function analyzeLevel(n:number,u:any){
- if(n===1){const scores=[u.fatigueScore,u.stressScore,u.hungerScore].map(Number),reasons=["疲憊感","壓力感","飢餓感"];return {title:`你的高風險時間：${u.primaryTime||"尚未選擇"}`,text:`${reasons[scores.indexOf(Math.max(...scores))]}是目前最明顯的線索。`,highRiskTime:u.primaryTime};}
- if(n===2){return {title:`場景組合：${arr(u.selectedScenes).join("＋")}`,text:`主要觸發是${arr(u.selectedTriggers).join("、")}。先改變食物位置、通知或原本動作，通常比硬忍更實際。`};}
- if(n===3){const pairs:[[string,number,string,string],...Array<[string,number,string,string]>]=[["真餓型訊號",Number(u.trueHungerScore),"選正常正餐或蛋白質點心","真的餓"],["疲憊型嘴饞",Number(u.fatigueScore),"喝水、休息，再補一個蛋白質點心","累了"],["壓力型嘴饞",Number(u.emotionStressScore),"先深呼吸並離開原本情境 3 分鐘","壓力"],["嘴巴想吃型",Number(u.specificFoodCravingScore),"先分裝或選安全替換選項","嘴巴想吃"]];const best=pairs.sort((a,b)=>b[1]-a[1])[0];return {title:`你的結果偏向：${best[0]}`,text:`建議先做：${best[2]}。`,decodedSignalType:best[0],suggestedAction:best[2]};}
- if(n===4){const b=branches[u.selectedBranch as keyof typeof branches];return {title:`你的主支線：${b?.name||"尚未選擇"}`,text:u.isCorrect?`你選到較穩的第一步。${b.feedback}`:`這題的重點不是責備自己。較穩的選擇是「${b.options[b.correct]}」。${b.feedback}`};}
- if(n===5){const keys=["breakfastScore","lunchScore","waterScore","proteinScore","afternoonEnergyScore"],names=["早餐洞","午餐洞","水分洞","蛋白洞","下午能量洞"],values=keys.map(k=>Number(u[k])),score=values.reduce((a,b)=>a+b,0),min=Math.min(...values),lowest=names.filter((_,i)=>values[i]===min);return {title:`營養補洞分數：${score} / 10`,text:score<=3?"補給裂縫偏大，明天先修補一項就好。":score<=7?"已有部分補給，仍有一至兩個缺口值得優先處理。":"今天補給相對穩定，繼續維持可執行的節奏。",score,lowestItems:lowest,tomorrowRepairTask:`明天先處理：${lowest[0]}`};}
- if(n===6){const score=(u.selectedProtein?30:0)+(u.selectedVegetable?30:0)+(u.selectedCarb?20:0)+(["水","無糖茶","無糖豆漿","無糖拿鐵"].includes(u.selectedDrink)?20:0);return {title:`晚餐防線強度：${score} / 100`,text:score<=40?"防線仍有空隙，優先補蛋白質與蔬菜。":score<=70?"已有基礎防線，再檢查飲料或缺少的餐盤元素。":"這是一份相對穩定、適合下班後使用的晚餐備案。",score};}
- return {title:"個人止損地圖已生成",text:"你已把角色、時間、場景、訊號、營養與晚餐線索拼成自己的止損路線。"};
-}
