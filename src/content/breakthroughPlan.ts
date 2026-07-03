@@ -2,7 +2,7 @@ import { emotionalEatingTypes,type EmotionalEatingType } from "./emotionalEating
 export const routeProfiles:Record<EmotionalEatingType,{route:string;tools:string[];branch:string}>={stress_release:{route:"壓力止損路線",tools:["嘴饞前 3 分鐘身心連結工作本","10 分鐘嘴饞急救流程卡","安全零食與飲料替換清單"],branch:"stress"},fatigue_loss_control:{route:"營養補電路線",tools:["正念營養缺口掃描","下班後防暴食晚餐公式","7 天外食防暴食菜單"],branch:"nutrition"},compensation:{route:"情緒安撫路線",tools:["嘴饞前 3 分鐘身心連結工作本","安全零食與飲料替換清單","10 分鐘嘴饞急救流程卡"],branch:"stress"},boredom_habit:{route:"習慣迴路拆解路線",tools:["下班後嘴饞觸發點分析表","10 分鐘嘴饞急救流程卡","安全零食與飲料替換清單"],branch:"swap"},sugary_drink_dependency:{route:"飲料降糖路線",tools:["7 天含糖飲料重置表","含糖飲料替換清單 Pro","安全零食與飲料替換清單"],branch:"drink"},nutrition_gap:{route:"白天營養補洞路線",tools:["正念營養缺口掃描","下班後防暴食晚餐公式","7 天外食防暴食菜單"],branch:"nutrition"}};
 export const branches={drink:{name:"飲料降糖支線",tool:"7 天含糖飲料重置表",path:"drink-reset",clues:["飲料觸發線索"],badge:"專屬支線徽章",description:"找出最容易想喝飲料的時間、情緒與情境。"},nutrition:{name:"營養補洞支線",tool:"正念營養缺口掃描",path:"mindful-nutrition-tracker",clues:["營養缺口線索"],badge:"專屬支線徽章",description:"檢查早餐、午餐、蛋白質、水量與下午疲憊。"},stress:{name:"壓力止損支線",tool:"10 分鐘嘴饞急救流程卡",path:"craving-rescue",clues:["壓力止損線索"],badge:"專屬支線徽章",description:"遇到強烈嘴饞時，先完成一次 10 分鐘急救流程。"},swap:{name:"安全替換支線",tool:"安全零食與飲料替換清單",path:"safe-swap-list",clues:["安全替換線索"],badge:"專屬支線徽章",description:"找出一個最常用來替代零食或飲料的安全選項。"}} as const;
 export const levels=[
-{level:1,name:"找出你的嘴饞角色",task:"完成嘴饞角色判定",tool:"情緒性進食 6 型測驗",path:"quiz/emotional-eating",clues:["嘴饞角色線索"],badge:"嘴饞角色徽章",icon:"🧭",points:10,description:"先不要急著改變飲食。今天只要完成測驗，知道自己最容易因為什麼原因嘴饞。",feedback:"你已解鎖自己的嘴饞角色。這不是單純沒自制力，而是一個固定模式正在發生。"},
+{level:1,name:"找出嘴饞角色",task:"完成嘴饞角色判定",tool:"情緒性進食 6 型測驗",path:"quiz/emotional-eating",clues:["嘴饞角色線索"],badge:"嘴饞角色徽章",icon:"🧭",points:10,description:"先不要急著改變飲食。今天只要完成測驗，知道自己最容易因為什麼原因嘴饞。",feedback:"你已解鎖自己的嘴饞角色。這不是單純沒自制力，而是一個固定模式正在發生。"},
 {level:2,name:"找出破功時間與場景",task:"破解我的高風險場景",tool:"下班後嘴饞觸發點分析表",path:"trigger-analysis",clues:["高風險時間線索","高風險場景線索"],badge:"觸發點偵探徽章",icon:"🔍",points:10,description:"回想最近一次嘴饞或破功，找出發生的時間、地點與情境。",feedback:"你已找出嘴饞常出現的時間與場景，可以開始提前準備。"},
 {level:3,name:"破解情緒與身體訊號",task:"嘴饞前先停 3 分鐘",tool:"嘴饞前 3 分鐘身心連結工作本",path:"three-minute-check",clues:["情緒線索","身體訊號線索"],badge:"身心連結徽章",icon:"🌿",points:10,description:"嘴饞出現時先停 3 分鐘，分辨真餓、壓力、疲憊、委屈、無聊或想放鬆。",feedback:"你開始把「想吃就吃」變成「先看懂自己」。"},
 {level:4,name:"選擇專屬支線任務",task:"選擇最適合自己的止損支線",tool:"依嘴饞角色推薦",path:"",clues:["專屬支線線索"],badge:"專屬支線徽章",icon:"🛤️",points:10,description:"系統會推薦最適合的支線，你也可以依今天狀況手動切換。",feedback:"你已選出最適合自己的止損支線，不需要一次做完所有道具。"},
@@ -13,3 +13,10 @@ export const levels=[
 export function normalizeType(value:string|null|undefined):EmotionalEatingType|null{const type=value?.split(",")[0] as EmotionalEatingType;return type&&type in routeProfiles?type:null}
 export function typeName(value:string|null|undefined){const t=normalizeType(value);return t?emotionalEatingTypes[t].name:"尚未判定"}
 export function recommendation(primary:string|null|undefined){const t=normalizeType(primary);return t?routeProfiles[t]:null}
+export function completionFeedback(levelNumber:number){
+  const level=levels[levelNumber-1];
+  if(!level)return "關卡已完成。";
+  const next=levels[levelNumber];
+  const insight=levelNumber===3?"你正在把「想吃就吃」改成「先看懂自己」。":level.feedback;
+  return `恭喜完成第 ${level.level} 關。你已經解鎖「${level.badge}」，並收集到${level.clues.join("與")}。獲得 ${level.points} 行動點數。${insight}${next?` 下一關預告：第 ${next.level} 關｜${next.name}。`:" 你的個人止損地圖已完成。"}`;
+}

@@ -9,7 +9,7 @@ export const triggerAnalysisContent={
   list:{title:"我的紀錄列表",date:"日期",item:"想吃／喝",trigger:"主要觸發點",score:"嘴饞強度",stopped:"是否止損",yes:"未吃喝",no:"有吃喝"},
   summary:{title:"我的觸發點摘要",needMore:"目前先顯示基本摘要。累積至少 3 筆後，會提供更完整的高風險模式分析。",count:"紀錄總數",avgCraving:"平均嘴饞",avgHunger:"平均飢餓",avgStress:"平均壓力",avgFatigue:"平均疲憊",topTriggers:"常見觸發點",topLocations:"高風險場景",topTimes:"高風險時間",topItems:"常想吃喝",eatRatio:"實際吃喝比例",mainTrigger:"最常見主因",riskTitle:"我的高風險模式"},
   patterns:{stress:"壓力觸發傾向",fatigue:"疲憊觸發傾向",nutrition:"營養缺口傾向",habit:"習慣觸發傾向",drink:"含糖飲料觸發傾向",unclear:"目前模式尚不明顯"},
-  next:{title:"下一步建議",emotion:"情緒觸發明顯：建議回去看情緒性進食 6 型測驗結果。",pause:"當下很難停下來：建議使用嘴饞前 3 分鐘身心連結工作本。",rescue:"已經快要失控：建議使用 10 分鐘嘴饞急救流程卡。",day5:"白天吃太少：建議完成 7 天嘴饞止損行動手冊 Day 5。",day6:"晚餐後失控：建議完成 7 天嘴饞止損行動手冊 Day 6。",aiTitle:"想知道更深層的減脂卡關原因？",aiText:"如果你已經加購 1 元 AI 減脂測驗，點擊後可直接進入測驗領取與聯繫頁面。若尚未加購，系統會引導你進入加購頁。",aiButton:"前往 AI 能量減脂初評"},
+  next:{title:"下一步建議",emotion:"情緒觸發明顯：建議回去看情緒性進食 6 型測驗結果。",pause:"當下很難停下來：建議使用嘴饞前 3 分鐘身心連結工作本。",rescue:"已經快要失控：建議使用 10 分鐘嘴饞急救流程卡。",day5:"白天吃太少：建議進入《7 天嘴饞破關計畫》第 5 關，掃描白天營養缺口。",day6:"晚餐後失控：建議進入《7 天嘴饞破關計畫》第 6 關，建立晚餐防線。",aiTitle:"想知道更深層的減脂卡關原因？",aiText:"如果你已經加購 1 元 AI 減脂測驗，點擊後可直接進入測驗領取與聯繫頁面。若尚未加購，系統會引導你進入加購頁。",aiButton:"前往 AI 能量減脂初評"},
   errors:{invalid:"這個工具包連結無效、尚未付款，或未包含主商品。請從購買信件中的專屬連結重新進入。",load:"目前無法讀取紀錄，請稍後再試。",save:"目前無法儲存，請確認網路後再試。",remove:"目前無法刪除，請稍後再試。"}
 } as const;
 

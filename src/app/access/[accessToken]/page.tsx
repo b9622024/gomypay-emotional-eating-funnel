@@ -1,6 +1,95 @@
-import { notFound } from "next/navigation";import { prisma } from "@/lib/db";import { getBreakthroughState } from "@/lib/breakthrough-plan";import { assetDeliveryLinks,digitalAssetsByProduct,type DigitalAsset } from "@/content/digitalProducts";import { branches,typeName } from "@/content/breakthroughPlan";import { salesPage } from "@/content/emotionalEatingSalesPage";import RememberAccessToken from "@/components/access/RememberAccessToken";
-function Button({href,label,kind}:{href:string;label:string;kind:string}){return href==="#"?<button disabled className={`btn delivery-button ${kind} disabled`}>{label}<small>準備中</small></button>:<a className={`btn delivery-button ${kind}`} href={href} target={kind==="interactive"?undefined:"_blank"} rel="noreferrer"><span>{label}</span><span>{kind==="interactive"?"→":"↓"}</span></a>}
-function Actions({asset,token}:{asset:DigitalAsset;token:string}){const d=assetDeliveryLinks[asset.key]??{interactivePath:"#",pdfUrl:"#"},href=d.interactivePath==="#"?"#":`/access/${token}${d.interactivePath}`;return <div className="asset-actions unified"><Button href={href} label="開始使用" kind="interactive"/><Button href={d.pdfUrl} label="PDF 版" kind="pdf"/>{d.imageUrl&&<Button href={d.imageUrl} label="圖卡" kind="image"/>}</div>}
-const groups=[{title:"當下急救道具",keys:["three-minute-workbook","craving-rescue"]},{title:"線索分析道具",keys:["trigger-analysis","mindful-nutrition"]},{title:"飲料支線道具",keys:["drink-reset","sugary-drink-swap-pro"]},{title:"外食與晚餐道具",keys:["dinner-formula","anti-binge-meal-plan"]},{title:"替換清單道具",keys:["safe-swaps"]}];
-const timing:Record<string,string>={"three-minute-workbook":"嘴饞剛出現、想分辨身體與情緒時","craving-rescue":"嘴饞強度很高、快失控時","trigger-analysis":"想回推固定破功時間與場景時","mindful-nutrition":"想快速檢查白天營養是否穩定時","drink-reset":"飲料依賴型或選擇飲料降糖支線時","dinner-formula":"下班後不知道晚餐怎麼選時","safe-swaps":"不知道零食或飲料可以換成什麼時","sugary-drink-swap-pro":"想直接取得點餐話術與降糖攻略時","anti-binge-meal-plan":"想直接照著吃一週時"};
-export default async function Access({params}:{params:Promise<{accessToken:string}>}){const {accessToken}=await params,canonical=await prisma.entitlement.findUnique({where:{accessToken},include:{order:true}});if(!canonical||canonical.order.status!=="paid")notFound();const state=await getBreakthroughState(accessToken);if(!state)notFound();const ownedCodes=(await prisma.entitlement.findMany({where:{customerId:canonical.customerId,order:{status:"paid"}},select:{productCode:true}})).map(x=>x.productCode),mainAssets=digitalAssetsByProduct.emotional_eating_reset_7d,proAssets=[...digitalAssetsByProduct.sugary_drink_swap_pro,...digitalAssetsByProduct.anti_binge_meal_plan_7d],all=[...mainAssets,...proAssets],completed=state.progress.completedLevels.length,done=completed>=7,cta=!state.quiz?`/access/${accessToken}/quiz/emotional-eating`:done&&state.map?`/access/${accessToken}/breakthrough-plan#rescue-map`:`/access/${accessToken}/breakthrough-plan`,today=done?"個人止損地圖已完成":`第 ${state.progress.currentLevel} 關`;return <main className="access-page bt-home"><div className="container"><RememberAccessToken accessToken={accessToken}/><section className="bt-home-hero"><span>可樂吉健康研究所</span><h1>7 天嘴饞破關計畫</h1><h2>每天完成一個小任務，解鎖你的減脂止損地圖</h2><p>你不需要一次改掉所有習慣，也不用每天寫一堆紀錄。每天完成一個小任務，收集一個線索，解鎖一枚徽章。</p><a href={cta}>開始我的破關任務 →</a></section><section className="bt-home-progress"><div><span>我的破關進度</span><h2>{today}</h2><div className="bt-home-bar"><i style={{width:`${completed/7*100}%`}}/></div><p>已完成 {completed} / 7 關</p></div><div className="bt-home-stats"><article><strong>{state.progress.actionPoints}</strong><span>行動點數</span></article><article><strong>{state.progress.earnedBadges.length}</strong><span>已解鎖徽章</span></article><article><strong>{state.progress.collectedClues.length}</strong><span>已收集線索</span></article></div><a href={cta}>{done?"查看個人止損地圖":"開始今日關卡"} →</a></section>{state.quiz&&state.profile&&<section className="bt-home-route"><span>你的推薦破關路線</span><h2>{state.profile.route}</h2><p>主要嘴饞角色：<b>{typeName(state.quiz.primaryType)}</b></p><p>次要嘴饞角色：<b>{typeName(state.quiz.secondaryType)}</b></p><small>破關路線會以主要類型為主，次要類型作為加強任務。</small><div>{state.profile.tools.map(x=><strong key={x}>{x}</strong>)}</div></section>}<section className="bt-intro"><h2>這不是一堆 PDF。<br/>這是一套 7 天嘴饞破關系統。</h2><p>系統會先找出你的嘴饞角色，再依照測驗結果安排破關路線。你不需要一次使用所有道具，每天完成一關，最後拼出自己的個人止損地圖。</p><ol>{["找出嘴饞角色","找出破功場景","破解情緒與身體訊號","選擇專屬支線","掃描營養缺口","建立晚餐防線","生成個人止損地圖"].map((x,i)=><li key={x}><span>{i+1}</span>{x}</li>)}</ol></section><details className="bt-toolbox"><summary><div><span>MISSION TOOLBOX</span><h2>任務道具箱</h2><p>需要時再打開，不必一次使用所有道具。</p></div><b>展開道具箱＋</b></summary>{groups.map(group=><section key={group.title}><h3>{group.title}</h3><div>{group.keys.map(key=>{const asset=all.find(x=>x.key===key);if(!asset)return null;const advanced=key==="sugary-drink-swap-pro"||key==="anti-binge-meal-plan",code=key==="sugary-drink-swap-pro"?"sugary_drink_swap_pro":"anti_binge_meal_plan_7d",owned=!advanced||ownedCodes.includes(code);return <article className={!owned?"locked":""} key={key}><div><small>{advanced?"進階道具":"已解鎖道具"}</small><h4>{asset.title}</h4><p>{asset.description}</p><span>使用時機：{timing[key]}</span></div>{owned?<Actions asset={asset} token={accessToken}/>:<div className="bt-unlock"><b>進階道具尚未解鎖</b><p>卡關時可加購解鎖完整內容。</p><a href="/checkout">{key==="sugary-drink-swap-pro"?"解鎖飲料降糖攻略":"解鎖 7 天外食通關菜單"} →</a></div>}</article>})}</div></section>)}</details><footer className="access-support"><div><span>有問題嗎？</span><h2>可以立即跟我們聯繫</h2><p>破關任務或道具使用有任何問題，都歡迎透過官方社群詢問。</p><strong>{salesPage.brand}</strong></div><div className="access-support-links">{salesPage.contacts.map(x=><a href={x.href} target="_blank" rel="noreferrer" key={x.label}><span>{x.label}</span><small>{x.handle} ↗</small></a>)}</div></footer></div></main>}
+import { notFound } from "next/navigation";
+import RememberAccessToken from "@/components/access/RememberAccessToken";
+import { assetDeliveryLinks, digitalAssetsByProduct, type DigitalAsset } from "@/content/digitalProducts";
+import { typeName } from "@/content/breakthroughPlan";
+import { salesPage } from "@/content/emotionalEatingSalesPage";
+import { prisma } from "@/lib/db";
+import { getBreakthroughState } from "@/lib/breakthrough-plan";
+
+function Button({ href, label, kind }: { href: string; label: string; kind: string }) {
+  if (href === "#") return <button disabled className={`btn delivery-button ${kind} disabled`}>{label}<small>準備中</small></button>;
+  return <a className={`btn delivery-button ${kind}`} href={href} target={kind === "interactive" ? undefined : "_blank"} rel="noreferrer"><span>{label}</span><span>{kind === "interactive" ? "→" : "↓"}</span></a>;
+}
+
+function Actions({ asset, token }: { asset: DigitalAsset; token: string }) {
+  const delivery = assetDeliveryLinks[asset.key] ?? { interactivePath: "#", pdfUrl: "#" };
+  const interactiveHref = delivery.interactivePath === "#" ? "#" : `/access/${token}${delivery.interactivePath}`;
+  return <div className="asset-actions unified"><Button href={interactiveHref} label="開始使用" kind="interactive"/><Button href={delivery.pdfUrl} label="PDF 版" kind="pdf"/>{delivery.imageUrl && <Button href={delivery.imageUrl} label="圖卡" kind="image"/>}</div>;
+}
+
+const groups = [
+  { title: "當下急救道具", keys: ["three-minute-workbook", "craving-rescue"] },
+  { title: "線索分析道具", keys: ["trigger-analysis", "mindful-nutrition"] },
+  { title: "飲料支線道具", keys: ["drink-reset", "sugary-drink-swap-pro"] },
+  { title: "外食與晚餐道具", keys: ["dinner-formula", "anti-binge-meal-plan"] },
+  { title: "替換清單道具", keys: ["safe-swaps"] },
+];
+
+const timing: Record<string, string> = {
+  "three-minute-workbook": "嘴饞剛出現、想分辨身體與情緒時",
+  "craving-rescue": "嘴饞強度很高、快失控時",
+  "trigger-analysis": "想回推固定破功時間與場景時",
+  "mindful-nutrition": "想快速檢查白天營養是否穩定時",
+  "drink-reset": "飲料依賴型或選擇飲料降糖支線時",
+  "dinner-formula": "下班後不知道晚餐怎麼選時",
+  "safe-swaps": "不知道零食或飲料可以換成什麼時",
+  "sugary-drink-swap-pro": "想直接取得點餐話術與降糖攻略時",
+  "anti-binge-meal-plan": "想直接照著吃一週時",
+};
+
+const advancedCopy: Record<string, { name: string; message: string; button: string }> = {
+  "sugary-drink-swap-pro": {
+    name: "手搖飲降糖攻略",
+    message: "你已經找出自己的飲料觸發點。如果你想知道手搖飲、咖啡、超商飲料要怎麼直接點，可以解鎖進階道具《含糖飲料替換清單 Pro》。",
+    button: "解鎖飲料降糖攻略",
+  },
+  "anti-binge-meal-plan": {
+    name: "7 天外食通關菜單",
+    message: "你已經建立了自己的晚餐防線。如果你想直接照著吃一週，可以解鎖進階道具《7 天外食防暴食菜單》。",
+    button: "解鎖 7 天外食通關菜單",
+  },
+};
+
+export default async function Access({ params }: { params: Promise<{ accessToken: string }> }) {
+  const { accessToken } = await params;
+  const canonical = await prisma.entitlement.findUnique({ where: { accessToken }, include: { order: true } });
+  if (!canonical || canonical.order.status !== "paid") notFound();
+  const state = await getBreakthroughState(accessToken);
+  if (!state) notFound();
+
+  const ownedCodes = (await prisma.entitlement.findMany({ where: { customerId: canonical.customerId, order: { status: "paid" } }, select: { productCode: true } })).map(x => x.productCode);
+  const all = [...digitalAssetsByProduct.emotional_eating_reset_7d, ...digitalAssetsByProduct.sugary_drink_swap_pro, ...digitalAssetsByProduct.anti_binge_meal_plan_7d];
+  const completed = state.progress.completedLevels.length;
+  const done = completed >= 7;
+  const cta = !state.quiz ? `/access/${accessToken}/quiz/emotional-eating` : done && state.map ? `/access/${accessToken}/breakthrough-plan#rescue-map` : `/access/${accessToken}/breakthrough-plan`;
+  const today = done ? "個人止損地圖已完成" : `第 ${state.progress.currentLevel} 關`;
+
+  return <main className="access-page bt-home"><div className="container">
+    <RememberAccessToken accessToken={accessToken}/>
+    <section className="bt-home-hero">
+      <span>可樂吉健康研究所</span>
+      <h1>7 天嘴饞破關計畫</h1>
+      <h2>不用靠意志力硬撐，先找出你為什麼總是在同一個時間想吃、想喝、想失控。</h2>
+      <p>你不需要一次改掉所有習慣，也不用每天寫一堆飲食紀錄。這 7 天，你只需要每天完成一個小任務，收集一個線索，解鎖一枚徽章。系統會先透過情緒性進食 6 型測驗，找出你的嘴饞角色，再依照你的狀況安排專屬破關路線。</p>
+      <a href={cta}>開始我的破關任務 →</a>
+    </section>
+
+    <section className="bt-home-progress"><div><span>我的破關進度</span><h2>{today}</h2><div className="bt-home-bar"><i style={{ width: `${completed / 7 * 100}%` }}/></div><p>已完成 {completed} / 7 關</p></div><div className="bt-home-stats"><article><strong>{state.progress.actionPoints}</strong><span>行動點數</span></article><article><strong>{state.progress.earnedBadges.length}</strong><span>已解鎖徽章</span></article><article><strong>{state.progress.collectedClues.length}</strong><span>已收集線索</span></article></div><a href={cta}>{done ? "查看個人止損地圖" : "開始今日關卡"} →</a></section>
+
+    {state.quiz && state.profile && <section className="bt-home-route"><span>你的推薦破關路線</span><h2>{state.profile.route}</h2><p>主要嘴饞角色：<b>{typeName(state.quiz.primaryType)}</b></p><p>次要嘴饞角色：<b>{typeName(state.quiz.secondaryType)}</b></p><small>你的破關路線會以主要類型為主，次要類型作為加強任務。</small><div>{state.profile.tools.map(x => <strong key={x}>{x}</strong>)}</div></section>}
+
+    <section className="bt-intro"><h2>這不是一堆 PDF。<br/>這是一套 7 天嘴饞破關系統。</h2><p>你不需要一次使用所有道具。每天完成一關，就能解鎖一個線索，最後拼出自己的個人止損地圖。</p><ol>{["找出嘴饞角色", "找出破功時間與場景", "破解情緒與身體訊號", "選擇專屬支線任務", "掃描白天營養缺口", "建立晚餐防線", "生成個人止損地圖"].map((x, i) => <li key={x}><span>{i + 1}</span>{x}</li>)}</ol></section>
+
+    <details className="bt-toolbox"><summary><div><span>MISSION TOOLBOX</span><h2>任務道具箱</h2><p>需要時再打開，不必一次使用所有道具。</p></div><b>展開道具箱＋</b></summary>{groups.map(group => <section key={group.title}><h3>{group.title}</h3><div>{group.keys.map(key => {
+      const asset = all.find(x => x.key === key);
+      if (!asset) return null;
+      const advanced = Boolean(advancedCopy[key]);
+      const code = key === "sugary-drink-swap-pro" ? "sugary_drink_swap_pro" : "anti_binge_meal_plan_7d";
+      const owned = !advanced || ownedCodes.includes(code);
+      const prompt = advancedCopy[key];
+      return <article className={!owned ? "locked" : ""} key={key}><div><small>{advanced ? `進階道具｜${prompt.name}` : "已解鎖道具"}</small><h4>{asset.title}</h4><p>{asset.description}</p><span>使用時機：{timing[key]}</span></div>{owned ? <Actions asset={asset} token={accessToken}/> : <div className="bt-unlock"><b>進階道具尚未解鎖</b><p>{prompt.message}</p><a href="/checkout">{prompt.button} →</a></div>}</article>;
+    })}</div></section>)}</details>
+
+    <footer className="access-support"><div><span>有問題嗎？</span><h2>可以立即跟我們聯繫</h2><p>破關任務或道具使用有任何問題，都歡迎透過官方社群詢問。</p><strong>{salesPage.brand}</strong></div><div className="access-support-links">{salesPage.contacts.map(x => <a href={x.href} target="_blank" rel="noreferrer" key={x.label}><span>{x.label}</span><small>{x.handle} ↗</small></a>)}</div></footer>
+  </div></main>;
+}

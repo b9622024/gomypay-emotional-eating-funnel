@@ -44,10 +44,10 @@ export const digitalAssetsByProduct:Record<string,DigitalAsset[]>={
     {key:"ai-energy-assessment",title:"AI 能量減脂測驗",description:"透過 5 分鐘 49 題的測驗填寫，了解目前的脈輪能量狀態與個人天賦優勢；由專人一對一解析測驗結果、找出問題並提供專屬對策方案。",kind:"表單",downloadUrl:placeholder}
   ],
   sugary_drink_swap_pro:[
-    {key:"sugary-drink-swap-pro",title:"含糖飲料替換清單 Pro",description:"想喝飲料時，直接知道怎麼點、怎麼降階、怎麼停得住。",kind:"清單",downloadUrl:placeholder,badge:"NT$99 加購工具"}
+    {key:"sugary-drink-swap-pro",title:"含糖飲料替換清單 Pro",description:"想喝飲料時，直接知道怎麼點、怎麼降階、怎麼停得住。",kind:"清單",downloadUrl:placeholder,badge:"NT$99 進階道具"}
   ],
   anti_binge_meal_plan_7d:[
-    {key:"anti-binge-meal-plan",title:"7 天外食防暴食菜單",description:"不用自己煮，外食族也能照著吃的 7 天穩定晚餐與嘴饞止損菜單。",kind:"菜單",downloadUrl:placeholder,badge:"NT$99 加購工具"}
+    {key:"anti-binge-meal-plan",title:"7 天外食防暴食菜單",description:"不用自己煮，外食族也能照著吃的 7 天穩定晚餐與嘴饞止損菜單。",kind:"菜單",downloadUrl:placeholder,badge:"NT$99 進階道具"}
   ],
   coaching_deposit_3d:[
     {key:"coaching-intake",title:"三天陪跑資料填寫表單",description:"提交飲食、嘴饞紀錄與希望教練協助的問題。",kind:"表單",downloadUrl:placeholder}
