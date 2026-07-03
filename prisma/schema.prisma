@@ -442,6 +442,12 @@ model BreakthroughPlanProgress {
   secondaryType    String?
   recommendedRoute String?
   selectedBranch   String?
+  characterCreated Boolean  @default(false)
+  characterCreatedAt DateTime?
+  primaryCharacterName String?
+  primaryOriginalTypeName String?
+  secondaryCharacterName String?
+  secondaryOriginalTypeName String?
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
 }
@@ -458,6 +464,8 @@ model BreakthroughDailyEntry {
   earnedBadge        String
   actionPointsEarned Int       @default(0)
   userNotes          String?
+  selectedBranch     String?
+  userInputs         Json?
   completedAt        DateTime?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt
@@ -481,6 +489,15 @@ model PersonalRescueMap {
   dinnerBackups        Json
   rescuePlan           String?
   nextWeekAction       String?
+  primaryCharacterName String?
+  primaryOriginalTypeName String?
+  secondaryCharacterName String?
+  secondaryOriginalTypeName String?
+  bodySignal           String?
+  selectedBranch       String?
+  firstRescueAction    String?
+  rewardUnlocked       Boolean  @default(false)
+  rewardUnlockedAt     DateTime?
   generatedAt          DateTime @default(now())
   createdAt            DateTime @default(now())
   updatedAt            DateTime @updatedAt

@@ -61,7 +61,7 @@ export default async function Access({ params }: { params: Promise<{ accessToken
   const all = [...digitalAssetsByProduct.emotional_eating_reset_7d, ...digitalAssetsByProduct.sugary_drink_swap_pro, ...digitalAssetsByProduct.anti_binge_meal_plan_7d];
   const completed = state.progress.completedLevels.length;
   const done = completed >= 7;
-  const cta = !state.quiz ? `/access/${accessToken}/quiz/emotional-eating` : done && state.map ? `/access/${accessToken}/breakthrough-plan#rescue-map` : `/access/${accessToken}/breakthrough-plan`;
+  const cta = !state.quiz ? `/access/${accessToken}/character-creation` : done && state.map ? `/access/${accessToken}/personal-rescue-map` : `/access/${accessToken}/breakthrough-plan`;
   const today = done ? "個人止損地圖已完成" : `第 ${state.progress.currentLevel} 關`;
 
   return <main className="access-page bt-home"><div className="container">
@@ -71,12 +71,12 @@ export default async function Access({ params }: { params: Promise<{ accessToken
       <h1>7 天嘴饞破關計畫</h1>
       <h2>不用靠意志力硬撐，先找出你為什麼總是在同一個時間想吃、想喝、想失控。</h2>
       <p>你不需要一次改掉所有習慣，也不用每天寫一堆飲食紀錄。這 7 天，你只需要每天完成一個小任務，收集一個線索，解鎖一枚徽章。系統會先透過情緒性進食 6 型測驗，找出你的嘴饞角色，再依照你的狀況安排專屬破關路線。</p>
-      <a href={cta}>開始我的破關任務 →</a>
+      <a href={cta}>{state.quiz ? "開始我的破關任務" : "開始第 0 天｜創建嘴饞角色"} →</a>
     </section>
 
-    <section className="bt-home-progress"><div><span>我的破關進度</span><h2>{today}</h2><div className="bt-home-bar"><i style={{ width: `${completed / 7 * 100}%` }}/></div><p>已完成 {completed} / 7 關</p></div><div className="bt-home-stats"><article><strong>{state.progress.actionPoints}</strong><span>行動點數</span></article><article><strong>{state.progress.earnedBadges.length}</strong><span>已解鎖徽章</span></article><article><strong>{state.progress.collectedClues.length}</strong><span>已收集線索</span></article></div><a href={cta}>{done ? "查看個人止損地圖" : "開始今日關卡"} →</a></section>
+    {!state.quiz ? <section className="bt-home-progress"><div><span>第 0 天尚未完成</span><h2>你還沒有創建嘴饞角色</h2><p>完成角色創建後，系統才能依照你的結果安排專屬破關路線。</p></div><div className="bt-home-stats"><article><strong>🔒</strong><span>第 1～7 關將在角色創建後解鎖</span></article></div><a href={cta}>開始第 0 天｜創建嘴饞角色 →</a></section> : <section className="bt-home-progress"><div><span>我的破關進度</span><h2>{today}</h2><div className="bt-home-bar"><i style={{ width: `${completed / 7 * 100}%` }}/></div><p>已完成 {completed} / 7 關</p></div><div className="bt-home-stats"><article><strong>{state.progress.actionPoints}</strong><span>行動點數</span></article><article><strong>{state.progress.earnedBadges.length}</strong><span>已解鎖徽章</span></article><article><strong>{state.progress.collectedClues.length}</strong><span>已收集線索</span></article></div><a href={cta}>{done ? "查看個人止損地圖" : `開始第 ${state.progress.currentLevel} 關`} →</a></section>}
 
-    {state.quiz && state.profile && <section className="bt-home-route"><span>你的推薦破關路線</span><h2>{state.profile.route}</h2><p>主要嘴饞角色：<b>{typeName(state.quiz.primaryType)}</b></p><p>次要嘴饞角色：<b>{typeName(state.quiz.secondaryType)}</b></p><small>你的破關路線會以主要類型為主，次要類型作為加強任務。</small><div>{state.profile.tools.map(x => <strong key={x}>{x}</strong>)}</div></section>}
+    {state.quiz && state.profile && <section className="bt-home-route"><span>你的嘴饞角色</span><h2>{state.characters.primary?.accentIcon} {state.characters.primary?.characterName}</h2><p>對應類型：<b>{typeName(state.quiz.primaryType)}</b></p>{state.characters.secondary&&<p>次要角色：<b>{state.characters.secondary.characterName}</b>｜{typeName(state.quiz.secondaryType)}</p>}<p>推薦破關路線：<b>{state.profile.route}</b></p><small>你的破關路線會以主要類型為主，次要類型作為加強任務。</small><div>{state.profile.tools.map(x => <strong key={x}>{x}</strong>)}</div></section>}
 
     <section className="bt-intro"><h2>這不是一堆 PDF。<br/>這是一套 7 天嘴饞破關系統。</h2><p>你不需要一次使用所有道具。每天完成一關，就能解鎖一個線索，最後拼出自己的個人止損地圖。</p><ol>{["找出嘴饞角色", "找出破功時間與場景", "破解情緒與身體訊號", "選擇專屬支線任務", "掃描白天營養缺口", "建立晚餐防線", "生成個人止損地圖"].map((x, i) => <li key={x}><span>{i + 1}</span>{x}</li>)}</ol></section>
 

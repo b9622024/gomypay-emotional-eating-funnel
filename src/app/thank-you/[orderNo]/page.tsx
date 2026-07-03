@@ -2,17 +2,17 @@ import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { salesPage as c } from "@/content/emotionalEatingSalesPage";
 import { SuccessMark } from "@/components/ui/BrandUI";
-import OtoButton from "./OtoButton";
 
-const otoItems=["完整 AI 能量減脂測驗","提交 1 天飲食與嘴饞紀錄","教練協助看一次嘴饞觸發點","3 天每日回報提醒","提供外食與飲料調整方向","NT$399 可折抵正式方案"];
+export default async function ThankYou({ params }: { params: Promise<{ orderNo: string }> }) {
+  const { orderNo } = await params;
+  const order = await prisma.order.findUnique({ where: { orderNo }, include: { items: true, entitlements: { where: { accessToken: { not: null } }, take: 1 } } });
+  if (!order || order.status !== "paid" || !order.entitlements[0]?.accessToken) notFound();
+  const accessToken = order.entitlements[0].accessToken;
+  const aiOnly = order.items.length === 1 && order.items[0].productCode === "ai_energy_assessment";
+  if (aiOnly) return <main className="success-page"><div className="container"><section className="success-card"><SuccessMark/><span className="eyebrow">付款完成</span><h1 className="title">感謝你購買 AI 能量減脂測驗</h1><p>請查看領取說明，再加入 LINE 官方帳號確認測驗與解析時間。</p><a className="btn" href={`/ai-energy-assessment?accessToken=${accessToken}`}><span>查看測驗領取與人工解析流程</span><span>→</span></a></section></div></main>;
 
-export default async function ThankYou({params}:{params:Promise<{orderNo:string}>}){
-  const {orderNo}=await params;
-  const order=await prisma.order.findUnique({where:{orderNo},include:{customer:true,items:true,entitlements:{where:{accessToken:{not:null}},take:1}}});
-  if(!order||order.status!=="paid"||!order.entitlements[0]?.accessToken)notFound();
-  const aiOnly=order.items.length===1&&order.items[0].productCode==="ai_energy_assessment";
   return <main className="success-page"><div className="container">
-    <section className="success-card"><SuccessMark/><span className="eyebrow">付款完成</span><h1 className="title">恭喜你完成購買</h1><p>{aiOnly?"你的「AI 能量減脂初評」已經準備好了。":"你的《下班後嘴饞止損包》已經準備好了。"}</p><p className="muted">{aiOnly?"請查看領取說明，再加入 LINE 官方帳號和我們確認測驗與解析時間。":"請先完成第 1 天的情緒性進食 6 型測驗，接著開始記錄今天最容易嘴饞的時間點。"}</p>{!aiOnly&&<div className="next-steps"><article><span>STEP 1</span><p>打開工具包</p></article><article><span>STEP 2</span><p>完成 6 型測驗</p></article><article><span>STEP 3</span><p>開始今天的記錄</p></article></div>}<a className="btn" href={aiOnly?`/ai-energy-assessment?accessToken=${order.entitlements[0].accessToken}`:`/access/${order.entitlements[0].accessToken}`}><span>{aiOnly?"查看測驗領取與人工解析流程":"前往我的工具包"}</span><span>→</span></a><div className="contact-links">{c.contacts.map(item=><a href={item.href} target="_blank" rel="noreferrer" key={item.label}>{item.label} ↗</a>)}</div><p className="muted" style={{fontSize:12}}>使用上有任何問題，都可以透過以上官方社群聯絡我們。</p></section>
-    {!aiOnly&&<section className="oto-card"><div className="oto-visual"><div className="oto-calendar"><small>3 DAY SUPPORT</small><strong>03</strong><p>嘴饞止損<br/>陪跑計畫</p></div></div><div className="oto-copy"><span className="eyebrow light">限本頁一次加購</span><h2>3 天嘴饞止損陪跑預約金</h2><p className="oto-price">NT$399</p><p>如果你不想自己看資料，也希望教練幫你看一次狀況，可以加購 3 天嘴饞止損陪跑預約金。</p><ul className="checklist">{otoItems.map(x=><li key={x}>{x}</li>)}</ul><OtoButton customer={order.customer}/></div></section>}
+    <section className="success-card"><SuccessMark/><span className="eyebrow">付款完成 · 破關權限已解鎖</span><h1 className="title">恭喜你解鎖《7 天嘴饞破關計畫》</h1><p>接下來不用一次看完所有工具，先從第 0 天開始，創建你的嘴饞角色。</p><p className="muted">角色創建測驗會找出你的嘴饞類型，並依照結果安排後續破關路線。每天完成一個小任務，就能收集線索、解鎖徽章，最後生成自己的個人止損地圖。</p><div className="next-steps"><article><span>DAY 0</span><p>創建嘴饞角色</p></article><article><span>LEVEL 1–7</span><p>每天完成一關</p></article><article><span>FINAL</span><p>生成個人止損地圖</p></article></div><a className="btn" href={`/access/${accessToken}/character-creation`}><span>開始第 0 天｜創建我的嘴饞角色</span><span>→</span></a><div className="contact-links">{c.contacts.map(item => <a href={item.href} target="_blank" rel="noreferrer" key={item.label}>{item.label} ↗</a>)}</div></section>
+    <section className="oto-card"><div className="oto-copy"><span className="eyebrow light">你的第一步</span><h2>第 0 天角色創建</h2><p>完成角色創建後，你會知道自己屬於哪一種嘴饞角色，例如壓力法師、能量騎士、療癒牧師、習慣遊俠、飲料鍊金師或補給守衛。</p><p>系統會依照你的角色，推薦最適合的破關路線。</p><a className="btn" href={`/access/${accessToken}/character-creation`}><span>開始角色創建</span><span>→</span></a></div></section>
   </div></main>;
 }
