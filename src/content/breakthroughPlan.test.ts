@@ -22,27 +22,27 @@ describe("關卡最低完成條件",()=>{
   it("不允許空白資料直接通過",()=>{
     expect(validateBreakthroughLevel(1,{})).toContain("時間");
     expect(validateBreakthroughLevel(2,{})).toContain("場景");
-    expect(validateBreakthroughLevel(3,{})).toContain("情緒");
+    expect(validateBreakthroughLevel(3,{})).toContain("身心");
     expect(validateBreakthroughLevel(5,{})).toContain("5 項");
-    expect(validateBreakthroughLevel(6,{dinnerBackups:["","",""]})).toContain("3 個");
-    expect(validateBreakthroughLevel(7,{},{})).toContain("核心欄位");
+    expect(validateBreakthroughLevel(6,{savedDinnerBackups:["","",""]})).toContain("3-1-1");
+    expect(validateBreakthroughLevel(7,{},{})).toContain("六張線索卡");
   });
   it("完整填寫後可通過",()=>{
-    expect(validateBreakthroughLevel(1,{occurredTime:"20:00",period:"晚餐後",cravingScore:8,fatigueScore:7})).toBeNull();
-    expect(validateBreakthroughLevel(6,{dinnerBackups:["便當","滷味","超商雞胸"]})).toBeNull();
+    expect(validateBreakthroughLevel(1,{selectedTimes:["晚餐後"],primaryTime:"晚餐後",cravingScore:8,hungerScore:5,fatigueScore:7,stressScore:4})).toBeNull();
+    expect(validateBreakthroughLevel(6,{selectedProtein:"雞胸",selectedVegetable:"沙拉",selectedCarb:"地瓜",selectedDrink:"水",savedDinnerBackups:["便當","滷味","超商雞胸"]})).toBeNull();
   });
 });
 
 describe("成熟版破關文案", () => {
   it("使用統一的七個關卡與徽章名稱", () => {
-    expect(levels.map(x => x.name)).toEqual(["找出破功時間", "找出高風險場景", "破解情緒與身體訊號", "選擇專屬支線任務", "掃描白天營養缺口", "建立晚餐防線", "生成個人止損地圖"]);
+    expect(levels.map(x => x.name)).toEqual(["時間迷霧", "場景迷宮", "情緒之門", "支線岔路", "補給裂縫", "晚餐防線", "迷霧核心"]);
     expect(levels.map(x => x.badge)).toEqual(["時間偵探徽章", "場景偵探徽章", "身心連結徽章", "專屬支線徽章", "營養補洞徽章", "晚餐穩定徽章", "止損地圖完成徽章"]);
   });
-  it("完成回饋包含徽章、線索、點數與下一關", () => {
+  it("完成回饋以徽章與下一關為主，不再強調點數", () => {
     const text = completionFeedback(3);
     expect(text).toContain("身心連結徽章");
-    expect(text).toContain("情緒線索與身體訊號線索");
-    expect(text).toContain("10 行動點數");
+    expect(text).toContain("新的嘴饞線索");
+    expect(text).not.toContain("行動點數");
     expect(text).toContain("下一關預告：第 4 關");
   });
 });

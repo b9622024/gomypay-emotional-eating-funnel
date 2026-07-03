@@ -467,6 +467,7 @@ model BreakthroughDailyEntry {
   userNotes          String?
   selectedBranch     String?
   userInputs         Json?
+  analysisResult     Json?
   completedAt        DateTime?
   createdAt          DateTime  @default(now())
   updatedAt          DateTime  @updatedAt

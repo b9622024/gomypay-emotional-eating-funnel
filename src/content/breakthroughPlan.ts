@@ -1,33 +1,40 @@
 import { emotionalEatingTypes,type EmotionalEatingType } from "./emotionalEatingQuiz";
+
+export const kingdomCopy={name:"嘴饞迷霧王國",hero:"穿越嘴饞迷霧王國，解鎖你的減脂止損地圖",intro:"你不是沒有自制力，只是還沒有看見嘴饞迷霧背後的真正線索。這 7 天，你會穿越 7 個關卡；每完成一關，就解鎖一枚徽章，逐步看見時間、場景、情緒、營養與晚餐線索。"} as const;
 export const routeProfiles:Record<EmotionalEatingType,{route:string;tools:string[];branch:string}>={stress_release:{route:"壓力止損路線",tools:["嘴饞前 3 分鐘身心連結工作本","10 分鐘嘴饞急救流程卡","安全零食與飲料替換清單"],branch:"stress"},fatigue_loss_control:{route:"營養補電路線",tools:["正念營養缺口掃描","下班後防暴食晚餐公式","7 天外食防暴食菜單"],branch:"nutrition"},compensation:{route:"情緒安撫路線",tools:["嘴饞前 3 分鐘身心連結工作本","安全零食與飲料替換清單","10 分鐘嘴饞急救流程卡"],branch:"stress"},boredom_habit:{route:"習慣迴路拆解路線",tools:["下班後嘴饞觸發點分析表","10 分鐘嘴饞急救流程卡","安全零食與飲料替換清單"],branch:"swap"},sugary_drink_dependency:{route:"飲料降糖路線",tools:["7 天含糖飲料重置表","含糖飲料替換清單 Pro","安全零食與飲料替換清單"],branch:"drink"},nutrition_gap:{route:"白天營養補洞路線",tools:["正念營養缺口掃描","下班後防暴食晚餐公式","7 天外食防暴食菜單"],branch:"nutrition"}};
-export const branches={drink:{name:"飲料降糖支線",tool:"7 天含糖飲料重置表",path:"drink-reset",clues:["飲料觸發線索"],badge:"專屬支線徽章",description:"找出最容易想喝飲料的時間、情緒與情境。"},nutrition:{name:"營養補洞支線",tool:"正念營養缺口掃描",path:"mindful-nutrition-tracker",clues:["營養缺口線索"],badge:"專屬支線徽章",description:"檢查早餐、午餐、蛋白質、水量與下午疲憊。"},stress:{name:"壓力止損支線",tool:"10 分鐘嘴饞急救流程卡",path:"craving-rescue",clues:["壓力止損線索"],badge:"專屬支線徽章",description:"遇到強烈嘴饞時，先完成一次 10 分鐘急救流程。"},swap:{name:"安全替換支線",tool:"安全零食與飲料替換清單",path:"safe-swap-list",clues:["安全替換線索"],badge:"專屬支線徽章",description:"找出一個最常用來替代零食或飲料的安全選項。"}} as const;
+export const branches={drink:{name:"飲料降糖支線",tool:"7 天含糖飲料重置表",path:"drink-reset",clues:["飲料觸發線索"],badge:"專屬支線徽章",description:"找出最容易想喝飲料的時間、情緒與情境。",question:"你下午很累，很想喝珍珠奶茶。哪個選擇最適合當第一步？",options:["直接全糖珍奶","小杯鮮奶茶，微糖，不加料","完全不喝，硬忍到晚上","改喝果汁"],correct:1,feedback:"真正容易執行的降糖，是先降糖、拿掉加料、縮小杯型。"},nutrition:{name:"營養補洞支線",tool:"正念營養缺口掃描",path:"mindful-nutrition-tracker",clues:["營養缺口線索"],badge:"專屬支線徽章",description:"檢查早餐、午餐、蛋白質、水量與下午疲憊。",question:"早餐只喝咖啡、午餐吃很少，晚上很想暴食。最優先要補的是？",options:["晚上完全不吃澱粉","下午先補蛋白質和水","晚上只吃水果","只靠意志力撐過去"],correct:1,feedback:"晚上失控有時不是晚上才開始，而是白天補給不足一路累積。"},stress:{name:"壓力止損支線",tool:"10 分鐘嘴饞急救流程卡",path:"craving-rescue",clues:["壓力止損線索"],badge:"專屬支線徽章",description:"遇到強烈嘴饞時，先完成一次暫停流程。",question:"壓力很大時突然想吃甜食，第一個動作最適合是？",options:["立刻吃，今天很累沒關係","先停 3 分鐘，辨認是真的餓或想放鬆","責備自己沒自制力","晚餐不吃補回來"],correct:1,feedback:"壓力型嘴饞最需要的不是責備，而是先暫停，讓大腦重新選擇。"},swap:{name:"安全替換支線",tool:"安全零食與飲料替換清單",path:"safe-swap-list",clues:["安全替換線索"],badge:"專屬支線徽章",description:"找出比較不容易一路失控的替代選項。",question:"晚上想吃洋芋片，哪個替換比較穩？",options:["拿整包邊追劇邊吃","海苔或毛豆，先分裝","完全不吃，餓到睡覺","改吃一大包堅果"],correct:1,feedback:"可執行的替換不是完全禁止，而是先選比較不容易失控的版本。"}} as const;
+
 export const levels=[
-{level:1,name:"找出破功時間",task:"記下最近一次嘴饞發生的時間",tool:"下班後嘴饞觸發點分析表",path:"trigger-analysis",clues:["破功時間線索"],badge:"時間偵探徽章",icon:"🕒",points:10,description:"時間是最容易先看見的線索。找出固定時段後，才能在嘴饞出現前提早準備。",feedback:"你已找出最近一次破功時間，開始看見嘴饞不是毫無預警地發生。"},
-{level:2,name:"找出高風險場景",task:"辨認最容易啟動嘴饞的地點與情境",tool:"下班後嘴饞觸發點分析表",path:"trigger-analysis",clues:["高風險場景線索"],badge:"場景偵探徽章",icon:"🔍",points:10,description:"同一個地點、動作或 App，可能已經成為自動想吃的開關。找出場景，就能改變下一步。",feedback:"你已找出高風險場景，可以開始提前安排替代行動。"},
-{level:3,name:"破解情緒與身體訊號",task:"嘴饞前先停 3 分鐘",tool:"嘴饞前 3 分鐘身心連結工作本",path:"three-minute-check",clues:["情緒線索","身體訊號線索"],badge:"身心連結徽章",icon:"🌿",points:10,description:"嘴饞出現時先停 3 分鐘，分辨真餓、壓力、疲憊、委屈、無聊或想放鬆。",feedback:"你開始把「想吃就吃」變成「先看懂自己」。"},
-{level:4,name:"選擇專屬支線任務",task:"選擇最適合自己的止損支線",tool:"依嘴饞角色推薦",path:"",clues:["專屬支線線索"],badge:"專屬支線徽章",icon:"🛤️",points:10,description:"系統會推薦最適合的支線，你也可以依今天狀況手動切換。",feedback:"你已選出最適合自己的止損支線，不需要一次做完所有道具。"},
-{level:5,name:"掃描白天營養缺口",task:"檢查我是不是白天吃得太空",tool:"正念營養缺口掃描",path:"mindful-nutrition-tracker",clues:["白天營養缺口線索"],badge:"營養補洞徽章",icon:"🥗",points:10,description:"檢查早餐蛋白質、午餐份量、水、下午飲料與晚餐前飢餓。",feedback:"如果晚上嘴饞和白天吃太少有關，現在你已看見這個線索。"},
-{level:6,name:"建立晚餐防線",task:"建立我的下班後晚餐備案",tool:"下班後防暴食晚餐公式",path:"dinner-formula",clues:["晚餐備案線索"],badge:"晚餐穩定徽章",icon:"🍱",points:10,description:"用 3-1-1 公式建立很累、很餓與只能吃超商時的三個備案。",feedback:"真正能長期執行的調整，是先準備好不用重新思考的選擇。"},
-{level:7,name:"生成個人止損地圖",task:"完成我的嘴饞破關地圖",tool:"整合第 0 天與前 6 關所有線索",path:"map",clues:["個人止損地圖"],badge:"止損地圖完成徽章",icon:"🗺️",points:60,description:"把角色結果與前 6 關線索整理成自己的個人止損 SOP，並解鎖破關獎勵。",feedback:"你收集到的不是表格，而是更理解自己的證據。"}
+{level:1,name:"時間迷霧",task:"用時間雷達找出一天中最容易嘴饞的高風險時間",tool:"時間雷達",path:"trigger-analysis",clues:["破功時間線索"],badge:"時間偵探徽章",icon:"🕒",points:10,story:"嘴饞迷霧通常不是隨機出現。它常在同一時間悄悄靠近，例如下午、下班前、晚餐後或睡前。",learning:"嘴饞常是固定時間點的疲憊、壓力或能量不足累積出來的結果。",feedback:"你已穿越時間迷霧，看見嘴饞最常出現的時間。"},
+{level:2,name:"場景迷宮",task:"找出最容易啟動嘴饞的場景與觸發組合",tool:"場景觸發分析器",path:"trigger-analysis",clues:["高風險場景線索"],badge:"場景偵探徽章",icon:"🔍",points:10,story:"有些嘴饞不是來自肚子，而是來自場景。沙發、超商、外送 App 或追劇，都可能讓迷霧自動升起。",learning:"很多嘴饞不是靠意志力解決，而是要先改變環境。",feedback:"你已穿越場景迷宮，看見嘴饞最容易出現的地方。"},
+{level:3,name:"情緒之門",task:"用身心訊號解碼器辨認真正需求",tool:"嘴饞前 3 分鐘身心連結工作本",path:"three-minute-check",clues:["情緒線索","身體訊號線索"],badge:"身心連結徽章",icon:"🌿",points:10,story:"嘴饞迷霧最會偽裝成「我想吃」，背後卻可能是餓、累、壓力、委屈或想被安慰。",learning:"先辨認身體與情緒訊號，就比較不容易直接進入自動反應。",feedback:"你已穿越情緒之門，看見嘴饞背後真正的訊號。"},
+{level:4,name:"支線岔路",task:"完成支線試煉，選出目前最需要優先處理的問題",tool:"專屬支線試煉",path:"",clues:["專屬支線線索"],badge:"專屬支線徽章",icon:"🛤️",points:10,story:"前三關讓你看見時間、場景與訊號。現在迷霧王國出現四條支線，系統會推薦一條，你也可以自行選擇。",learning:"每個人不必做同一件事，先處理最常卡住的支線更實際。",feedback:"你已穿越支線岔路，選出最適合自己的破關方向。"},
+{level:5,name:"補給裂縫",task:"用營養補洞盤檢查白天補給是否影響晚上嘴饞",tool:"正念營養缺口掃描",path:"mindful-nutrition-tracker",clues:["營養缺口線索"],badge:"營養補洞徽章",icon:"🥗",points:10,story:"很多晚上的嘴饞，裂縫其實從白天開始：早餐太空、午餐太少、水與蛋白質不足。",learning:"晚上不穩有時不是晚上的問題，而是白天補給不足累積的結果。",feedback:"你已修補補給裂縫，看見白天營養和晚上嘴饞的關係。"},
+{level:6,name:"晚餐防線",task:"用 3-1-1 建造器完成一份穩定晚餐並保存三組備案",tool:"下班後防暴食晚餐公式",path:"dinner-formula",clues:["晚餐備案線索"],badge:"晚餐穩定徽章",icon:"🍱",points:10,story:"下班後不是你不努力，而是太累、太餓，又沒有準備好的選項。今天要建立不用重新思考的晚餐防線。",learning:"晚餐穩定度提高，晚上嘴饞與失控的機率通常會比較低。",feedback:"你已建立自己的晚餐防線，準備好不用重新思考的選擇。"},
+{level:7,name:"迷霧核心",task:"確認六張線索卡，生成自己的個人止損地圖",tool:"止損地圖拼圖",path:"map",clues:["個人止損地圖"],badge:"止損地圖完成徽章",icon:"🗺️",points:60,story:"你已穿越前六關。現在不是證明意志力，而是把所有線索拼起來，看見自己的破關路線。",learning:"你現在不是盲目調整，而是擁有一張屬於自己的止損地圖。",feedback:"你已破解迷霧核心，完成自己的個人止損地圖。"}
 ] as const;
+
 export function normalizeType(value:string|null|undefined):EmotionalEatingType|null{const type=value?.split(",")[0] as EmotionalEatingType;return type&&type in routeProfiles?type:null}
 export function typeName(value:string|null|undefined){const t=normalizeType(value);return t?emotionalEatingTypes[t].name:"尚未判定"}
 export function recommendation(primary:string|null|undefined){const t=normalizeType(primary);return t?routeProfiles[t]:null}
-export function completionFeedback(levelNumber:number){
-  const level=levels[levelNumber-1];
-  if(!level)return "關卡已完成。";
-  const next=levels[levelNumber];
-  const insight=levelNumber===3?"你正在把「想吃就吃」改成「先看懂自己」。":level.feedback;
-  return `恭喜完成第 ${level.level} 關。你已經解鎖「${level.badge}」，並收集到${level.clues.join("與")}。獲得 ${level.points} 行動點數。${insight}${next?` 下一關預告：第 ${next.level} 關｜${next.name}。`:" 你的個人止損地圖已完成。"}`;
+export function completionFeedback(levelNumber:number){const level=levels[levelNumber-1],next=levels[levelNumber];if(!level)return "關卡已完成。";return `你已獲得「${level.badge}」。這枚徽章代表你已經看見一個新的嘴饞線索，離破解迷霧核心又更近一步。${next?` 下一關預告：第 ${next.level} 關｜${next.name}。`:" 你的個人止損地圖已完成。"}`}
+const filled=(v:unknown)=>typeof v==="string"&&v.trim().length>0,arr=(v:unknown)=>Array.isArray(v)?v:[];
+export function validateBreakthroughLevel(n:number,u:Record<string,unknown>={},map:Record<string,unknown>={}){
+ if(n===1&&(arr(u.selectedTimes).length<1||!filled(u.primaryTime)))return "請選擇嘴饞時間並指定主要高風險時間";
+ if(n===2&&(arr(u.selectedScenes).length<1||arr(u.selectedTriggers).length<1))return "請至少選擇一個場景與一個觸發卡";
+ if(n===3&&!filled(u.selectedState))return "請完成身心訊號評分並選擇最接近的狀態";
+ if(n===4&&!filled(u.selectedAnswer))return "請完成支線試煉";
+ if(n===5&&["breakfastScore","lunchScore","waterScore","proteinScore","afternoonEnergyScore"].some(k=>typeof u[k]!=="number"))return "請完成 5 項營養補洞評分";
+ if(n===6){if(!filled(u.selectedProtein)||!filled(u.selectedVegetable)||!filled(u.selectedCarb)||!filled(u.selectedDrink))return "請完成 3-1-1 晚餐組合";const b=arr(u.savedDinnerBackups);if(b.length<3||b.some(x=>!filled(x)))return "請保存 3 組晚餐備案"}
+ if(n===7){const required=["highRiskTime","highRiskScene","mainEmotion","nutritionGap","firstRescueAction","nextWeekAction"];if(required.some(k=>!filled(map[k])))return "請確認止損地圖的六張線索卡與下週任務";const b=arr(map.dinnerBackups);if(b.length<3||b.some(x=>!filled(x)))return "請確認 3 組晚餐備案"}
+ return null;
 }
-
-const filled=(value:unknown)=>typeof value==="string"&&value.trim().length>0;
-export function validateBreakthroughLevel(levelNumber:number,userInputs:Record<string,unknown>={},map:Record<string,unknown>={}){
-  if(levelNumber===1&&!filled(userInputs.occurredTime))return "請填寫最近一次嘴饞發生時間";
-  if(levelNumber===2){if(!filled(userInputs.scene))return "請選擇一個高風險場景";if(userInputs.scene==="其他"&&!filled(userInputs.otherScene))return "請補充其他場景"}
-  if(levelNumber===3&&(!filled(userInputs.mainEmotion)||!filled(userInputs.bodySignal)))return "請填寫主要情緒與身體訊號";
-  if(levelNumber===5&&["breakfastProtein","lunchEnough","waterEnough","afternoonDrink","tooHungryBeforeDinner"].some(key=>!filled(userInputs[key])))return "請完成 5 項營養缺口掃描";
-  if(levelNumber===6){const backups=Array.isArray(userInputs.dinnerBackups)?userInputs.dinnerBackups:[];if(backups.length<3||backups.some(item=>!filled(item)))return "請完成 3 個晚餐備案"}
-  if(levelNumber===7){const required=["highRiskTime","highRiskScene","mainEmotion","bodySignal","nutritionGap","firstRescueAction","nextWeekAction"];if(required.some(key=>!filled(map[key])))return "請完成止損地圖的 7 個核心欄位";const backups=Array.isArray(map.dinnerBackups)?map.dinnerBackups:[];if(backups.length<3||backups.some(item=>!filled(item)))return "請填寫 3 個晚餐備案"}
-  return null;
+export function analyzeLevel(n:number,u:any){
+ if(n===1){const scores=[u.fatigueScore,u.stressScore,u.hungerScore].map(Number),reasons=["疲憊感","壓力感","飢餓感"];return {title:`你的高風險時間：${u.primaryTime||"尚未選擇"}`,text:`${reasons[scores.indexOf(Math.max(...scores))]}是目前最明顯的線索。`,highRiskTime:u.primaryTime};}
+ if(n===2){return {title:`場景組合：${arr(u.selectedScenes).join("＋")}`,text:`主要觸發是${arr(u.selectedTriggers).join("、")}。先改變食物位置、通知或原本動作，通常比硬忍更實際。`};}
+ if(n===3){const pairs:[[string,number,string,string],...Array<[string,number,string,string]>]=[["真餓型訊號",Number(u.trueHungerScore),"選正常正餐或蛋白質點心","真的餓"],["疲憊型嘴饞",Number(u.fatigueScore),"喝水、休息，再補一個蛋白質點心","累了"],["壓力型嘴饞",Number(u.emotionStressScore),"先深呼吸並離開原本情境 3 分鐘","壓力"],["嘴巴想吃型",Number(u.specificFoodCravingScore),"先分裝或選安全替換選項","嘴巴想吃"]];const best=pairs.sort((a,b)=>b[1]-a[1])[0];return {title:`你的結果偏向：${best[0]}`,text:`建議先做：${best[2]}。`,decodedSignalType:best[0],suggestedAction:best[2]};}
+ if(n===4){const b=branches[u.selectedBranch as keyof typeof branches];return {title:`你的主支線：${b?.name||"尚未選擇"}`,text:u.isCorrect?`你選到較穩的第一步。${b.feedback}`:`這題的重點不是責備自己。較穩的選擇是「${b.options[b.correct]}」。${b.feedback}`};}
+ if(n===5){const keys=["breakfastScore","lunchScore","waterScore","proteinScore","afternoonEnergyScore"],names=["早餐洞","午餐洞","水分洞","蛋白洞","下午能量洞"],values=keys.map(k=>Number(u[k])),score=values.reduce((a,b)=>a+b,0),min=Math.min(...values),lowest=names.filter((_,i)=>values[i]===min);return {title:`營養補洞分數：${score} / 10`,text:score<=3?"補給裂縫偏大，明天先修補一項就好。":score<=7?"已有部分補給，仍有一至兩個缺口值得優先處理。":"今天補給相對穩定，繼續維持可執行的節奏。",score,lowestItems:lowest,tomorrowRepairTask:`明天先處理：${lowest[0]}`};}
+ if(n===6){const score=(u.selectedProtein?30:0)+(u.selectedVegetable?30:0)+(u.selectedCarb?20:0)+(["水","無糖茶","無糖豆漿","無糖拿鐵"].includes(u.selectedDrink)?20:0);return {title:`晚餐防線強度：${score} / 100`,text:score<=40?"防線仍有空隙，優先補蛋白質與蔬菜。":score<=70?"已有基礎防線，再檢查飲料或缺少的餐盤元素。":"這是一份相對穩定、適合下班後使用的晚餐備案。",score};}
+ return {title:"個人止損地圖已生成",text:"你已把角色、時間、場景、訊號、營養與晚餐線索拼成自己的止損路線。"};
 }

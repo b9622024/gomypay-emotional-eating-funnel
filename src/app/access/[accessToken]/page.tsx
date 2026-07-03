@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import RememberAccessToken from "@/components/access/RememberAccessToken";
 import BadgeCollection from "@/components/badges/BadgeCollection";
 import { assetDeliveryLinks, digitalAssetsByProduct, type DigitalAsset } from "@/content/digitalProducts";
-import { typeName } from "@/content/breakthroughPlan";
+import { levels, typeName } from "@/content/breakthroughPlan";
 import { salesPage } from "@/content/emotionalEatingSalesPage";
 import { prisma } from "@/lib/db";
 import { getBreakthroughState } from "@/lib/breakthrough-plan";
@@ -71,12 +71,12 @@ export default async function Access({ params }: { params: Promise<{ accessToken
     <section className="bt-home-hero">
       <span>可樂吉健康研究所</span>
       <h1>7 天嘴饞破關計畫</h1>
-      <h2>不用靠意志力硬撐，先找出你為什麼總是在同一個時間想吃、想喝、想失控。</h2>
-      <p>你不需要一次改掉所有習慣，也不用每天寫一堆飲食紀錄。這 7 天，你只需要每天完成一個小任務，收集一個線索，解鎖一枚徽章。系統會先透過情緒性進食 6 型測驗，找出你的嘴饞角色，再依照你的狀況安排專屬破關路線。</p>
-      <a href={cta}>{state.quiz ? "開始我的破關任務" : "開始第 0 天｜創建嘴饞角色"} →</a>
+      <h2>穿越嘴饞迷霧王國，解鎖你的減脂止損地圖</h2>
+      <p>你不是沒有自制力，只是還沒有看見嘴饞迷霧背後的真正線索。在這 7 天裡，你會先創建自己的嘴饞角色，再穿越 7 個關卡。每一關都會幫你收集關鍵線索並解鎖一枚徽章；集齊 8 枚徽章後，就能破解迷霧核心，生成個人止損地圖。</p>
+      <a href={cta}>{state.quiz ? "開始我的破關旅程" : "開始第 0 天｜創建嘴饞角色"} →</a>
     </section>
 
-    {!state.quiz ? <section className="bt-home-progress"><div><span>第 0 天尚未完成</span><h2>你還沒有創建嘴饞角色</h2><p>完成角色創建後，系統才能依照你的結果安排專屬破關路線。</p></div><div className="bt-home-stats"><article><strong>🔒</strong><span>第 1～7 關將在角色創建後解鎖</span></article></div><a href={cta}>開始第 0 天｜創建嘴饞角色 →</a></section> : <section className="bt-home-progress"><div><span>我的破關進度</span><h2>{today}</h2><div className="bt-home-bar"><i style={{ width: `${completed / 7 * 100}%` }}/></div><p>已完成 {completed} / 7 關</p></div><div className="bt-home-stats"><article><strong>{state.progress.actionPoints}</strong><span>行動點數</span></article><article><strong>{state.progress.earnedBadges.length}</strong><span>已解鎖徽章</span></article><article><strong>{state.progress.collectedClues.length}</strong><span>已收集線索</span></article></div><a href={cta}>{done ? "查看個人止損地圖" : `開始第 ${state.progress.currentLevel} 關`} →</a></section>}
+    {!state.quiz ? <section className="bt-home-progress"><div><span>第 0 天尚未完成</span><h2>你還沒有創建嘴饞角色</h2><p>完成角色創建後，系統才能依照你的結果安排專屬破關路線。</p></div><div className="bt-home-stats"><article><strong>🔒</strong><span>第 1～7 關將在角色創建後解鎖</span></article></div><a href={cta}>開始第 0 天｜創建嘴饞角色 →</a></section> : <section className="bt-home-progress"><div><span>嘴饞迷霧王國進度</span><h2>{today}</h2><p>目前關卡：第 {done?7:state.progress.currentLevel} 關 / 共 7 關</p></div><div className="bt-home-stats"><article><strong>{state.progress.earnedBadges.length}</strong><span>已解鎖徽章 / 8</span></article><article><strong>{done?"已完成":levels[state.progress.currentLevel-1]?.name}</strong><span>今日關卡</span></article><article><strong>{done?"個人止損地圖":levels[state.progress.currentLevel]?.name||"迷霧核心"}</strong><span>下一關預告</span></article></div><a href={cta}>{done ? "查看個人止損地圖" : `開始第 ${state.progress.currentLevel} 關`} →</a></section>}
 
     {state.quiz && state.profile && <section className="bt-home-route bt-home-character">{characterImage&&<img src={characterImage} alt={`${state.characters.primary?.characterName}角色圖`} loading="lazy"/>}<div><span>你的嘴饞角色</span><h2>{state.characters.primary?.accentIcon} {state.characters.primary?.characterName}</h2><p>對應類型：<b>{typeName(state.quiz.primaryType)}</b></p>{state.characters.secondary&&<p>次要角色：<b>{state.characters.secondary.characterName}</b>｜{typeName(state.quiz.secondaryType)}</p>}<p>推薦破關路線：<b>{state.profile.route}</b></p><small>你的破關路線會以主要類型為主，次要類型作為加強任務。</small><div>{state.profile.tools.map(x => <strong key={x}>{x}</strong>)}</div></div></section>}
 
