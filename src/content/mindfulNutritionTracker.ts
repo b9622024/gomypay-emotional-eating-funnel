@@ -10,7 +10,7 @@ export const mindfulNutritionContent={
     {title:"晚間嘴饞回推",fields:[{key:"nightCravingTime",label:"晚上幾點開始嘴饞？",type:"text"},{key:"nightCravingItem",label:"想吃或想喝什麼？",type:"text"},{key:"trulyHungry",label:"當時是真的餓嗎？",type:"radio",options:["是","否","不確定"]},{key:"mostUnstableMeal",label:"今天哪一餐最不穩？",type:"text"},{key:"lowWaterToday",label:"今天水分偏少？",type:"radio",options:uncertain},{key:"lowProteinToday",label:"今天蛋白質偏少？",type:"radio",options:uncertain},{key:"highStressOrFatigue",label:"今天壓力或疲憊偏高？",type:"radio",options:uncertain},{key:"nightCravingReason",label:"這次嘴饞最可能和什麼有關？",type:"textarea"}]}
   ] as NutritionSection[],
   formula:{title:"外食營養穩定公式",formula:"蛋白質一掌 + 蔬菜三拳 + 澱粉一拳 + 水或無糖飲",tips:["早餐店：蛋餅加蛋 + 無糖豆漿，少用奶茶當早餐","便利商店：茶葉蛋 + 雞胸 + 沙拉 + 地瓜或飯糰","便當店：主菜 + 多青菜 + 飯半碗到一碗","麵店：湯麵加蛋或肉，再補一份青菜","速食店：主餐保留，飲料換無糖，薯條減量"]},
-  report:{title:"你的 7 天營養追蹤結果",earlyTitle:"你的初步營養觀察",unstable:"最常不穩的餐次",gaps:"最常出現的缺口",craving:"晚間嘴饞平均分數",drinks:"含糖飲料出現次數",observations:"初步觀察",next:"下一步建議",aiTitle:"前往 AI 能量減脂初評",aiText:"如果你已經加購 1 元 AI 能量減脂初評，點擊後即可前往填寫與領取。若尚未加購，點擊後會進入加購頁，完成後即可開始測驗。",home:"回到工具包首頁"}
+  report:{title:"你的 7 天營養追蹤結果",earlyTitle:"你的初步營養觀察",unstable:"最常不穩的餐次",gaps:"最常出現的缺口",craving:"晚間嘴饞平均分數",drinks:"含糖飲料出現次數",observations:"初步觀察",next:"下一步建議",aiTitle:"前往 AI 能量減脂初評",aiText:"如果你已經加購 1 元 AI 能量減脂初評，點擊後即可前往填寫與領取。若尚未加購，點擊後會進入加購頁，完成後即可開始測驗。",home:"回到 7 天破關地圖"}
 } as const;
 
 export type NutritionDayState={data:Record<string,unknown>;isCompleted:boolean;completedAt:string|null};

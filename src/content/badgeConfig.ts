@@ -1,5 +1,5 @@
 export type BadgeConfig = { id:string; name:string; imageUrl:string; modelUrl:string; description:string; lockedDescription:string; levelNumber:number };
-const base="/game-assets/badges";
+const base="/game-assets/characters/badges/transparent";
 export const badgeConfig:BadgeConfig[]=[
   {id:"character-creation",name:"角色創建徽章",imageUrl:`${base}/badge-character-creation.png`,modelUrl:"/game-assets/badges-3d/badge-character-creation.glb",description:"完成第 0 天角色創建後解鎖",lockedDescription:"完成第 0 天角色創建即可解鎖",levelNumber:0},
   {id:"time-detective",name:"時間偵探徽章",imageUrl:`${base}/badge-time-detective.png`,modelUrl:"/game-assets/badges-3d/badge-time-detective.glb",description:"完成第 1 關後解鎖",lockedDescription:"找出破功時間後解鎖",levelNumber:1},

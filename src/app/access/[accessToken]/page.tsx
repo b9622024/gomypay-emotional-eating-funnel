@@ -13,6 +13,7 @@ function Button({ href, label, kind }: { href: string; label: string; kind: stri
 }
 
 function Actions({ asset, token }: { asset: DigitalAsset; token: string }) {
+  if(asset.key==="ai-energy-assessment")return <div className="asset-actions unified ai-detail-action"><a className="btn delivery-button interactive" href={`/ai-energy-assessment?accessToken=${encodeURIComponent(token)}`}><span>點我了解詳情</span><span>→</span></a></div>;
   const delivery = assetDeliveryLinks[asset.key] ?? { interactivePath: "#", pdfUrl: "#" };
   const interactiveHref = delivery.interactivePath === "#" ? "#" : `/access/${token}${delivery.interactivePath}`;
   return <div className="asset-actions unified"><Button href={interactiveHref} label="開始使用" kind="interactive"/><Button href={delivery.pdfUrl} label="PDF 版" kind="pdf"/>{delivery.imageUrl && <Button href={delivery.imageUrl} label="圖卡" kind="image"/>}</div>;
@@ -24,6 +25,7 @@ const groups = [
   { title: "飲料支線道具", keys: ["drink-reset", "sugary-drink-swap-pro"] },
   { title: "外食與晚餐道具", keys: ["dinner-formula", "anti-binge-meal-plan"] },
   { title: "替換清單道具", keys: ["safe-swaps"] },
+  { title: "專屬評估道具", keys: ["ai-energy-assessment"] },
 ];
 
 const timing: Record<string, string> = {
@@ -36,6 +38,7 @@ const timing: Record<string, string> = {
   "safe-swaps": "不知道零食或飲料可以換成什麼時",
   "sugary-drink-swap-pro": "想直接取得點餐話術與降糖攻略時",
   "anti-binge-meal-plan": "想直接照著吃一週時",
+  "ai-energy-assessment": "想進一步了解能量狀態與減脂卡點時",
 };
 
 const advancedCopy: Record<string, { name: string; message: string; button: string }> = {
@@ -59,7 +62,7 @@ export default async function Access({ params }: { params: Promise<{ accessToken
   if (!state) notFound();
 
   const ownedCodes = (await prisma.entitlement.findMany({ where: { customerId: canonical.customerId, order: { status: "paid" } }, select: { productCode: true } })).map(x => x.productCode);
-  const all = [...digitalAssetsByProduct.emotional_eating_reset_7d, ...digitalAssetsByProduct.sugary_drink_swap_pro, ...digitalAssetsByProduct.anti_binge_meal_plan_7d];
+  const all = [...digitalAssetsByProduct.emotional_eating_reset_7d, ...digitalAssetsByProduct.ai_energy_assessment, ...digitalAssetsByProduct.sugary_drink_swap_pro, ...digitalAssetsByProduct.anti_binge_meal_plan_7d];
   const completed = state.progress.completedLevels.length;
   const done = completed >= 7;
   const cta = !state.quiz ? `/access/${accessToken}/character-creation` : done && state.map ? `/access/${accessToken}/personal-rescue-map` : `/access/${accessToken}/breakthrough-plan`;
@@ -87,6 +90,7 @@ export default async function Access({ params }: { params: Promise<{ accessToken
     <details className="bt-toolbox"><summary><div><span>MISSION TOOLBOX</span><h2>任務道具箱</h2><p>需要時再打開，不必一次使用所有道具。</p></div><b>展開道具箱＋</b></summary>{groups.map(group => <section key={group.title}><h3>{group.title}</h3><div>{group.keys.map(key => {
       const asset = all.find(x => x.key === key);
       if (!asset) return null;
+      if (key === "ai-energy-assessment" && !ownedCodes.includes("ai_energy_assessment")) return null;
       const advanced = Boolean(advancedCopy[key]);
       const code = key === "sugary-drink-swap-pro" ? "sugary_drink_swap_pro" : "anti_binge_meal_plan_7d";
       const owned = !advanced || ownedCodes.includes(code);
