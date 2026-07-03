@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import RememberAccessToken from "@/components/access/RememberAccessToken";
+import BadgeCollection from "@/components/badges/BadgeCollection";
 import { assetDeliveryLinks, digitalAssetsByProduct, type DigitalAsset } from "@/content/digitalProducts";
 import { typeName } from "@/content/breakthroughPlan";
 import { salesPage } from "@/content/emotionalEatingSalesPage";
@@ -63,6 +64,7 @@ export default async function Access({ params }: { params: Promise<{ accessToken
   const done = completed >= 7;
   const cta = !state.quiz ? `/access/${accessToken}/character-creation` : done && state.map ? `/access/${accessToken}/personal-rescue-map` : `/access/${accessToken}/breakthrough-plan`;
   const today = done ? "個人止損地圖已完成" : `第 ${state.progress.currentLevel} 關`;
+  const characterImage=state.characters.primary?(state.progress.selectedGender==="male"?state.characters.primary.maleImage:state.characters.primary.femaleImage):null;
 
   return <main className="access-page bt-home"><div className="container">
     <RememberAccessToken accessToken={accessToken}/>
@@ -76,7 +78,9 @@ export default async function Access({ params }: { params: Promise<{ accessToken
 
     {!state.quiz ? <section className="bt-home-progress"><div><span>第 0 天尚未完成</span><h2>你還沒有創建嘴饞角色</h2><p>完成角色創建後，系統才能依照你的結果安排專屬破關路線。</p></div><div className="bt-home-stats"><article><strong>🔒</strong><span>第 1～7 關將在角色創建後解鎖</span></article></div><a href={cta}>開始第 0 天｜創建嘴饞角色 →</a></section> : <section className="bt-home-progress"><div><span>我的破關進度</span><h2>{today}</h2><div className="bt-home-bar"><i style={{ width: `${completed / 7 * 100}%` }}/></div><p>已完成 {completed} / 7 關</p></div><div className="bt-home-stats"><article><strong>{state.progress.actionPoints}</strong><span>行動點數</span></article><article><strong>{state.progress.earnedBadges.length}</strong><span>已解鎖徽章</span></article><article><strong>{state.progress.collectedClues.length}</strong><span>已收集線索</span></article></div><a href={cta}>{done ? "查看個人止損地圖" : `開始第 ${state.progress.currentLevel} 關`} →</a></section>}
 
-    {state.quiz && state.profile && <section className="bt-home-route"><span>你的嘴饞角色</span><h2>{state.characters.primary?.accentIcon} {state.characters.primary?.characterName}</h2><p>對應類型：<b>{typeName(state.quiz.primaryType)}</b></p>{state.characters.secondary&&<p>次要角色：<b>{state.characters.secondary.characterName}</b>｜{typeName(state.quiz.secondaryType)}</p>}<p>推薦破關路線：<b>{state.profile.route}</b></p><small>你的破關路線會以主要類型為主，次要類型作為加強任務。</small><div>{state.profile.tools.map(x => <strong key={x}>{x}</strong>)}</div></section>}
+    {state.quiz && state.profile && <section className="bt-home-route bt-home-character">{characterImage&&<img src={characterImage} alt={`${state.characters.primary?.characterName}角色圖`} loading="lazy"/>}<div><span>你的嘴饞角色</span><h2>{state.characters.primary?.accentIcon} {state.characters.primary?.characterName}</h2><p>對應類型：<b>{typeName(state.quiz.primaryType)}</b></p>{state.characters.secondary&&<p>次要角色：<b>{state.characters.secondary.characterName}</b>｜{typeName(state.quiz.secondaryType)}</p>}<p>推薦破關路線：<b>{state.profile.route}</b></p><small>你的破關路線會以主要類型為主，次要類型作為加強任務。</small><div>{state.profile.tools.map(x => <strong key={x}>{x}</strong>)}</div></div></section>}
+
+    <BadgeCollection earnedBadges={state.progress.earnedBadges.map(String)} entries={state.entries.map(entry=>({earnedBadge:entry.earnedBadge,completedAt:entry.completedAt,actionPointsEarned:entry.actionPointsEarned}))} characterCreated={state.progress.characterCreated}/>
 
     <section className="bt-intro"><h2>這不是一堆 PDF。<br/>這是一套 7 天嘴饞破關系統。</h2><p>你不需要一次使用所有道具。每天完成一關，就能解鎖一個線索，最後拼出自己的個人止損地圖。</p><ol>{["找出嘴饞角色", "找出破功時間與場景", "破解情緒與身體訊號", "選擇專屬支線任務", "掃描白天營養缺口", "建立晚餐防線", "生成個人止損地圖"].map((x, i) => <li key={x}><span>{i + 1}</span>{x}</li>)}</ol></section>
 

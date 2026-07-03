@@ -444,6 +444,7 @@ model BreakthroughPlanProgress {
   selectedBranch   String?
   characterCreated Boolean  @default(false)
   characterCreatedAt DateTime?
+  selectedGender   String?
   primaryCharacterName String?
   primaryOriginalTypeName String?
   secondaryCharacterName String?

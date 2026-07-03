@@ -9,6 +9,8 @@ describe("嘴饞角色設定", () => {
       expect(character.originalTypeName).toBeTruthy();
       expect(character.recommendedRoute).toContain("路線");
       expect(character.primaryTools.length).toBeGreaterThanOrEqual(3);
+      expect(character.femaleImage).toContain("/game-assets/characters/female/");
+      expect(character.maleImage).toContain("/game-assets/characters/male/");
     }
   });
   it("疲憊失控型對應能量騎士", () => {
