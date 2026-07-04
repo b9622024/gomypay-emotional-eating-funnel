@@ -1,6 +1,7 @@
 import { randomBytes } from "crypto";
 import { prisma } from "./db";
 import { emailService } from "./email";
+import { proAddonByCode } from "../content/proAddons";
 
 const createAccessToken=()=>randomBytes(32).toString("base64url");
 
@@ -16,6 +17,23 @@ export function fulfillmentEmail(input:{name:string;accessUrl:string;productCode
 ${input.accessUrl}
 
 接著請透過 LINE 官方帳號與我們聯繫，我們會提供 49 題測驗，並安排專人一對一解析測驗結果：
+https://lin.ee/UKTsrwq
+
+可樂吉健康研究所｜崇銘老師`
+  };
+  const proAddon=input.productCodes?.length===1?proAddonByCode(input.productCodes[0]):undefined;
+  if(proAddon)return {
+    subject:`感謝你購買加購的《${proAddon.title}》`,
+    body:`${input.name}，你好：
+
+感謝你購買加購的《${proAddon.title}》！付款已完成，進階道具權限已經開通。
+
+請由以下連結回到你的《7 天嘴饞破關計畫》工具包主頁：
+${input.accessUrl}
+
+在「任務道具箱」中找到《${proAddon.title}》，即可開始使用。
+
+若需要協助，歡迎加入 LINE 官方帳號：
 https://lin.ee/UKTsrwq
 
 可樂吉健康研究所｜崇銘老師`
@@ -77,10 +95,13 @@ export async function markPaid(orderNo:string,meta:{gomypayOrderId?:string;avcod
 
   // 只有成功取得 pending -> paid 的 callback 會進入此區，因此不會重複寄信。
   if(transitioned?.fresh){
-    const access=await prisma.entitlement.findFirst({where:{orderId:transitioned.order.id,accessToken:{not:null}},select:{accessToken:true}});
+    const productCodes=transitioned.order.items.map(item=>item.productCode);
+    const proOnly=productCodes.length===1&&Boolean(proAddonByCode(productCodes[0]));
+    const access=proOnly
+      ? await prisma.entitlement.findFirst({where:{customerId:transitioned.order.customerId,productCode:"emotional_eating_reset_7d",accessToken:{not:null},order:{status:"paid"}},orderBy:{createdAt:"asc"},select:{accessToken:true}})
+      : await prisma.entitlement.findFirst({where:{orderId:transitioned.order.id,accessToken:{not:null}},select:{accessToken:true}});
     if(access?.accessToken){
       const baseUrl=(process.env.APP_BASE_URL??"").replace(/\/$/,"");
-      const productCodes=transitioned.order.items.map(item=>item.productCode);
       const mail=fulfillmentEmail({name:transitioned.order.customer.name,accessUrl:`${baseUrl}/access/${access.accessToken}`,productCodes});
       try{
         const pdfUrl=productCodes.includes("emotional_eating_reset_7d")?process.env.DIGITAL_PRODUCT_PDF_URL:undefined;

@@ -37,7 +37,7 @@ const timing: Record<string, string> = {
   "dinner-formula": "下班後不知道晚餐怎麼選時",
   "safe-swaps": "不知道零食或飲料可以換成什麼時",
   "sugary-drink-swap-pro": "想直接取得點餐話術與降糖攻略時",
-  "anti-binge-meal-plan": "想直接照著吃一週時",
+  "anti-binge-meal-plan": "外食時想快速判斷這餐缺什麼時",
   "ai-energy-assessment": "想進一步了解能量狀態與減脂卡點時",
 };
 
@@ -48,9 +48,9 @@ const advancedCopy: Record<string, { name: string; message: string; button: stri
     button: "解鎖飲料降糖攻略",
   },
   "anti-binge-meal-plan": {
-    name: "7 天外食通關菜單",
-    message: "你已經建立了自己的晚餐防線。如果你想直接照著吃一週，可以解鎖進階道具《7 天外食防暴食菜單》。",
-    button: "解鎖 7 天外食通關菜單",
+    name: "外食補給導航",
+    message: "你已經建立了自己的晚餐防線。如果你想在不同外食場景快速判斷這餐缺什麼，可以解鎖進階道具《外食補給導航 Pro》。",
+    button: "解鎖外食補給導航",
   },
 };
 
@@ -95,7 +95,8 @@ export default async function Access({ params }: { params: Promise<{ accessToken
       const code = key === "sugary-drink-swap-pro" ? "sugary_drink_swap_pro" : "anti_binge_meal_plan_7d";
       const owned = !advanced || ownedCodes.includes(code);
       const prompt = advancedCopy[key];
-      return <article className={!owned ? "locked" : ""} key={key}><div><small>{advanced ? `進階道具｜${prompt.name}` : "已解鎖道具"}</small><h4>{asset.title}</h4><p>{asset.description}</p><span>使用時機：{timing[key]}</span></div>{owned ? <Actions asset={asset} token={accessToken}/> : <div className="bt-unlock"><b>進階道具尚未解鎖</b><p>{prompt.message}</p><a href="/checkout">{prompt.button} →</a></div>}</article>;
+      const slug = key === "sugary-drink-swap-pro" ? "drink-swap-pro" : "eating-navigation";
+      return <article className={!owned ? "locked" : ""} key={key}><div><small>{advanced ? `進階道具｜${prompt.name}` : "已解鎖道具"}</small><h4>{asset.title}</h4><p>{asset.description}</p><span>使用時機：{timing[key]}</span></div>{owned ? <Actions asset={asset} token={accessToken}/> : <div className="bt-unlock"><b>進階道具尚未解鎖</b><p>{prompt.message}</p><a href={`/pro-tools/${slug}?accessToken=${encodeURIComponent(accessToken)}`}>查看介紹與加購解鎖 →</a></div>}</article>;
     })}</div></section>)}</details>
 
     <footer className="access-support"><div><span>有問題嗎？</span><h2>可以立即跟我們聯繫</h2><p>破關任務或道具使用有任何問題，都歡迎透過官方社群詢問。</p><strong>{salesPage.brand}</strong></div><div className="access-support-links">{salesPage.contacts.map(x => <a href={x.href} target="_blank" rel="noreferrer" key={x.label}><span>{x.label}</span><small>{x.handle} ↗</small></a>)}</div></footer>

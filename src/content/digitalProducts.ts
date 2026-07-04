@@ -24,7 +24,7 @@ export const assetDeliveryLinks:Record<string,AssetDelivery>={
   "safe-swaps":{interactivePath:"/safe-swap-list",pdfUrl:"/downloads/safe-swap-list.pdf",imageUrl:"/downloads/safe-swap-list-card.png"},
   "sugary-drink-swap-pro":{interactivePath:"/drink-swap-pro",pdfUrl:"/downloads/drink-swap-pro.pdf",imageUrl:"/downloads/drink-swap-pro-card.png"},
   "ai-energy-assessment":{interactivePath:"/ai-energy-assessment",pdfUrl:placeholder},
-  "anti-binge-meal-plan":{interactivePath:"/7-day-eating-out-menu",pdfUrl:"/downloads/7-day-eating-out-menu.pdf",imageUrl:"/downloads/7-day-eating-out-menu-card.png"},
+  "anti-binge-meal-plan":{interactivePath:"/pro/eating-navigation",pdfUrl:"/game-assets/pro-tools/eating-navigation/handbook.pdf"},
   "coaching-intake":{interactivePath:placeholder,pdfUrl:placeholder}
 };
 
@@ -47,7 +47,7 @@ export const digitalAssetsByProduct:Record<string,DigitalAsset[]>={
     {key:"sugary-drink-swap-pro",title:"含糖飲料替換清單 Pro",description:"想喝飲料時，直接知道怎麼點、怎麼降階、怎麼停得住。",kind:"清單",downloadUrl:placeholder,badge:"NT$99 進階道具"}
   ],
   anti_binge_meal_plan_7d:[
-    {key:"anti-binge-meal-plan",title:"7 天外食防暴食菜單",description:"不用自己煮，外食族也能照著吃的 7 天穩定晚餐與嘴饞止損菜單。",kind:"菜單",downloadUrl:placeholder,badge:"NT$99 進階道具"}
+    {key:"anti-binge-meal-plan",title:"外食補給導航 Pro",description:"到哪裡吃，都知道這一餐下一步該補什麼。",kind:"清單",downloadUrl:placeholder,badge:"付費進階道具"}
   ],
   coaching_deposit_3d:[
     {key:"coaching-intake",title:"三天陪跑資料填寫表單",description:"提交飲食、嘴饞紀錄與希望教練協助的問題。",kind:"表單",downloadUrl:placeholder}

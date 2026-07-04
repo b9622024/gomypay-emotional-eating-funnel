@@ -3,8 +3,8 @@ import { useEffect, useMemo, useState } from "react";
 import { CheckoutSummaryCard, OrderBumpCard, type Bump } from "@/components/checkout/CheckoutCards";
 const bumps:Bump[]=[
   {code:"ai_energy_assessment",name:"AI 能量減脂初評",price:1,popularity:"97% 的客人都會加購此選項",priceNote:"本頁加購只要 NT$1，之後單獨購買為 NT$100",text:"透過 5 分鐘、49 題的測驗填寫，了解現在的脈輪能量狀態以及個人天賦優勢；會有專人一對一解析測驗結果、找出問題，並提供專屬對策方案。",note:"此項目僅能與主商品一起以 NT$1 加購。"},
-  {code:"sugary_drink_swap_pro",name:"含糖飲料替換清單 Pro",price:99,popularity:"93% 的客人都會加購此選項",text:"如果你最戒不掉的是手搖飲、奶茶、含糖咖啡，這份清單會很適合你。包含手搖飲降糖選擇表、便利商店無糖飲選擇表、想喝奶茶時的替代選擇、下午提神飲料選擇與一週飲料規則設計表。"},
-  {code:"anti_binge_meal_plan_7d",name:"7 天外食防暴食菜單",price:99,popularity:"93% 的客人都會加購此選項",text:"如果你最常卡在不知道外食怎麼吃，這份菜單可以幫你省下很多思考時間。包含早餐店、便利商店、便當店、速食店與晚餐後嘴饞替代組合。"}
+  {code:"sugary_drink_swap_pro",name:"含糖飲料替換清單 Pro",price:99,popularity:"93% 的客人都會加購此選項",priceNote:"本頁加購只要 NT$99，之後單獨購買為 NT$149",text:"如果你最戒不掉的是手搖飲、奶茶、含糖咖啡，這份清單會很適合你。包含手搖飲降糖選擇表、便利商店無糖飲選擇表、想喝奶茶時的替代選擇、下午提神飲料選擇與一週飲料規則設計表。"},
+  {code:"anti_binge_meal_plan_7d",name:"外食補給導航 Pro",price:99,popularity:"93% 的客人都會加購此選項",priceNote:"本頁加購只要 NT$99，之後單獨購買為 NT$149",text:"先分析你現在的飢餓、疲憊與白天補給，再依超商、早餐店、便當店、外送等場景，告訴你這一餐下一步該補什麼。"}
 ];
 export default function CheckoutForm(){
  const [selected,setSelected]=useState<string[]>([]),[busy,setBusy]=useState(false),[error,setError]=useState("");

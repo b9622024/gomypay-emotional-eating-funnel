@@ -430,6 +430,38 @@ model EatingOutMenuFavorite {
   @@index([accessToken, createdAt])
 }
 
+model EatingNavigationSession {
+  id                    String   @id @default(cuid())
+  accessToken           String
+  customerId            String?
+  orderId               String?
+  statusScan             Json
+  navigationModes        Json
+  sceneId                String
+  selectedItems          Json
+  analysisResult         Json
+  threeRouteSuggestions  Json
+  finalSelectedItems     Json?
+  postMealReview         Json?
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  @@index([accessToken, createdAt])
+}
+
+model EatingNavigationFavorite {
+  id          String   @id @default(cuid())
+  accessToken String
+  title       String
+  sceneId     String
+  items       Json
+  tags        Json
+  score       Int
+  note        String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  @@index([accessToken, sceneId, createdAt])
+}
+
 model BreakthroughPlanProgress {
   id               String   @id @default(cuid())
   accessToken      String   @unique
