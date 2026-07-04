@@ -382,6 +382,10 @@ model DrinkSwapProRecord {
   suggestedReason String
   orderScript     String
   nextStep        String
+  drinkId         String?
+  feeling         String?
+  context         String?
+  analysisResult  Json?
   createdAt       DateTime @default(now())
 
   @@index([accessToken, createdAt])
@@ -394,8 +398,36 @@ model DrinkSwapProFavorite {
   title            String
   content          String
   orderScript      String
+  drinkId          String?
+  context          String?
+  originalVersion  String?
+  currentVersion   String?
+  note              String?
   createdAt        DateTime @default(now())
 
+  @@index([accessToken, createdAt])
+}
+
+model DrinkSwapProProfile {
+  id          String   @id @default(cuid())
+  accessToken String   @unique
+  rules       Json
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model DrinkSwapProObservation {
+  id          String   @id @default(cuid())
+  accessToken String
+  dayNumber   Int
+  time        String
+  feeling     String
+  version     String
+  reflection  String
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([accessToken, dayNumber])
   @@index([accessToken, createdAt])
 }
 

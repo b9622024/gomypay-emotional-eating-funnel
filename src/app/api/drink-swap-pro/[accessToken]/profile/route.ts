@@ -1,0 +1,9 @@
+import {Prisma} from "@prisma/client";
+import {NextResponse} from "next/server";
+import {z} from "zod";
+import {prisma} from "@/lib/db";
+import {analyzeSevenDayObservations} from "@/lib/drink-swap-analysis";
+import {authorizeProductAccess} from "@/lib/workbook";
+const rules=z.object({rules:z.array(z.string().trim().min(1).max(150)).length(5)}),observation=z.object({dayNumber:z.number().int().min(1).max(7),time:z.string().max(30),feeling:z.string().max(30),version:z.string().max(300),reflection:z.string().max(500)});
+export async function PUT(req:Request,{params}:{params:Promise<{accessToken:string}>}){const {accessToken}=await params;if(!await authorizeProductAccess(accessToken,"sugary_drink_swap_pro"))return NextResponse.json({error:"無權存取"},{status:404});const p=rules.safeParse(await req.json().catch(()=>null));if(!p.success)return NextResponse.json({error:"請保留 5 條完整規則"},{status:400});const profile=await prisma.drinkSwapProProfile.upsert({where:{accessToken},update:{rules:p.data.rules as Prisma.InputJsonValue},create:{accessToken,rules:p.data.rules as Prisma.InputJsonValue}});return NextResponse.json({profile,message:"✓ 個人規則已儲存"})}
+export async function POST(req:Request,{params}:{params:Promise<{accessToken:string}>}){const {accessToken}=await params;if(!await authorizeProductAccess(accessToken,"sugary_drink_swap_pro"))return NextResponse.json({error:"無權存取"},{status:404});const p=observation.safeParse(await req.json().catch(()=>null));if(!p.success)return NextResponse.json({error:"請完成今天的觀察"},{status:400});const item=await prisma.drinkSwapProObservation.upsert({where:{accessToken_dayNumber:{accessToken,dayNumber:p.data.dayNumber}},update:p.data,create:{accessToken,...p.data}});const all=await prisma.drinkSwapProObservation.findMany({where:{accessToken},orderBy:{dayNumber:"asc"}});return NextResponse.json({item,observations:all,analysis:analyzeSevenDayObservations(all),message:"✓ 今天的觀察已儲存"})}

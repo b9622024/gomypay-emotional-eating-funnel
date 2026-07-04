@@ -16,7 +16,7 @@ export const proAddons: ProAddon[] = [
     slug: "drink-swap-pro",
     productCode: "sugary_drink_swap_pro",
     title: "含糖飲料替換清單 Pro",
-    subtitle: "把「我要戒飲料」變成「我知道下一杯怎麼點」。",
+    subtitle: "從你平常真的會喝的那一杯開始，找到做得到的降糖版本",
     checkoutPrice: 99,
     standalonePrice: 149,
     description: "從手搖飲、咖啡到超商飲料，依照糖度、杯型與加料習慣，建立可以直接使用的點餐規則。",
