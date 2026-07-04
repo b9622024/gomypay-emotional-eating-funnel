@@ -1,6 +1,6 @@
 import { describe,expect,it } from "vitest";
 import { assetDeliveryLinks, assetsForProducts, digitalAssetsByProduct } from "./digitalProducts";
-import { fulfillmentEmail } from "../lib/fulfillment";
+import { fulfillmentEmail, ownerOrderNotification } from "../lib/fulfillment";
 
 describe("digital fulfillment content",()=>{
   it("maps the main product and every add-on to the expected assets",()=>{
@@ -27,6 +27,14 @@ describe("digital fulfillment content",()=>{
     expect(eating.subject).toContain("外食補給導航 Pro");
     expect(drink.body).toContain("https://example.com/access/main-token");
     expect(eating.body).toContain("工具包主頁");
+  });
+
+  it("builds an immediate owner payment notification",()=>{
+    const mail=ownerOrderNotification({orderNo:"EE2607040001",name:"王小美",email:"buyer@example.com",amount:298,items:[{name:"主商品",price:199,quantity:1},{name:"進階道具",price:99,quantity:1}]});
+    expect(mail.subject).toContain("付款成功");
+    expect(mail.body).toContain("buyer@example.com");
+    expect(mail.body).toContain("進階道具");
+    expect(mail.body).toContain("NT$298");
   });
 });
 

@@ -42,6 +42,11 @@ const timing: Record<string, string> = {
 };
 
 const advancedCopy: Record<string, { name: string; message: string; button: string }> = {
+  "ai-energy-assessment": {
+    name: "AI 能量減脂測驗",
+    message: "透過 5 分鐘 49 題測驗了解目前的能量狀態與個人天賦優勢，並由專人一對一解析結果與提供對策方案。結帳時加購只要 NT$1，購買後單獨解鎖為 NT$100。",
+    button: "了解 AI 能量減脂測驗",
+  },
   "sugary-drink-swap-pro": {
     name: "手搖飲降糖攻略",
     message: "你已經找出自己的飲料觸發點。如果你想知道手搖飲、咖啡、超商飲料要怎麼直接點，可以解鎖進階道具《含糖飲料替換清單 Pro》。",
@@ -90,13 +95,13 @@ export default async function Access({ params }: { params: Promise<{ accessToken
     <details className="bt-toolbox"><summary><div><span>MISSION TOOLBOX</span><h2>任務道具箱</h2><p>需要時再打開，不必一次使用所有道具。</p></div><b>展開道具箱＋</b></summary>{groups.map(group => <section key={group.title}><h3>{group.title}</h3><div>{group.keys.map(key => {
       const asset = all.find(x => x.key === key);
       if (!asset) return null;
-      if (key === "ai-energy-assessment" && !ownedCodes.includes("ai_energy_assessment")) return null;
       const advanced = Boolean(advancedCopy[key]);
-      const code = key === "sugary-drink-swap-pro" ? "sugary_drink_swap_pro" : "anti_binge_meal_plan_7d";
+      const code = key === "ai-energy-assessment" ? "ai_energy_assessment" : key === "sugary-drink-swap-pro" ? "sugary_drink_swap_pro" : "anti_binge_meal_plan_7d";
       const owned = !advanced || ownedCodes.includes(code);
       const prompt = advancedCopy[key];
       const slug = key === "sugary-drink-swap-pro" ? "drink-swap-pro" : "eating-navigation";
-      return <article className={!owned ? "locked" : ""} key={key}><div><small>{advanced ? `進階道具｜${prompt.name}` : "已解鎖道具"}</small><h4>{asset.title}</h4><p>{asset.description}</p><span>使用時機：{timing[key]}</span></div>{owned ? <Actions asset={asset} token={accessToken}/> : <div className="bt-unlock"><b>進階道具尚未解鎖</b><p>{prompt.message}</p><a href={`/pro-tools/${slug}?accessToken=${encodeURIComponent(accessToken)}`}>查看介紹與加購解鎖 →</a></div>}</article>;
+      const unlockHref = key === "ai-energy-assessment" ? `/ai-energy-assessment?accessToken=${encodeURIComponent(accessToken)}` : `/pro-tools/${slug}?accessToken=${encodeURIComponent(accessToken)}`;
+      return <article className={!owned ? "locked" : ""} key={key}><div><small>{advanced ? `進階道具｜${prompt.name}` : "已解鎖道具"}</small><h4>{asset.title}</h4><p>{asset.description}</p><span>使用時機：{timing[key]}</span></div>{owned ? <Actions asset={asset} token={accessToken}/> : <div className="bt-unlock"><b>進階道具尚未解鎖</b><p>{prompt.message}</p><a href={unlockHref}>查看介紹與加購解鎖 →</a></div>}</article>;
     })}</div></section>)}</details>
 
     <footer className="access-support"><div><span>有問題嗎？</span><h2>可以立即跟我們聯繫</h2><p>破關任務或道具使用有任何問題，都歡迎透過官方社群詢問。</p><strong>{salesPage.brand}</strong></div><div className="access-support-links">{salesPage.contacts.map(x => <a href={x.href} target="_blank" rel="noreferrer" key={x.label}><span>{x.label}</span><small>{x.handle} ↗</small></a>)}</div></footer>

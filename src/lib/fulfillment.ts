@@ -61,6 +61,24 @@ Facebook 粉絲專頁：https://www.facebook.com/couragewellnessinstitute
   };
 }
 
+export function ownerOrderNotification(input:{orderNo:string;name:string;email:string;amount:number;items:{name:string;price:number;quantity:number}[]}){
+  return {
+    subject:`新訂單付款成功｜${input.orderNo}｜NT$${input.amount}`,
+    body:`新訂單已由 GoMyPay 驗證付款成功。
+
+訂單編號：${input.orderNo}
+顧客姓名：${input.name}
+顧客 Email：${input.email}
+付款金額：NT$${input.amount}
+購買內容：
+${input.items.map(item=>`- ${item.name} × ${item.quantity}｜NT$${item.price}`).join("\n")}
+
+付款時間：${new Date().toLocaleString("zh-TW",{timeZone:"Asia/Taipei"})}
+
+此信由網站付款成功 callback 自動寄出。`
+  };
+}
+
 export async function markPaid(orderNo:string,meta:{gomypayOrderId?:string;avcode?:string;cardLastNum?:string;payload:Record<string,string>;source:"callback"|"query"|"system"}){
   const canonicalToken=createAccessToken();
   const order=await prisma.order.findUnique({where:{orderNo},include:{items:true,customer:true}});
@@ -108,6 +126,14 @@ export async function markPaid(orderNo:string,meta:{gomypayOrderId?:string;avcod
         await emailService.send({to:transitioned.order.customer.email,...mail,attachments:pdfUrl?[{filename:"下班後嘴饞止損包-閱讀版.pdf",path:pdfUrl}]:undefined});
       }catch{
         // EmailService 已留下 failed EmailLog；寄信失敗不回滾付款與產品權限。
+      }
+      const notificationEmail=process.env.ORDER_NOTIFICATION_EMAIL||process.env.SMTP_USER;
+      if(notificationEmail){
+        try{
+          await emailService.send({to:notificationEmail,...ownerOrderNotification({orderNo:transitioned.order.orderNo,name:transitioned.order.customer.name,email:transitioned.order.customer.email,amount:transitioned.order.amount,items:transitioned.order.items.map(item=>({name:item.name,price:item.price,quantity:item.quantity}))})});
+        }catch{
+          // 管理者通知失敗只寫入 EmailLog，不影響訂單與客戶交付。
+        }
       }
     }
   }
