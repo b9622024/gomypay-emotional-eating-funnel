@@ -8,6 +8,7 @@ describe("sales page RPG refresh",()=>{
     expect(salesPage.days).toHaveLength(8);
     expect(salesPage.days[0]).toContain("第 0 天");
     expect(salesPage.bonuses).toHaveLength(7);
+    expect(salesPageAssets.tools).toHaveLength(7);
     expect(salesPage.bonuses.map(item=>item[0])).not.toContain("情緒性進食 6 型測驗");
   });
 
