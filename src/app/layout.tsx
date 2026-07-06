@@ -18,7 +18,10 @@ import "./access-clarity-fixes.css";
 import "./sales-trust.css";
 import "./eating-navigation.css";
 import "./pro-addon.css";
+import "./navigation-feedback.css";
+import "./tool-next-step-unification.css";
 import BadgeUnlockHost from "@/components/badges/BadgeUnlockHost";
 import CharacterImageLightboxHost from "@/components/access/CharacterImageLightboxHost";
+import NavigationFeedback from "@/components/navigation/NavigationFeedback";
 export const metadata = { title: "7 天嘴饞破關計畫｜可樂吉健康研究所", description: "每天完成一個小任務，解鎖你的減脂止損地圖" };
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="zh-Hant"><body>{children}<BadgeUnlockHost/><CharacterImageLightboxHost/></body></html>; }
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) { return <html lang="zh-Hant"><body>{children}<NavigationFeedback/><BadgeUnlockHost/><CharacterImageLightboxHost/></body></html>; }

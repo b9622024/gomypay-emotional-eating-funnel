@@ -1,0 +1,37 @@
+/* Tool result pages use one safe next step. Cross-tool and locked-level shortcuts stay hidden. */
+.swap-tools,.dinner-tools,.pro-links{display:none!important}
+.nutrition-next>a:not(.primary){display:none!important}
+
+/* Older tools used slightly different AI-assessment labels. Keep one visible next-step language. */
+.rescue-cta h2,
+.dinner-ai h2,
+.swap-ai h2,
+.nutrition-next h3,
+.drink-report-cta h3,
+.wb-report-cta h3{font-size:0!important}
+
+.rescue-cta h2::after,
+.dinner-ai h2::after,
+.swap-ai h2::after,
+.nutrition-next h3::after,
+.drink-report-cta h3::after,
+.wb-report-cta h3::after{
+  content:"想知道更深層的減脂卡關原因？";
+  font-size:clamp(1.25rem,4vw,1.75rem);
+  line-height:1.45;
+}
+
+.rescue-cta>a,
+.dinner-ai>a,
+.swap-ai>a,
+.nutrition-next>a.primary,
+.drink-report-cta>a{font-size:0!important}
+
+.rescue-cta>a::after,
+.dinner-ai>a::after,
+.swap-ai>a::after,
+.nutrition-next>a.primary::after,
+.drink-report-cta>a::after{
+  content:"前往 AI 能量減脂測驗 →";
+  font-size:.95rem;
+}
