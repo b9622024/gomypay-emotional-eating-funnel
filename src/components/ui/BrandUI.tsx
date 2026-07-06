@@ -13,7 +13,7 @@ export function TrustPill({children}:{children:string}){return <span className="
 export function ProductBundleMockup(){return <div className="bundle-stage game-bundle" aria-label="7 天嘴饞破關計畫內容示意">
   <span className="blob blob-one"/><span className="blob blob-two"/>
   <div className="phone-mock"><div className="phone-speaker"/><div className="phone-screen"><span className="mini-brand">可樂吉健康研究所</span><strong>7 天嘴饞<br/>破關計畫</strong><small>今日關卡 · 第 3 關</small><div className="phone-progress"><i/><i/><i/><i/><i/><i/><i/></div></div></div>
-  <div className="workbook workbook-back"><span>ACHIEVEMENT</span><b>每關解鎖<br/>專屬徽章</b><div className="paper-lines"/></div>
+  <div className="workbook workbook-back"><span>FINAL REWARD</span><b>完成 7 關<br/>解鎖神秘禮物</b><div className="paper-lines"/></div>
   <div className="workbook workbook-front game-character-preview"><span>DAY 0 · ROLE</span><img src="/game-assets/characters/female/energy-knight.png" alt="能量騎士角色插圖"/><b>先創建你的<br/>嘴饞角色</b></div>
   <div className="bundle-sticker">7 關<br/><b>破關任務</b></div>
 </div>}
