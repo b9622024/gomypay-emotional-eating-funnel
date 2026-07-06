@@ -37,3 +37,10 @@
 .trust-strip{background:#edf2e9;border:1px solid #dbe5d7;border-bottom:0}
 .pain-section{background:#fffaf6}
 .pain-card>span{font-family:Arial,"Apple Color Emoji","Segoe UI Emoji",sans-serif;font-size:1.2rem}
+.story-callout-close{align-self:flex-end;margin-left:auto;transform:translateY(.35em)}
+
+@media(max-width:640px){
+  .story-callout{display:grid;grid-template-columns:34px minmax(0,1fr) 34px;gap:8px}
+  .story-callout>span{font-size:3rem}
+  .story-callout-close{grid-column:3;align-self:end;margin:0;text-align:right}
+}
