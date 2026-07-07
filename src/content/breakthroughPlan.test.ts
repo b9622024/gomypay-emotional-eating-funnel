@@ -24,12 +24,13 @@ describe("關卡最低完成條件",()=>{
     expect(validateBreakthroughLevel(2,{})).toContain("場景");
     expect(validateBreakthroughLevel(3,{})).toContain("身心");
     expect(validateBreakthroughLevel(5,{})).toContain("5 項");
-    expect(validateBreakthroughLevel(6,{savedDinnerBackups:["","",""]})).toContain("3-1-1");
+    expect(validateBreakthroughLevel(6,{savedDinnerBackups:[]})).toContain("3 組");
     expect(validateBreakthroughLevel(7,{},{})).toContain("六張線索卡");
   });
   it("完整填寫後可通過",()=>{
     expect(validateBreakthroughLevel(1,{selectedTimes:["晚餐後"],primaryTime:"晚餐後",cravingScore:8,hungerScore:5,fatigueScore:7,stressScore:4})).toBeNull();
-    expect(validateBreakthroughLevel(6,{selectedProtein:"雞胸",selectedVegetable:"沙拉",selectedCarb:"地瓜",selectedDrink:"水",savedDinnerBackups:["便當","滷味","超商雞胸"]})).toBeNull();
+    const backup=(id:string,scenarioType:string)=>({id,name:`備案${id}`,scenarioType,dinnerScene:"convenience_store",selections:{protein:["雞胸"]},analysisResult:{totalScore:80},score:80,createdAt:new Date().toISOString()});
+    expect(validateBreakthroughLevel(6,{savedDinnerBackups:[backup("1","tired"),backup("2","hungry"),backup("3","hungry")]})).toBeNull();
   });
 });
 

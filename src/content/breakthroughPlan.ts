@@ -10,7 +10,7 @@ export const levels=[
 {level:3,name:"情緒之門",task:"用身心訊號解碼器辨認真正需求",tool:"嘴饞前 3 分鐘身心連結工作本",path:"three-minute-check",clues:["情緒線索","身體訊號線索"],badge:"身心連結徽章",icon:"🌿",points:10,story:"嘴饞迷霧最會偽裝成「我想吃」，背後卻可能是餓、累、壓力、委屈或想被安慰。",learning:"先辨認身體與情緒訊號，就比較不容易直接進入自動反應。",feedback:"你已穿越情緒之門，看見嘴饞背後真正的訊號。"},
 {level:4,name:"支線岔路",task:"完成支線試煉，選出目前最需要優先處理的問題",tool:"專屬支線試煉",path:"",clues:["專屬支線線索"],badge:"專屬支線徽章",icon:"🛤️",points:10,story:"前三關讓你看見時間、場景與訊號。現在迷霧王國出現四條支線，系統會推薦一條，你也可以自行選擇。",learning:"每個人不必做同一件事，先處理最常卡住的支線更實際。",feedback:"你已穿越支線岔路，選出最適合自己的破關方向。"},
 {level:5,name:"補給裂縫",task:"用營養補洞盤檢查白天補給是否影響晚上嘴饞",tool:"正念營養缺口掃描",path:"mindful-nutrition-tracker",clues:["營養缺口線索"],badge:"營養補洞徽章",icon:"🥗",points:10,story:"很多晚上的嘴饞，裂縫其實從白天開始：早餐太空、午餐太少、水與蛋白質不足。",learning:"晚上不穩有時不是晚上的問題，而是白天補給不足累積的結果。",feedback:"你已修補補給裂縫，看見白天營養和晚上嘴饞的關係。"},
-{level:6,name:"晚餐防線",task:"用 3-1-1 建造器完成一份穩定晚餐並保存三組備案",tool:"下班後防暴食晚餐公式",path:"dinner-formula",clues:["晚餐備案線索"],badge:"晚餐穩定徽章",icon:"🍱",points:10,story:"下班後不是你不努力，而是太累、太餓，又沒有準備好的選項。今天要建立不用重新思考的晚餐防線。",learning:"晚餐穩定度提高，晚上嘴饞與失控的機率通常會比較低。",feedback:"你已建立自己的晚餐防線，準備好不用重新思考的選擇。"},
+{level:6,name:"晚餐防線",task:"讀取前五關線索，用場景專屬卡庫建立三座晚餐防線",tool:"下班後防暴食晚餐公式",path:"dinner-formula",clues:["晚餐備案線索"],badge:"晚餐穩定徽章",icon:"🍱",points:10,story:"下班後不是你不努力，而是太累、太餓，又沒有準備好的選項。今天要依照你的場景與前五關線索，建立不用重新思考的晚餐防線。",learning:"不是每個場景都硬套同一個餐盤；符合當下飢餓、營養缺口與外食條件，才是能長期使用的防線。",feedback:"你已完成三座晚餐防線，準備好能在不同情境直接使用的選擇。"},
 {level:7,name:"迷霧核心",task:"確認六張線索卡，生成自己的個人止損地圖",tool:"止損地圖拼圖",path:"map",clues:["個人止損地圖"],badge:"止損地圖完成徽章",icon:"🗺️",points:60,story:"你已穿越前六關。現在不是證明意志力，而是把所有線索拼起來，看見自己的破關路線。",learning:"你現在不是盲目調整，而是擁有一張屬於自己的止損地圖。",feedback:"你已破解迷霧核心，完成自己的個人止損地圖。"}
 ] as const;
 
@@ -25,7 +25,7 @@ export function validateBreakthroughLevel(n:number,u:Record<string,unknown>={},m
  if(n===3&&!filled(u.selectedState))return "請完成身心訊號評分並選擇最接近的狀態";
  if(n===4&&!filled(u.selectedAnswer))return "請完成支線試煉";
  if(n===5&&["breakfastScore","lunchScore","waterScore","proteinScore","afternoonEnergyScore"].some(k=>typeof u[k]!=="number"))return "請完成 5 項營養補洞評分";
- if(n===6){if(!filled(u.selectedProtein)||!filled(u.selectedVegetable)||!filled(u.selectedCarb)||!filled(u.selectedDrink))return "請完成 3-1-1 晚餐組合";const b=arr(u.savedDinnerBackups);if(b.length<3||b.some(x=>!filled(x)))return "請保存 3 組晚餐備案"}
- if(n===7){const required=["highRiskTime","highRiskScene","mainEmotion","nutritionGap","firstRescueAction","nextWeekAction"];if(required.some(k=>!filled(map[k])))return "請確認止損地圖的六張線索卡與下週任務";const b=arr(map.dinnerBackups);if(b.length<3||b.some(x=>!filled(x)))return "請確認 3 組晚餐備案"}
+ if(n===6){const b=arr(u.savedDinnerBackups) as Array<Record<string,unknown>>;if(b.length<3)return "請至少建立 3 組晚餐備案";if(b.some(x=>!x||!filled(x.name)||!x.analysisResult||typeof x.score!=="number"))return "每組備案都需要名稱並完成分析";if(new Set(b.map(x=>String(x.scenarioType||""))).size<2)return "3 組備案至少需要包含 2 種不同情境"}
+ if(n===7){const required=["highRiskTime","highRiskScene","mainEmotion","nutritionGap","firstRescueAction","nextWeekAction"];if(required.some(k=>!filled(map[k])))return "請確認止損地圖的六張線索卡與下週任務";const b=arr(map.dinnerBackups);if(b.length<3)return "請確認 3 組晚餐備案"}
  return null;
 }
