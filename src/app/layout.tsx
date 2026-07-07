@@ -20,6 +20,7 @@ import "./pro-addon.css";
 import "./navigation-feedback.css";
 import "./tool-next-step-unification.css";
 import "./dinner-defense.css";
+import "./journey-connections.css";
 import BadgeUnlockHost from "@/components/badges/BadgeUnlockHost";
 import CharacterImageLightboxHost from "@/components/access/CharacterImageLightboxHost";
 import NavigationFeedback from "@/components/navigation/NavigationFeedback";

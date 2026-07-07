@@ -3,12 +3,12 @@ import { completionFeedback, levels, normalizeType, recommendation, typeName, va
 
 describe("breakthrough routes", () => {
   it.each([
-    ["stress_release", "壓力止損路線", "stress"],
-    ["fatigue_loss_control", "營養補電路線", "nutrition"],
-    ["compensation", "情緒安撫路線", "stress"],
-    ["boredom_habit", "習慣迴路拆解路線", "swap"],
-    ["sugary_drink_dependency", "飲料降糖路線", "drink"],
-    ["nutrition_gap", "白天營養補洞路線", "nutrition"],
+    ["stress_release", "壓力止損路線", "stress_rescue"],
+    ["fatigue_loss_control", "營養補電路線", "energy_refill"],
+    ["compensation", "情緒安撫路線", "stress_rescue"],
+    ["boredom_habit", "習慣迴路拆解路線", "habit_break"],
+    ["sugary_drink_dependency", "飲料降糖路線", "drink_loop"],
+    ["nutrition_gap", "白天營養補洞路線", "energy_refill"],
   ])("maps %s", (type, route, branch) => {
     expect(recommendation(type)?.route).toBe(route);
     expect(recommendation(type)?.branch).toBe(branch);

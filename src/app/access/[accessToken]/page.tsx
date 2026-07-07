@@ -6,6 +6,8 @@ import { levels, typeName } from "@/content/breakthroughPlan";
 import { salesPage } from "@/content/emotionalEatingSalesPage";
 import { prisma } from "@/lib/db";
 import { getBreakthroughState } from "@/lib/breakthrough-plan";
+import { buildJourneyContext } from "@/lib/journey-context";
+import { AdventureLog,JourneySummaryCard } from "@/components/breakthrough/JourneyConnection";
 
 function Button({ href, label, kind }: { href: string; label: string; kind: string }) {
   if (href === "#") return <button disabled className={`btn delivery-button ${kind} disabled`}>{label}<small>準備中</small></button>;
@@ -73,6 +75,7 @@ export default async function Access({ params }: { params: Promise<{ accessToken
   const cta = !state.quiz ? `/access/${accessToken}/character-creation` : done && state.map ? `/access/${accessToken}/personal-rescue-map` : `/access/${accessToken}/breakthrough-plan`;
   const today = done ? "個人止損地圖已完成" : `第 ${state.progress.currentLevel} 關`;
   const characterImage=state.characters.primary?(state.progress.selectedGender==="male"?state.characters.primary.maleImage:state.characters.primary.femaleImage):null;
+  const journey=buildJourneyContext(state);
 
   return <main className="access-page bt-home"><div className="container">
     <RememberAccessToken accessToken={accessToken}/>
@@ -89,6 +92,8 @@ export default async function Access({ params }: { params: Promise<{ accessToken
     {done&&state.map?.rewardUnlocked&&<section className="bt-home-reward"><span>BREAKTHROUGH REWARD</span><h2>你的破關獎勵正在等你領取</h2><p>你已完成第 7 關並生成個人止損地圖。別忘了前往獎勵頁，截圖聯繫官方帳號領取「3 天實戰減脂體驗獎勵金」。</p><a href={`/access/${accessToken}/reward`}>前往領取破關獎勵 →</a></section>}
 
     {state.quiz && state.profile && <section className="bt-home-route bt-home-character">{characterImage&&<img src={characterImage} alt={`${state.characters.primary?.characterName}角色圖`} loading="lazy"/>}<div><span>你的嘴饞角色</span><h2>{state.characters.primary?.accentIcon} {state.characters.primary?.characterName}</h2><p>對應類型：<b>{typeName(state.quiz.primaryType)}</b></p>{state.characters.secondary&&<p>次要角色：<b>{state.characters.secondary.characterName}</b>｜{typeName(state.quiz.secondaryType)}</p>}<p>推薦破關路線：<b>{state.profile.route}</b></p><small>你的破關路線會以主要類型為主，次要類型作為加強任務。</small><div>{state.profile.tools.map(x => <strong key={x}>{x}</strong>)}</div></div></section>}
+
+    {state.quiz&&<JourneySummaryCard journey={journey}/>}<AdventureLog journey={journey}/>
 
     <BadgeCollection earnedBadges={state.progress.earnedBadges.map(String)} entries={state.entries.map(entry=>({earnedBadge:entry.earnedBadge,completedAt:entry.completedAt,actionPointsEarned:entry.actionPointsEarned}))} characterCreated={state.progress.characterCreated}/>
 

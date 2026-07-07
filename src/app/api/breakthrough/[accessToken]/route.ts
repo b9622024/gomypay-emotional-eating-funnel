@@ -6,7 +6,7 @@ import { rateLimit, requestIp } from "@/lib/rate-limit";
 const body = z.object({
   levelNumber: z.number().int().min(1).max(7),
   userNotes: z.string().max(3000).optional(),
-  selectedBranch: z.enum(["drink", "nutrition", "stress", "swap"]).optional(),
+  selectedBranch: z.enum(["drink_loop", "energy_refill", "stress_rescue", "habit_break"]).optional(),
   userInputs: z.record(z.unknown()).optional(),
   map: z.record(z.unknown()).optional(),
 });

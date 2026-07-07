@@ -4,11 +4,12 @@ import { RescueMap } from "@/components/breakthrough/BreakthroughPlanClient";
 import BadgeCollection from "@/components/badges/BadgeCollection";
 import ReplayPlanButton from "@/components/breakthrough/ReplayPlanButton";
 import { getBreakthroughState } from "@/lib/breakthrough-plan";
+import { buildJourneyContext } from "@/lib/journey-context";
 
 export default async function PersonalRescueMapPage({ params }: { params: Promise<{ accessToken:string }> }) {
   const { accessToken } = await params;
   const state = await getBreakthroughState(accessToken);
   if (!state) notFound();
   if (!state.map || state.progress.completedLevels.length < 7) return <main className="bt-loading"><h1>個人止損地圖尚未解鎖</h1><p>完成第 0 天角色創建與第 1～7 關後，地圖與破關獎勵會在這裡出現。</p><Link href={`/access/${accessToken}/breakthrough-plan`}>回到今日關卡 →</Link></main>;
-  return <main className="bt-app"><header><Link href={`/access/${accessToken}`}>← 回到計畫首頁</Link><b>已解鎖徽章 {state.progress.earnedBadges.length} / 8</b></header><div className="bt-overview"><RescueMap token={accessToken} map={state.map}/><BadgeCollection earnedBadges={state.progress.earnedBadges.map(String)} entries={state.entries.map(entry=>({earnedBadge:entry.earnedBadge,completedAt:entry.completedAt}))} characterCreated={state.progress.characterCreated}/><ReplayPlanButton token={accessToken}/></div></main>;
+  return <main className="bt-app"><header><Link href={`/access/${accessToken}`}>← 回到計畫首頁</Link><b>已解鎖徽章 {state.progress.earnedBadges.length} / 8</b></header><div className="bt-overview"><RescueMap token={accessToken} map={{...state.map,journey:buildJourneyContext(state)}}/><BadgeCollection earnedBadges={state.progress.earnedBadges.map(String)} entries={state.entries.map(entry=>({earnedBadge:entry.earnedBadge,completedAt:entry.completedAt}))} characterCreated={state.progress.characterCreated}/><ReplayPlanButton token={accessToken}/></div></main>;
 }
