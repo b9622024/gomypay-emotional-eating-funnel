@@ -89,15 +89,13 @@ export default async function Access({ params }: { params: Promise<{ accessToken
 
     {!state.quiz ? <section className="bt-home-progress"><div><span>第 0 天尚未完成</span><h2>你還沒有創建嘴饞角色</h2><p>完成角色創建後，系統才能依照你的結果安排專屬破關路線。</p></div><div className="bt-home-stats"><article><strong>🔒</strong><span>第 1～7 關將在角色創建後解鎖</span></article></div><a href={cta}>開始第 0 天｜創建嘴饞角色 →</a></section> : <section className="bt-home-progress"><div><span>嘴饞迷霧王國進度</span><h2>{today}</h2><p>目前關卡：第 {done?7:state.progress.currentLevel} 關 / 共 7 關</p></div><div className="bt-home-stats"><article><strong>{state.progress.earnedBadges.length}</strong><span>已解鎖徽章 / 8</span></article><article><strong>{done?"已完成":levels[state.progress.currentLevel-1]?.name}</strong><span>今日關卡</span></article><article><strong>{done?"個人止損地圖":levels[state.progress.currentLevel]?.name||"迷霧核心"}</strong><span>下一關預告</span></article></div><a href={cta}>{done ? "查看個人止損地圖" : `開始第 ${state.progress.currentLevel} 關`} →</a></section>}
 
-    {done&&state.map?.rewardUnlocked&&<section className="bt-home-reward"><span>BREAKTHROUGH REWARD</span><h2>你的破關獎勵正在等你領取</h2><p>你已完成第 7 關並生成個人止損地圖。別忘了前往獎勵頁，截圖聯繫官方帳號領取「3 天實戰減脂體驗獎勵金」。</p><a href={`/access/${accessToken}/reward`}>前往領取破關獎勵 →</a></section>}
+    {state.map?.rewardUnlocked&&<section className="bt-home-reward"><span>BREAKTHROUGH REWARD</span><h2>你的破關獎勵正在等你領取</h2><p>你已完成過第 7 關並生成個人止損地圖。即使進入二週目，這份已解鎖獎勵仍會保留。</p><a href={`/access/${accessToken}/reward`}>前往領取破關獎勵 →</a></section>}
 
     {state.quiz && state.profile && <section className="bt-home-route bt-home-character">{characterImage&&<img src={characterImage} alt={`${state.characters.primary?.characterName}角色圖`} loading="lazy"/>}<div><span>你的嘴饞角色</span><h2>{state.characters.primary?.accentIcon} {state.characters.primary?.characterName}</h2><p>對應類型：<b>{typeName(state.quiz.primaryType)}</b></p>{state.characters.secondary&&<p>次要角色：<b>{state.characters.secondary.characterName}</b>｜{typeName(state.quiz.secondaryType)}</p>}<p>推薦破關路線：<b>{state.profile.route}</b></p><small>你的破關路線會以主要類型為主，次要類型作為加強任務。</small><div>{state.profile.tools.map(x => <strong key={x}>{x}</strong>)}</div></div></section>}
 
     {state.quiz&&<JourneySummaryCard journey={journey}/>}<AdventureLog journey={journey}/>
 
     <BadgeCollection earnedBadges={state.progress.earnedBadges.map(String)} entries={state.entries.map(entry=>({earnedBadge:entry.earnedBadge,completedAt:entry.completedAt,actionPointsEarned:entry.actionPointsEarned}))} characterCreated={state.progress.characterCreated}/>
-
-    <section className="bt-intro"><h2>這不是一堆 PDF。<br/>這是一套 7 天嘴饞破關系統。</h2><p>你不需要一次使用所有道具。每天完成一關，就能解鎖一個線索，最後拼出自己的個人止損地圖。</p><ol>{["找出嘴饞角色", "找出破功時間與場景", "破解情緒與身體訊號", "選擇專屬支線任務", "掃描白天營養缺口", "建立晚餐防線", "生成個人止損地圖"].map((x, i) => <li key={x}><span>{i + 1}</span>{x}</li>)}</ol></section>
 
     <details className="bt-toolbox"><summary><div><span>MISSION TOOLBOX</span><h2>任務道具箱</h2><p>需要時再打開，不必一次使用所有道具。</p></div><b>展開道具箱＋</b></summary>{groups.map(group => <section key={group.title}><h3>{group.title}</h3><div>{group.keys.map(key => {
       const asset = all.find(x => x.key === key);
@@ -108,7 +106,7 @@ export default async function Access({ params }: { params: Promise<{ accessToken
       const prompt = advancedCopy[key];
       const slug = key === "sugary-drink-swap-pro" ? "drink-swap-pro" : "eating-navigation";
       const unlockHref = key === "ai-energy-assessment" ? `/ai-energy-assessment?accessToken=${encodeURIComponent(accessToken)}` : `/pro-tools/${slug}?accessToken=${encodeURIComponent(accessToken)}`;
-      return <article className={!owned ? "locked" : ""} key={key}><div><small>{advanced ? `進階道具｜${prompt.name}` : "已解鎖道具"}</small><h4>{asset.title}</h4><p>{asset.description}</p><span>使用時機：{timing[key]}</span></div>{owned ? <Actions asset={asset} token={accessToken}/> : <div className="bt-unlock"><b>進階道具尚未解鎖</b><p>{prompt.message}</p><a href={unlockHref}>查看介紹與加購解鎖 →</a></div>}</article>;
+      return <article className={`${!owned ? "locked" : ""} ${key==="ai-energy-assessment"?"ai-assessment-card":""}`} key={key}><div><small>{advanced ? `進階道具｜${prompt.name}` : "已解鎖道具"}</small><h4>{asset.title}</h4><p>{asset.description}</p><span>使用時機：{timing[key]}</span></div>{owned ? <Actions asset={asset} token={accessToken}/> : <div className="bt-unlock"><b>進階道具尚未解鎖</b><p>{prompt.message}</p><a href={unlockHref}>查看介紹與加購解鎖 →</a></div>}</article>;
     })}</div></section>)}</details>
 
     <footer className="access-support"><div><span>有問題嗎？</span><h2>可以立即跟我們聯繫</h2><p>破關任務或道具使用有任何問題，都歡迎透過官方社群詢問。</p><strong>{salesPage.brand}</strong></div><div className="access-support-links">{salesPage.contacts.map(x => <a href={x.href} target="_blank" rel="noreferrer" key={x.label}><span>{x.label}</span><small>{x.handle} ↗</small></a>)}</div></footer>

@@ -14,6 +14,7 @@ import "./flow-fixes.css";
 import "./sales-game-refresh.css";
 import "./fog-kingdom.css";
 import "./access-clarity-fixes.css";
+import "./access-ai-card.css";
 import "./sales-trust.css";
 import "./eating-navigation.css";
 import "./pro-addon.css";

@@ -27,6 +27,6 @@ export function validateBreakthroughLevel(n:number,u:Record<string,unknown>={},m
  if(n===4){const answers=typeof u.answers==="object"&&u.answers?u.answers as Record<string,unknown>:{};if(Object.keys(answers).length<8)return "請完成 8 題攻略路線試煉";if(!filled(u.selectedBranch))return "請接受系統推薦或選擇自己的主要攻略路線"}
  if(n===5){if(["breakfastScore","lunchScore","waterScore","proteinScore","afternoonEnergyScore"].some(k=>typeof u[k]!=="number"))return "請完成 5 項營養補洞評分";if(!filled(u.branchAnswer))return "請完成你的支線專屬問題"}
  if(n===6){const b=arr(u.savedDinnerBackups) as Array<Record<string,unknown>>;if(b.length<3)return "請至少建立 3 組晚餐備案";if(b.some(x=>!x||!filled(x.name)||!x.analysisResult||typeof x.score!=="number"))return "每組備案都需要名稱並完成分析";if(new Set(b.map(x=>String(x.scenarioType||""))).size<2)return "3 組備案至少需要包含 2 種不同情境"}
- if(n===7){const required=["highRiskTime","highRiskScene","mainEmotion","nutritionGap","firstRescueAction","nextWeekAction"];if(required.some(k=>!filled(map[k])))return "請確認止損地圖的六張線索卡與下週任務";const b=arr(map.dinnerBackups);if(b.length<3)return "請確認 3 組晚餐備案"}
+ if(n===7){const clues=["highRiskTime","highRiskScene","mainEmotion","nutritionGap","firstRescueAction"];if(clues.some(k=>!filled(map[k])))return "請確認止損地圖的線索卡與第一個止損動作";if(!filled(map.nextWeekAction))return "請記得填寫「我的下週任務」，寫下一個你真的做得到的小行動";const b=arr(map.dinnerBackups);if(b.length<3)return "請確認 3 組晚餐備案"}
  return null;
 }

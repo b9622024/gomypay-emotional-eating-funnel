@@ -25,7 +25,8 @@ describe("關卡最低完成條件",()=>{
     expect(validateBreakthroughLevel(3,{})).toContain("身心");
     expect(validateBreakthroughLevel(5,{})).toContain("5 項");
     expect(validateBreakthroughLevel(6,{savedDinnerBackups:[]})).toContain("3 組");
-    expect(validateBreakthroughLevel(7,{},{})).toContain("六張線索卡");
+    expect(validateBreakthroughLevel(7,{},{})).toContain("線索卡");
+    expect(validateBreakthroughLevel(7,{}, {highRiskTime:"下午",highRiskScene:"辦公室",mainEmotion:"疲憊",nutritionGap:"蛋白質",firstRescueAction:"先停 3 分鐘",dinnerBackups:["A","B","C"]})).toContain("下週任務");
   });
   it("完整填寫後可通過",()=>{
     expect(validateBreakthroughLevel(1,{selectedTimes:["晚餐後"],primaryTime:"晚餐後",cravingScore:8,hungerScore:5,fatigueScore:7,stressScore:4})).toBeNull();

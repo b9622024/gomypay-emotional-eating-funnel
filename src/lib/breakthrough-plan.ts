@@ -55,13 +55,12 @@ export async function resetBreakthroughFromLevel(accessToken:string,fromLevel=1)
   if(fromLevel===0){
     await prisma.$transaction([
       prisma.breakthroughDailyEntry.deleteMany({where:{accessToken}}),
-      prisma.personalRescueMap.deleteMany({where:{accessToken}}),
       prisma.quizResult.deleteMany({where:{accessToken,quizType}}),
       prisma.breakthroughPlanProgress.update({where:{accessToken},data:{currentLevel:1,completedLevels:[] as Prisma.InputJsonValue,collectedClues:[] as Prisma.InputJsonValue,earnedBadges:[] as Prisma.InputJsonValue,actionPoints:0,primaryType:null,secondaryType:null,recommendedRoute:null,selectedBranch:null,characterCreated:false,characterCreatedAt:null,selectedGender:null,primaryCharacterName:null,primaryOriginalTypeName:null,secondaryCharacterName:null,secondaryOriginalTypeName:null}})
     ]);
     return {ok:true,currentLevel:0,characterCreated:false};
   }
   const retained=state.entries.filter(entry=>entry.levelNumber<fromLevel&&entry.completed),completed=retained.map(entry=>entry.levelNumber),clues=[...new Set(retained.flatMap(entry=>array(entry.collectedClue).map(String)))],badges=["角色創建徽章",...retained.map(entry=>entry.earnedBadge)];
-  await prisma.$transaction([prisma.breakthroughDailyEntry.deleteMany({where:{accessToken,levelNumber:{gte:fromLevel}}}),prisma.personalRescueMap.deleteMany({where:{accessToken}}),prisma.breakthroughPlanProgress.update({where:{accessToken},data:{currentLevel:Math.max(1,fromLevel),completedLevels:completed as Prisma.InputJsonValue,collectedClues:clues as Prisma.InputJsonValue,earnedBadges:[...new Set(badges)] as Prisma.InputJsonValue,actionPoints:retained.reduce((sum,entry)=>sum+entry.actionPointsEarned,0)}})]);
+  await prisma.$transaction([prisma.breakthroughDailyEntry.deleteMany({where:{accessToken,levelNumber:{gte:fromLevel}}}),prisma.breakthroughPlanProgress.update({where:{accessToken},data:{currentLevel:Math.max(1,fromLevel),completedLevels:completed as Prisma.InputJsonValue,collectedClues:clues as Prisma.InputJsonValue,earnedBadges:[...new Set(badges)] as Prisma.InputJsonValue,actionPoints:retained.reduce((sum,entry)=>sum+entry.actionPointsEarned,0)}})]);
   return {ok:true,currentLevel:Math.max(1,fromLevel)};
 }

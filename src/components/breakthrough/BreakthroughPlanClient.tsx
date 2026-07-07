@@ -17,7 +17,7 @@ const emptyInputs:any={
 3:{stomachScore:5,fatigueScore:5,emotionStressScore:5,specificFoodCravingScore:5,trueHungerScore:5,selectedState:""},
 4:{answers:{},selectedBranch:"",recommendedBranch:"",secondaryBranch:""},
 5:{breakfastScore:null,lunchScore:null,waterScore:null,proteinScore:null,afternoonEnergyScore:null},
-6:{dinnerSceneId:"convenience_store",selections:{},savedDinnerBackups:[]},7:{}
+6:{dinnerSceneId:"",selections:{},savedDinnerBackups:[]},7:{}
 };
 const toggle=(list:string[],value:string,max=99)=>list.includes(value)?list.filter(x=>x!==value):list.length<max?[...list,value]:list;
 
