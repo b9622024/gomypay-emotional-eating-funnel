@@ -46,7 +46,7 @@ export function analyzeLevel4BranchTrial(input:any,previous:Previous={},characte
 }
 
 export function analyzeLevel5NutritionGap(input:any):AnalysisResult{
- const data={breakfastGap:Number(input.breakfastScore),lunchGap:Number(input.lunchScore),hydrationGap:Number(input.waterScore),proteinGap:Number(input.proteinScore),energyGap:Number(input.afternoonEnergyScore)};if(Object.values(data).some(Number.isNaN))return insufficient({totalNutritionScore:0,nutritionGapTypes:[]});
+ const required=["breakfastScore","lunchScore","waterScore","proteinScore","afternoonEnergyScore"];if(required.some(key=>typeof input[key]!=="number"))return insufficient({totalNutritionScore:0,nutritionGapTypes:[]});const data={breakfastGap:Number(input.breakfastScore),lunchGap:Number(input.lunchScore),hydrationGap:Number(input.waterScore),proteinGap:Number(input.proteinScore),energyGap:Number(input.afternoonEnergyScore)};
  const score=Object.values(data).reduce((a,b)=>a+b,0),min=Math.min(...Object.values(data)),gaps=Object.entries(data).filter(([,v])=>v===min&&v<=1).map(([k])=>k),names:any={breakfastGap:"早餐洞",lunchGap:"午餐洞",hydrationGap:"水分洞",proteinGap:"蛋白洞",energyGap:"下午能量洞"};
  const explain:any={breakfastGap:"早餐蛋白質不足會讓上午能量不穩，下午更容易想靠甜飲或零食補電。",lunchGap:"午餐吃太少或太隨便，常讓晚餐前爆餓，提高晚間失控機率。",hydrationGap:"水分不足有時會被誤判成嘴饞，下午疲憊時尤其明顯。",proteinGap:"蛋白質不足容易讓飽足感不穩，晚餐後或睡前更容易想吃。",energyGap:"下午能量不足時，大腦容易想用甜飲、甜食或重口味快速提神。"},task:any={breakfastGap:"明天早餐補一份蛋白質，例如蛋、無糖豆漿或優格。",lunchGap:"明天午餐保留一份蛋白質和主食，不要只吃沙拉。",hydrationGap:"明天下午嘴饞前先喝 300ml 水。",proteinGap:"明天三餐至少先補一餐明確蛋白質。",energyGap:"明天下午準備一個穩定點心，避免直接靠甜飲。"};
  const branch=input.selectedBranch?normalizeBranchKey(input.selectedBranch):null,branchNote=branch&&input.branchAnswer?`${branchRoutes[branch].name}支線補充：${input.branchAnswer}。`:"";
