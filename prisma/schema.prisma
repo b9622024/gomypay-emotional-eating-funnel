@@ -334,6 +334,11 @@ model DinnerFormulaEntry {
   drinkChoice         String
   closingAction       String
   generatedSuggestion String
+  daytimeIntakeStatus String?
+  dinnerTimeBand      String?
+  tonightConcerns     Json?
+  contextData         Json?
+  dinnerFormulaResult Json?
   fullnessAfterDinner Int?
   cravingAfterDinner  String?
   hadSweetDrink       Boolean?
