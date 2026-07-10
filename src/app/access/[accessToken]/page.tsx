@@ -93,9 +93,7 @@ export default async function Access({ params }: { params: Promise<{ accessToken
 
     {state.quiz && state.profile && <section className="bt-home-route bt-home-character">{characterImage&&<img src={characterImage} alt={`${state.characters.primary?.characterName}角色圖`} loading="lazy"/>}<div><span>你的嘴饞角色</span><h2>{state.characters.primary?.accentIcon} {state.characters.primary?.characterName}</h2><p>對應類型：<b>{typeName(state.quiz.primaryType)}</b></p>{state.characters.secondary&&<p>次要角色：<b>{state.characters.secondary.characterName}</b>｜{typeName(state.quiz.secondaryType)}</p>}<p>推薦破關路線：<b>{state.profile.route}</b></p><small>你的破關路線會以主要類型為主，次要類型作為加強任務。</small><div>{state.profile.tools.map(x => <strong key={x}>{x}</strong>)}</div></div></section>}
 
-    {state.quiz&&<JourneySummaryCard journey={journey}/>}<AdventureLog journey={journey}/>
-
-    <BadgeCollection earnedBadges={state.progress.earnedBadges.map(String)} entries={state.entries.map(entry=>({earnedBadge:entry.earnedBadge,completedAt:entry.completedAt,actionPointsEarned:entry.actionPointsEarned}))} characterCreated={state.progress.characterCreated}/>
+    {state.quiz&&<JourneySummaryCard journey={journey}/>}
 
     <details className="bt-toolbox"><summary><div><span>MISSION TOOLBOX</span><h2>任務道具箱</h2><p>需要時再打開，不必一次使用所有道具。</p></div><b>展開道具箱＋</b></summary>{groups.map(group => <section key={group.title}><h3>{group.title}</h3><div>{group.keys.map(key => {
       const asset = all.find(x => x.key === key);
@@ -108,6 +106,10 @@ export default async function Access({ params }: { params: Promise<{ accessToken
       const unlockHref = key === "ai-energy-assessment" ? `/ai-energy-assessment?accessToken=${encodeURIComponent(accessToken)}` : `/pro-tools/${slug}?accessToken=${encodeURIComponent(accessToken)}`;
       return <article className={`${!owned ? "locked" : ""} ${key==="ai-energy-assessment"?"ai-assessment-card":""}`} key={key}><div><small>{advanced ? `進階道具｜${prompt.name}` : "已解鎖道具"}</small><h4>{asset.title}</h4><p>{asset.description}</p><span>使用時機：{timing[key]}</span></div>{owned ? <Actions asset={asset} token={accessToken}/> : <div className="bt-unlock"><b>進階道具尚未解鎖</b><p>{prompt.message}</p><a href={unlockHref}>查看介紹與加購解鎖 →</a></div>}</article>;
     })}</div></section>)}</details>
+
+    <AdventureLog journey={journey}/>
+
+    <BadgeCollection earnedBadges={state.progress.earnedBadges.map(String)} entries={state.entries.map(entry=>({earnedBadge:entry.earnedBadge,completedAt:entry.completedAt,actionPointsEarned:entry.actionPointsEarned}))} characterCreated={state.progress.characterCreated}/>
 
     <footer className="access-support"><div><span>有問題嗎？</span><h2>可以立即跟我們聯繫</h2><p>破關任務或道具使用有任何問題，都歡迎透過官方社群詢問。</p><strong>{salesPage.brand}</strong></div><div className="access-support-links">{salesPage.contacts.map(x => <a href={x.href} target="_blank" rel="noreferrer" key={x.label}><span>{x.label}</span><small>{x.handle} ↗</small></a>)}</div></footer>
   </div></main>;
