@@ -1,15 +1,37 @@
 import { prisma } from "@/lib/db";
-import { callbackCheck, safePayload } from "@/lib/gomypay";
 import { markPaid } from "@/lib/fulfillment";
+import { callbackCheck, isSuccessfulPaymentResult, normalizePaymentPayload, safePayload } from "@/lib/gomypay";
 import { rateLimit, requestIp } from "@/lib/rate-limit";
+
+async function handleCallback(req:Request, raw:Record<string,string>) {
+  if(!await rateLimit(`callback:${requestIp(req)}`,120,60_000))return new Response("rate limited",{status:429});
+
+  const payload=safePayload(raw);
+  const normalized=normalizePaymentPayload(raw);
+  const orderNo=normalized.orderNo||"unknown";
+  const order=normalized.orderNo?await prisma.order.findUnique({where:{orderNo:normalized.orderNo}}):null;
+  const verified=callbackCheck(raw);
+  const remoteAmount=Number(normalized.amount);
+  const amountMatches=Boolean(order)&&Number.isFinite(remoteAmount)&&remoteAmount===order!.amount;
+  const success=isSuccessfulPaymentResult(normalized.result);
+
+  let message="verified";
+  if(!verified)message="invalid str_check";
+  else if(!order)message="order not found";
+  else if(!amountMatches)message="amount mismatch";
+  else if(!success)message=`payment failed: ${normalized.retMsg||"unknown"}`;
+
+  await prisma.paymentLog.create({data:{orderNo,source:"callback",payload,isVerified:verified&&Boolean(order)&&amountMatches&&success,message}});
+  if(!verified||!order||!amountMatches||!success)return new Response("OK",{status:200});
+
+  await markPaid(orderNo,{gomypayOrderId:normalized.gomypayOrderId,avcode:normalized.avcode,cardLastNum:normalized.cardLastNum,payload,source:"callback"});
+  return new Response("OK",{status:200});
+}
+
 export async function POST(req:Request){
- const raw=Object.fromEntries(await req.formData()) as Record<string,string>, payload=safePayload(raw), orderNo=raw.e_orderno||"unknown";
- if(!await rateLimit(`callback:${requestIp(req)}`,120,60_000))return new Response("rate limited",{status:429});
- const order=await prisma.order.findUnique({where:{orderNo}}), verified=callbackCheck(raw);
- let message="verified";
- if(!verified)message="invalid str_check"; else if(!order)message="order not found"; else if(Number(raw.e_money)!==order.amount)message="amount mismatch"; else if(raw.result!=="1")message=`payment failed: ${raw.ret_msg||"unknown"}`;
- await prisma.paymentLog.create({data:{orderNo,source:"callback",payload,isVerified:verified&&message==="verified",message}});
- if(!verified||!order||Number(raw.e_money)!==order.amount||raw.result!=="1")return new Response("OK",{status:200});
- await markPaid(orderNo,{gomypayOrderId:raw.OrderID,avcode:raw.avcode,cardLastNum:raw.CardLastNum,payload,source:"callback"});
- return new Response("OK",{status:200});
+  return handleCallback(req,Object.fromEntries(await req.formData()) as Record<string,string>);
+}
+
+export async function GET(req:Request){
+  return handleCallback(req,Object.fromEntries(new URL(req.url).searchParams));
 }

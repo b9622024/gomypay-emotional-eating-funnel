@@ -79,7 +79,7 @@ ${input.items.map(item=>`- ${item.name} × ${item.quantity}｜NT$${item.price}`)
   };
 }
 
-export async function markPaid(orderNo:string,meta:{gomypayOrderId?:string;avcode?:string;cardLastNum?:string;payload:Record<string,string>;source:"callback"|"query"|"system"}){
+export async function markPaid(orderNo:string,meta:{gomypayOrderId?:string;avcode?:string;cardLastNum?:string;payload:Record<string,string>;source:"callback"|"query"|"system"|"return"}){
   const canonicalToken=createAccessToken();
   const order=await prisma.order.findUnique({where:{orderNo},include:{items:true,customer:true}});
   if(!order)return null;
