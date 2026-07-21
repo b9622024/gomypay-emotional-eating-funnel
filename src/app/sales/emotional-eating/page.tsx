@@ -10,6 +10,7 @@ export default function SalesPage(){return <main className="sales-page scroll-wo
   <KingdomGateScene/>
   <ScrollWorldTransitionSection/>
   <ScrollWorldBridgeSection/>
+  <div id="sales-content-start" aria-hidden="true"/>
   <header className="site-header"><div className="container"><div className="brand-mark"><span>可</span><strong>{c.brand}</strong></div><a href="/checkout">安全結帳 <span>→</span></a></div></header>
   <PainPointsSection/>
   <MistKingdomSection/>

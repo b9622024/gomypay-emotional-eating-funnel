@@ -337,6 +337,15 @@ body.scroll-world-locked{
   overscroll-behavior:none!important;
   touch-action:none;
 }
+body.sales-scroll-forward-only{
+  overscroll-behavior-y:none;
+}
+body.sales-scroll-forward-only .kingdom-gate-scroll,
+body.sales-scroll-forward-only .hall-destiny-scroll,
+body.sales-scroll-forward-only .scroll-world-bridge-scene{
+  visibility:hidden;
+  pointer-events:none;
+}
 body.scroll-world-locked .kingdom-gate-stage{
   cursor:grab;
 }
