@@ -1,0 +1,94 @@
+[
+  {
+    "key": "stress-mage",
+    "source": "public/game-assets/characters/female/stress-mage.png",
+    "outputCanvas": [
+      1200,
+      1600
+    ],
+    "png": "public/scroll-world/scene-02-class-hall/characters/png/stress-mage.png",
+    "webp": "public/scroll-world/scene-02-class-hall/characters/webp/stress-mage.webp",
+    "pngBytes": 2439699,
+    "webpBytes": 449420,
+    "needsManualReview": true,
+    "issues": [
+      "source_text_or_light_effect_near_character"
+    ]
+  },
+  {
+    "key": "healing-priest",
+    "source": "public/game-assets/characters/female/healing-priest.png",
+    "outputCanvas": [
+      1200,
+      1600
+    ],
+    "png": "public/scroll-world/scene-02-class-hall/characters/png/healing-priest.png",
+    "webp": "public/scroll-world/scene-02-class-hall/characters/webp/healing-priest.webp",
+    "pngBytes": 2330371,
+    "webpBytes": 562342,
+    "needsManualReview": true,
+    "issues": [
+      "source_text_or_light_effect_near_character"
+    ]
+  },
+  {
+    "key": "energy-knight",
+    "source": "public/game-assets/characters/female/energy-knight.png",
+    "outputCanvas": [
+      1200,
+      1600
+    ],
+    "png": "public/scroll-world/scene-02-class-hall/characters/png/energy-knight.png",
+    "webp": "public/scroll-world/scene-02-class-hall/characters/webp/energy-knight.webp",
+    "pngBytes": 2389599,
+    "webpBytes": 482576,
+    "needsManualReview": true,
+    "issues": [
+      "source_text_or_light_effect_near_character"
+    ]
+  },
+  {
+    "key": "supply-guardian",
+    "source": "public/game-assets/characters/female/supply-guardian.png",
+    "outputCanvas": [
+      1200,
+      1600
+    ],
+    "png": "public/scroll-world/scene-02-class-hall/characters/png/supply-guardian.png",
+    "webp": "public/scroll-world/scene-02-class-hall/characters/webp/supply-guardian.webp",
+    "pngBytes": 2123956,
+    "webpBytes": 322362,
+    "needsManualReview": false,
+    "issues": []
+  },
+  {
+    "key": "habit-ranger",
+    "source": "public/game-assets/characters/female/habit-ranger.png",
+    "outputCanvas": [
+      1200,
+      1600
+    ],
+    "png": "public/scroll-world/scene-02-class-hall/characters/png/habit-ranger.png",
+    "webp": "public/scroll-world/scene-02-class-hall/characters/webp/habit-ranger.webp",
+    "pngBytes": 2146045,
+    "webpBytes": 392730,
+    "needsManualReview": false,
+    "issues": []
+  },
+  {
+    "key": "drink-alchemist",
+    "source": "public/game-assets/characters/female/drink-alchemist.png",
+    "outputCanvas": [
+      1200,
+      1600
+    ],
+    "png": "public/scroll-world/scene-02-class-hall/characters/png/drink-alchemist.png",
+    "webp": "public/scroll-world/scene-02-class-hall/characters/webp/drink-alchemist.webp",
+    "pngBytes": 2314464,
+    "webpBytes": 513486,
+    "needsManualReview": true,
+    "issues": [
+      "source_text_or_light_effect_near_character"
+    ]
+  }
+]

@@ -22,6 +22,7 @@ import "./navigation-feedback.css";
 import "./tool-next-step-unification.css";
 import "./dinner-defense.css";
 import "./journey-connections.css";
+import "./scroll-video-scene.css";
 import BadgeUnlockHost from "@/components/badges/BadgeUnlockHost";
 import CharacterImageLightboxHost from "@/components/access/CharacterImageLightboxHost";
 import NavigationFeedback from "@/components/navigation/NavigationFeedback";
