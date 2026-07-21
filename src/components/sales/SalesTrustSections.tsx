@@ -4,10 +4,13 @@ import {salesPage as c} from "@/content/emotionalEatingSalesPage";
 import SalesAssetImage from "./SalesAssetImage";
 import KingdomGateScrollScene from "./KingdomGateScrollScene";
 import HallOfDestinyScene from "./HallOfDestinyScene";
+import ScrollWorldBridgeScene from "./ScrollWorldBridgeScene";
 
 export function KingdomGateScene(){return <KingdomGateScrollScene startImage="/scroll-world/scene-01-kingdom-gate/start.webp" endImage="/scroll-world/scene-02/start.webp" posterImage="/scroll-world/scene-01-kingdom-gate/poster.webp" videoSrc="/videos/scene-1-part-1.mp4" segments={[{frameBasePath:"/scroll-world/scene-01-kingdom-gate/part-1-frames",frameCount:76,frameExtension:"jpg"},{frameBasePath:"/scroll-world/scene-01-kingdom-gate/part-2-frames",frameCount:76,frameExtension:"jpg"}]}/>}
 
 export function ScrollWorldTransitionSection(){return <HallOfDestinyScene/>}
+
+export function ScrollWorldBridgeSection(){return <ScrollWorldBridgeScene/>}
 
 export function MistKingdomSection(){return <section id="mist-kingdom" className="section mist-kingdom-section"><div className="container mist-kingdom-grid"><div className="mist-cover"><SalesAssetImage src={salesPageAssets.mistKingdomCover} alt="7 天嘴饞破關計畫迷霧王國 RPG 遊戲封面" label="迷霧王國 RPG 遊戲封面"/></div><div className="mist-copy"><span>歡迎進入｜迷霧王國</span><h2>你的 7 天破關旅程，即將開始</h2><div className="mist-story"><p>在迷霧王國裡，很多人每天都會被同樣的迷霧困住。</p><p>下午想喝手搖飲、下班後突然很想吃、壓力大想找甜食、晚餐後坐上沙發就開始嘴饞。</p><p>你可能以為自己需要更多自制力。</p><p>但在這場冒險裡，你的任務，是一步一步收集線索，找出每次迷霧出現的時間、場景、情緒與飲食缺口。</p><p>你會先創建自己的嘴饞角色，接著穿越 7 個關卡，解鎖 7 種日常任務道具，最後進入「迷霧核心」。</p><p>完成最後一關後，你將生成自己的個人止損地圖，並解鎖只有完成破關者才能領取的神秘禮物。</p></div></div></div><div className="kingdom-levels"><div className="kingdom-levels-heading"><small>THE SEVEN-DAY ROUTE</small><h3>7 天嘴饞破關計畫</h3><p>第 0 天創建角色，再依序穿越七個關卡。</p></div><div className="kingdom-level-list">{c.days.map((item,index)=>{const [day,title]=item.split("：");return <article key={item}><div className="kingdom-level-number">{index}</div><div><span>{day}</span><h4>{title}</h4><p>{index===0?"完成測驗，建立嘴饞角色與推薦路線。":index<=3?"收集時間、場景與身心訊號線索。":index<=6?"把線索轉成能在生活中使用的止損方法。":"整合所有線索，生成個人止損地圖。"}</p></div></article>})}</div><div className="kingdom-final-reward"><p>🎁 完成第 7 關「迷霧核心」，除了生成個人止損地圖，還會解鎖只有完成破關者才能領取的神秘禮物。</p></div></div></section>}
 
