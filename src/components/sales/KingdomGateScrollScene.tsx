@@ -100,12 +100,12 @@ export default function KingdomGateScrollScene({
       segment.frameCount,
       Math.max(1, Math.round(localProgress * (segment.frameCount - 1)) + 1),
     );
-    for (let i = -4; i <= 10; i += 1) {
+    for (let i = -2; i <= 5; i += 1) {
       const next = frameNumber + i;
       if (next >= 1 && next <= segment.frameCount) preloadImage(getFrameSrc(segment, next));
     }
     if (segmentIndex + 1 < segments.length && localProgress > 0.82) {
-      for (let i = 1; i <= 12; i += 1) preloadImage(getFrameSrc(segments[segmentIndex + 1], i));
+      for (let i = 1; i <= 5; i += 1) preloadImage(getFrameSrc(segments[segmentIndex + 1], i));
     }
   };
 
@@ -151,16 +151,16 @@ export default function KingdomGateScrollScene({
     let frame = 1;
     const preloadBatch = () => {
       if (cancelled || !segments[segmentIndex]) return;
-      for (let i = 0; i < 8; i += 1) {
+      for (let i = 0; i < 3; i += 1) {
         preloadImage(getFrameSrc(segments[segmentIndex], frame));
-        frame += 4;
+        frame += 8;
         if (frame > segments[segmentIndex].frameCount) {
           segmentIndex += 1;
           frame = 1;
           if (!segments[segmentIndex]) break;
         }
       }
-      if (segments[segmentIndex]) window.setTimeout(preloadBatch, 140);
+      if (segments[segmentIndex]) window.setTimeout(preloadBatch, 220);
     };
     preloadBatch();
     return () => {
@@ -348,13 +348,15 @@ export default function KingdomGateScrollScene({
               onError={() => setVideoFailed(true)}
             />
           )}
-          <img
-            className="kingdom-gate-static is-end"
-            src={endImage}
-            alt=""
-            loading="eager"
-            style={{ opacity: fallbackEndOpacity }}
-          />
+          {(reducedMotion || videoFailed) && (
+            <img
+              className="kingdom-gate-static is-end"
+              src={endImage}
+              alt=""
+              loading="eager"
+              style={{ opacity: fallbackEndOpacity }}
+            />
+          )}
           <div className="kingdom-gate-mist" />
           <div className="kingdom-gate-portal-glow" style={{ opacity: clamp(transitionGlowOpacity) }} />
         </div>

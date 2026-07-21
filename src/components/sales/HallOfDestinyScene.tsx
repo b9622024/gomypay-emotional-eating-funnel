@@ -278,7 +278,7 @@ function CharacterLayer({ preset, progress }: { preset: CharacterStagePreset; pr
       <div className="hall-character-aura" />
       <img
         alt=""
-        src={character.image}
+        src={character.webpImage || character.image}
         loading={progress > preset.appearStart - 0.12 ? "eager" : "lazy"}
         style={{ display: "block", width: "100%", height: "100%", objectFit: "contain", objectPosition: "center bottom" }}
       />
