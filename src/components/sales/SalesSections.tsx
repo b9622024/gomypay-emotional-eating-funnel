@@ -2,11 +2,8 @@ import Image from "next/image";
 import { salesPage as c } from "@/content/emotionalEatingSalesPage";
 import { PrimaryCTA, ProductBundleMockup, SectionHeading, StickyCheckoutBar } from "@/components/ui/BrandUI";
 import { cravingCharacters } from "@/content/cravingCharacters";
-import SalesHeroCheckoutGate from "./SalesHeroCheckoutGate";
 
 const painIcons=["🧋","🛵","🍰","⏸","🧭"];
-
-export function HeroSection(){return <section className="hero-section scroll-world-sales-hero" data-sales-hero><SalesHeroCheckoutGate/><div className="hero-orb"/><div className="hero-quest-ambient"/><div className="container hero-grid"><div className="hero-copy"><p className="hero-eyebrow">7-DAY CRAVING QUEST</p><h1>《7 天嘴饞破關計畫》</h1><p className="hero-subtitle">不用每天計算熱量，<br/>不用立刻戒掉喜歡的食物。<br/><br/>透過角色、關卡與互動工具，<br/>一步步找出你反覆嘴饞的時間、<br/>場景、情緒與飲食缺口。<br/><br/>每天完成一個任務，<br/>逐步建立屬於自己的止損路線。</p><div className="hero-reward-tag">🎁 完成第 7 關後，神秘禮物正式解鎖</div><PrimaryCTA href="#adventure-content" className="hero-soft-cta">查看 7 天冒險內容</PrimaryCTA><p className="microcopy">往下看完整冒險內容，購買資訊會在後方出現。</p></div><div className="hero-quest-visual" aria-hidden="true"><div className="quest-mirror"><span/><i/></div><div className="quest-card quest-card-a">TIME<br/>SCENE</div><div className="quest-card quest-card-b">ROLE<br/>ROUTE</div><div className="quest-card quest-card-c">FINAL<br/>MAP</div></div></div></section>}
 
 export function PainPointsSection(){return <section className="section pain-section"><div className="container"><SectionHeading eyebrow="下班後的熟悉循環" title={c.pain.title} description={c.pain.paragraphs.slice(0,2).join(" ")}/><div className="pain-grid">{c.pain.bullets.map((x,i)=><article className="pain-card" key={x}><span>{painIcons[i]}</span><p>{x}</p></article>)}</div><div className="story-callout"><span aria-hidden="true">「</span><div>{c.pain.paragraphs.slice(2).map(p=><p key={p}>{p}</p>)}</div><span className="story-callout-close" aria-hidden="true">」</span></div></div></section>}
 
