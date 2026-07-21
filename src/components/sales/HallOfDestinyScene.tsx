@@ -141,18 +141,11 @@ const copySegments = [
   {
     start: 0,
     peak: 0.045,
-    end: 0.1,
+    end: 0.16,
     eyebrow: "HALL OF DESTINY",
     title: "你已抵達命運大廳",
-    body: "六種嘴饞職業，正在等待甦醒。",
-    hint: "繼續滑動，啟動召喚儀式",
-    align: "center",
-  },
-  {
-    start: 0.1,
-    peak: 0.16,
-    end: 0.22,
-    title: "你的每一次選擇，都會留下嘴饞線索。",
+    body: "你的每一次選擇，都會留下嘴饞線索。",
+    hint: "滑動或點擊，啟動召喚儀式",
     align: "center",
   },
   {
@@ -245,7 +238,8 @@ function CharacterLayer({ preset, progress }: { preset: CharacterStagePreset; pr
   const groupPresence = Math.max(pulse(progress, groupStart - 0.02, (groupStart + groupEnd) / 2, groupEnd + 0.055), gather);
   const groupHold = progress >= preset.appearEnd && progress <= groupEnd + 0.04 ? 1 : groupPresence;
   const focus = pulse(progress, preset.focusStart, (preset.focusStart + preset.focusEnd) / 2, preset.focusEnd);
-  const opacity = clamp(Math.max(appear * groupHold, gather));
+  const finalText = smooth(segment(progress, 0.9, 0.945));
+  const opacity = clamp(Math.max(appear * groupHold, gather) * (1 - finalText));
   const gatherIndex = characterPresets.findIndex((item) => item.key === preset.key);
   const gatherX = [-31, -18, -5, 7, 19, 31][gatherIndex] ?? 0;
   const gatherScale = [0.7, 0.74, 0.82, 0.76, 0.72, 0.7][gatherIndex] ?? 0.74;
@@ -326,7 +320,7 @@ export default function HallOfDestinyScene() {
   useEffect(() => {
     const scene = sceneRef.current;
     if (!scene) return;
-    const stepTargets = [0.045, 0.16, 0.24, 0.36, 0.51, 0.63, 0.78, 0.87, 0.945, 1];
+    const stepTargets = [0.045, 0.24, 0.36, 0.51, 0.63, 0.78, 0.87, 0.945, 1];
 
     const stopAnimation = () => {
       if (animationRef.current !== null) {
@@ -517,6 +511,11 @@ export default function HallOfDestinyScene() {
       .sort((a, b) => b.opacity - a.opacity)[0];
   }, [progress]);
 
+  const activeGroupCopyOpacity =
+    activeGroupCopy && progress >= activeGroupCopy.start && progress <= activeGroupCopy.end
+      ? 1
+      : activeGroupCopy.opacity;
+
   const introLight = 1 - smooth(segment(progress, 0, 0.1));
   const coreActivation = smooth(segment(progress, 0.1, 0.22));
   const gatherLight = smooth(segment(progress, 0.9, 0.982));
@@ -642,11 +641,11 @@ export default function HallOfDestinyScene() {
           {"hint" in activeCopy && activeCopy.hint && <small>{activeCopy.hint}</small>}
         </div>
 
-        {activeGroupCopy.opacity > 0.02 && (
+        {activeGroupCopyOpacity > 0.02 && progress < 0.9 && (
           <div
             className="hall-group-copy"
             style={{
-              opacity: reducedMotion ? 1 : activeGroupCopy.opacity,
+              opacity: reducedMotion ? 1 : activeGroupCopyOpacity,
             }}
           >
             <span>{activeGroupCopy.eyebrow}</span>
@@ -658,8 +657,12 @@ export default function HallOfDestinyScene() {
                   style={{
                     opacity:
                       index === 0
-                        ? smooth(segment(progress, activeGroupCopy.start, activeGroupCopy.start + 0.05))
-                        : smooth(segment(progress, activeGroupCopy.secondStart, activeGroupCopy.secondStart + 0.055)),
+                        ? progress >= activeGroupCopy.start + 0.045
+                          ? 1
+                          : smooth(segment(progress, activeGroupCopy.start, activeGroupCopy.start + 0.045))
+                        : progress >= activeGroupCopy.secondStart + 0.045
+                          ? 1
+                          : smooth(segment(progress, activeGroupCopy.secondStart, activeGroupCopy.secondStart + 0.045)),
                   }}
                 >
                   <strong>{item.name}</strong>

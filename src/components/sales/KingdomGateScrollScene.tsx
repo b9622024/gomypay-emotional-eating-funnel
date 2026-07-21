@@ -379,9 +379,7 @@ export default function KingdomGateScrollScene({
 
         <div className="kingdom-gate-hint" style={{ opacity: clamp(1 - progress * 1.9) }}>
           <span>
-            <i className="kingdom-gate-arrow" aria-hidden="true" />
-            <i className="kingdom-gate-hand" aria-hidden="true" />
-            <b>向上滑動</b>
+            <b>滑動或點擊繼續</b>
           </span>
         </div>
 
