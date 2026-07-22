@@ -1,5 +1,7 @@
 node_modules
 .next
+.next_old_*
+.DS_Store
 .env
 .env.local
 coverage
