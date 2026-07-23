@@ -61,6 +61,7 @@ export default function ScrollWorldBridgeScene() {
   const [progress, setProgress] = useState(0);
   const [stageMode, setStageMode] = useState<"before" | "fixed" | "after">("before");
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [isDesktopScrollMode, setIsDesktopScrollMode] = useState(false);
 
   const applyProgress = (next: number) => {
     const safe = clamp(next);
@@ -78,9 +79,18 @@ export default function ScrollWorldBridgeScene() {
   }, []);
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 900px) and (pointer: fine)");
+    const update = () => setIsDesktopScrollMode(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener?.("change", update);
+    return () => mediaQuery.removeEventListener?.("change", update);
+  }, []);
+
+  useEffect(() => {
     const scene = sceneRef.current;
     if (!scene) return;
     const stepTargets = [0.18, 0.43, 0.7, 0.91, 1];
+    const useNaturalScroll = reducedMotion || isDesktopScrollMode;
 
     const stopAnimation = () => {
       if (animationRef.current !== null) {
@@ -137,7 +147,7 @@ export default function ScrollWorldBridgeScene() {
     };
 
     const lockScene = () => {
-      if (releasedRef.current || lockedRef.current || reducedMotion) return;
+      if (releasedRef.current || lockedRef.current || useNaturalScroll) return;
       const sceneTop = scene.getBoundingClientRect().top + window.scrollY;
       lockedRef.current = true;
       setStageMode("fixed");
@@ -167,10 +177,11 @@ export default function ScrollWorldBridgeScene() {
       const viewportHeight = viewportRef.current.height;
       const rect = scene.getBoundingClientRect();
 
-      if (reducedMotion) {
+      if (useNaturalScroll) {
         const scrollableDistance = Math.max(1, rect.height - viewportHeight);
         applyProgress(clamp(-rect.top / scrollableDistance));
         setStageMode(rect.top <= 0 && rect.bottom > viewportHeight ? "fixed" : rect.top > 0 ? "before" : "after");
+        document.body.classList.remove("scroll-world-locked");
       } else if (!releasedRef.current && rect.top <= 2 && rect.bottom > viewportHeight) {
         lockScene();
       } else if (!lockedRef.current && !releasedRef.current && rect.top > 2) {
@@ -190,24 +201,24 @@ export default function ScrollWorldBridgeScene() {
     };
 
     const onWheel = (event: WheelEvent) => {
-      if (!lockedRef.current) return;
+      if (useNaturalScroll || !lockedRef.current) return;
       event.preventDefault();
       if (Math.abs(event.deltaY) < 12) return;
       moveStep(event.deltaY > 0 ? 1 : -1);
     };
 
     const onTouchStart = (event: TouchEvent) => {
-      if (!lockedRef.current) return;
+      if (useNaturalScroll || !lockedRef.current) return;
       lastTouchYRef.current = event.touches[0]?.clientY ?? null;
     };
 
     const onTouchMove = (event: TouchEvent) => {
-      if (!lockedRef.current) return;
+      if (useNaturalScroll || !lockedRef.current) return;
       event.preventDefault();
     };
 
     const onTouchEnd = (event: TouchEvent) => {
-      if (!lockedRef.current || lastTouchYRef.current === null) return;
+      if (useNaturalScroll || !lockedRef.current || lastTouchYRef.current === null) return;
       const endY = event.changedTouches[0]?.clientY;
       if (typeof endY !== "number") return;
       const deltaY = lastTouchYRef.current - endY;
@@ -217,7 +228,7 @@ export default function ScrollWorldBridgeScene() {
     };
 
     const onClick = () => {
-      if (lockedRef.current) moveStep(1);
+      if (!useNaturalScroll && lockedRef.current) moveStep(1);
     };
 
     requestUpdate();
@@ -243,7 +254,7 @@ export default function ScrollWorldBridgeScene() {
       scene.removeEventListener("click", onClick);
       document.body.classList.remove("scroll-world-active", "scroll-world-locked");
     };
-  }, [reducedMotion]);
+  }, [reducedMotion, isDesktopScrollMode]);
 
   const mirrorGlow = 0.55 + smooth(segment(progress, 0.06, 0.92)) * 0.45;
   const mirrorScale = 0.92 + smooth(segment(progress, 0.12, 0.96)) * 0.24;
