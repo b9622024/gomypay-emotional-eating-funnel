@@ -64,6 +64,7 @@ export default function KingdomGateScrollScene({
   const [videoReady, setVideoReady] = useState(false);
   const [videoFailed, setVideoFailed] = useState(false);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [isDesktopScrollMode, setIsDesktopScrollMode] = useState(false);
   const hasImageSequence = segments.length > 0 && !sequenceFailed;
 
   const getFrameSrc = (segment: ScrollFrameSegment, frameNumber: number) =>
@@ -111,7 +112,8 @@ export default function KingdomGateScrollScene({
 
   const applyProgress = (nextProgress: number) => {
     const sceneProgress = clamp(nextProgress);
-    if (Math.abs(sceneProgress - lastProgressRef.current) < 0.001) return;
+    const progressThreshold = isDesktopScrollMode ? 0.0025 : 0.001;
+    if (Math.abs(sceneProgress - lastProgressRef.current) < progressThreshold) return;
     lastProgressRef.current = sceneProgress;
     setProgress(sceneProgress);
     document.documentElement.style.setProperty("--kingdom-gate-progress", sceneProgress.toFixed(4));
@@ -145,6 +147,14 @@ export default function KingdomGateScrollScene({
   }, []);
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 900px)");
+    const update = () => setIsDesktopScrollMode(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener?.("change", update);
+    return () => mediaQuery.removeEventListener?.("change", update);
+  }, []);
+
+  useEffect(() => {
     if (!hasImageSequence || reducedMotion) return;
     let cancelled = false;
     let segmentIndex = 0;
@@ -169,10 +179,11 @@ export default function KingdomGateScrollScene({
   }, [hasImageSequence, reducedMotion, segments]);
 
   useEffect(() => {
-    if (reducedMotion) return;
     const scene = sceneRef.current;
     if (!scene) return;
     const stepTargets = [0.16, 0.68, 0.91, 1];
+    const useNaturalScroll = reducedMotion || isDesktopScrollMode;
+    let rafId: number | null = null;
 
     const stopAnimation = () => {
       if (animationRef.current !== null) {
@@ -203,7 +214,7 @@ export default function KingdomGateScrollScene({
     };
 
     const lockScene = () => {
-      if (releasedRef.current) return;
+      if (useNaturalScroll || releasedRef.current) return;
       lockedRef.current = true;
       document.body.classList.add("scroll-world-active", "scroll-world-locked");
       window.scrollTo(0, 0);
@@ -240,19 +251,19 @@ export default function KingdomGateScrollScene({
     };
 
     const onWheel = (event: WheelEvent) => {
-      if (!lockedRef.current) return;
+      if (useNaturalScroll || !lockedRef.current) return;
       event.preventDefault();
       if (Math.abs(event.deltaY) < 12) return;
       moveStep(event.deltaY > 0 ? 1 : -1);
     };
 
     const onTouchStart = (event: TouchEvent) => {
-      if (!lockedRef.current) return;
+      if (useNaturalScroll || !lockedRef.current) return;
       lastTouchYRef.current = event.touches[0]?.clientY ?? null;
     };
 
     const onTouchMove = (event: TouchEvent) => {
-      if (!lockedRef.current) return;
+      if (useNaturalScroll || !lockedRef.current) return;
       event.preventDefault();
     };
 
@@ -267,6 +278,7 @@ export default function KingdomGateScrollScene({
     };
 
     const onClick = () => {
+      if (useNaturalScroll) return;
       moveStep(1);
     };
 
@@ -279,7 +291,34 @@ export default function KingdomGateScrollScene({
       moveStep(downKeys.includes(event.key) ? 1 : -1);
     };
 
-    lockScene();
+    const updateNaturalProgress = () => {
+      rafId = null;
+      if (!useNaturalScroll) return;
+      const viewportHeight = window.innerHeight || document.documentElement.clientHeight || 800;
+      const rect = scene.getBoundingClientRect();
+      const scrollableDistance = Math.max(1, rect.height - viewportHeight);
+      applyProgress(clamp(-rect.top / scrollableDistance));
+      if (rect.top < viewportHeight * 0.72 && rect.bottom > viewportHeight * 0.18) {
+        document.body.classList.add("scroll-world-active");
+      } else {
+        document.body.classList.remove("scroll-world-active");
+      }
+      document.body.classList.remove("scroll-world-locked");
+    };
+
+    const requestNaturalUpdate = () => {
+      if (rafId !== null) return;
+      rafId = window.requestAnimationFrame(updateNaturalProgress);
+    };
+
+    if (useNaturalScroll) {
+      updateNaturalProgress();
+      window.addEventListener("scroll", requestNaturalUpdate, { passive: true });
+      window.addEventListener("resize", requestNaturalUpdate);
+    } else {
+      lockScene();
+    }
+
     window.addEventListener("wheel", onWheel, { passive: false });
     window.addEventListener("touchstart", onTouchStart, { passive: false });
     window.addEventListener("touchmove", onTouchMove, { passive: false });
@@ -295,10 +334,13 @@ export default function KingdomGateScrollScene({
       window.removeEventListener("touchend", onTouchEnd);
       window.removeEventListener("click", onClick);
       window.removeEventListener("keydown", onKeyDown);
+      window.removeEventListener("scroll", requestNaturalUpdate);
+      window.removeEventListener("resize", requestNaturalUpdate);
+      if (rafId !== null) window.cancelAnimationFrame(rafId);
       document.body.classList.remove("scroll-world-locked", "scroll-world-active");
       document.body.classList.remove("scroll-world-white-transition");
     };
-  }, [reducedMotion, hasImageSequence, segments, videoFailed]);
+  }, [reducedMotion, isDesktopScrollMode, hasImageSequence, segments, videoFailed]);
 
   const onLoadedMetadata = () => {
     const video = videoRef.current;
@@ -313,7 +355,8 @@ export default function KingdomGateScrollScene({
   const entryCopyOpacity = softSegmentOpacity(progress, 0.01, 0.24);
   const gateCopyOpacity = softSegmentOpacity(progress, 0.58, 0.82);
   const finalCopyOpacity = softSegmentOpacity(progress, 0.86, 1);
-  const exitWhiteOpacity = smooth(segment(progress, 0.9, 1));
+  const desktopExitWhiteOpacity = pulseOpacity(progress, 0.9, 0.96, 0.995) * 0.92;
+  const exitWhiteOpacity = isDesktopScrollMode ? desktopExitWhiteOpacity : smooth(segment(progress, 0.9, 1));
   const fallbackEndOpacity = reducedMotion ? clamp((progress - 0.36) / 0.52) : videoFailed ? 1 : 0;
 
   return (
@@ -381,7 +424,7 @@ export default function KingdomGateScrollScene({
 
         <div className="kingdom-gate-hint" style={{ opacity: clamp(1 - progress * 1.9) }}>
           <span>
-            <b>滑動或點擊繼續</b>
+            <b>{isDesktopScrollMode ? "滾動滑鼠或按空白鍵繼續" : "滑動或點擊繼續"}</b>
           </span>
         </div>
 

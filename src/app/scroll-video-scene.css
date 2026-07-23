@@ -667,7 +667,7 @@ body.scroll-world-white-transition::after{
   width:74px;
   height:20px;
   border-radius:999px;
-  transform:translate3d(calc(var(--slot-x) - 37px),var(--slot-y),0) perspective(220px) rotateX(62deg);
+  transform:translate3d(calc((var(--slot-x) * 1vw) - 37px),var(--slot-y),0) perspective(220px) rotateX(62deg);
   opacity:var(--slot-opacity);
   background:radial-gradient(ellipse at center,rgba(var(--slot-color),.72),rgba(var(--slot-color),.15) 52%,transparent 72%);
   box-shadow:
@@ -694,7 +694,7 @@ body.scroll-world-white-transition::after{
   justify-content:center;
   opacity:var(--character-opacity);
   transform:
-    translate3d(calc(-50% + var(--character-x)),var(--character-y),0)
+    translate3d(calc(-50% + (var(--character-x) * 1vw)),var(--character-y),0)
     scale(var(--character-scale));
   filter:
     blur(var(--character-blur))
@@ -1084,5 +1084,147 @@ body.scroll-world-white-transition::after{
   }
   .hall-character{
     filter:drop-shadow(0 22px 28px rgba(0,0,0,.38));
+  }
+}
+
+@media (min-width:900px){
+  .kingdom-gate-scroll{
+    height:400vh;
+    min-height:360vh;
+  }
+  .kingdom-gate-stage,
+  .hall-destiny-stage{
+    max-width:none;
+    margin:0;
+    box-shadow:none;
+  }
+  .kingdom-gate-stage{
+    height:100vh;
+    min-height:100vh;
+  }
+  .kingdom-gate-hint span,
+  .hall-copy small{
+    padding:10px 16px;
+    background:rgba(16,12,10,.34);
+  }
+  .hall-destiny-scroll{
+    height:640vh;
+    min-height:600vh;
+  }
+  .scroll-world-bridge-scene{
+    height:340vh;
+    min-height:320vh;
+  }
+}
+
+@media (min-width:1024px){
+  .kingdom-gate-copy{
+    top:calc(env(safe-area-inset-top) + 14vh);
+    left:clamp(72px,8vw,140px);
+    right:auto;
+    max-width:640px;
+    padding:clamp(18px,2.2vw,30px);
+    border-radius:28px;
+    background:linear-gradient(90deg,rgba(10,8,7,.38),rgba(10,8,7,.16) 72%,transparent);
+    text-shadow:0 5px 24px rgba(0,0,0,.58),0 1px 4px rgba(0,0,0,.34);
+  }
+  .kingdom-gate-copy.minimal{
+    max-width:600px;
+  }
+  .kingdom-gate-copy.opening{
+    top:calc(env(safe-area-inset-top) + 15vh);
+  }
+  .kingdom-gate-copy.final{
+    top:calc(env(safe-area-inset-top) + 20vh);
+  }
+  .kingdom-gate-copy h1{
+    font-size:clamp(3rem,5vw,5.4rem);
+    line-height:1.08;
+  }
+  .kingdom-gate-copy h2{
+    font-size:clamp(2.35rem,3.7vw,4.55rem);
+    line-height:1.18;
+  }
+  .kingdom-gate-copy p{
+    font-size:clamp(1.05rem,1.35vw,1.28rem);
+    line-height:1.78;
+  }
+  .kingdom-gate-copy>p:first-child{
+    font-size:.78rem;
+  }
+  .kingdom-gate-progress{
+    left:clamp(72px,8vw,140px);
+    right:clamp(72px,8vw,140px);
+    bottom:calc(env(safe-area-inset-bottom) + 20px);
+  }
+  .hall-character{
+    width:clamp(240px,19vw,360px);
+    height:76vh;
+    transform:
+      translate3d(calc(-50% + clamp(-360px, calc(var(--character-x) * 1vw), 360px)),var(--character-y),0)
+      scale(var(--character-scale));
+  }
+  .hall-summon-slot{
+    width:92px;
+    height:24px;
+    transform:translate3d(calc(clamp(-260px, calc(var(--slot-x) * 1vw), 260px) - 46px),var(--slot-y),0) perspective(260px) rotateX(62deg);
+  }
+  .hall-copy{
+    top:calc(env(safe-area-inset-top) + 12vh);
+    left:clamp(56px,7vw,118px);
+    right:auto;
+    max-width:min(34vw,520px);
+  }
+  .hall-copy-center{
+    width:min(44vw,560px);
+    max-width:560px;
+  }
+  .hall-copy h2{
+    font-size:clamp(2.25rem,3.6vw,4.4rem);
+  }
+  .hall-copy p{
+    font-size:clamp(1rem,1.25vw,1.22rem);
+  }
+  .hall-group-copy{
+    top:auto;
+    bottom:calc(env(safe-area-inset-bottom) + 66px);
+    left:50%;
+    right:auto;
+    width:min(62vw,760px);
+    transform:translateX(-50%);
+    text-shadow:0 5px 24px rgba(0,0,0,.58),0 1px 4px rgba(0,0,0,.34);
+  }
+  .hall-group-copy>span,
+  .hall-group-copy>h2{
+    text-align:center;
+  }
+  .hall-group-copy>h2{
+    font-size:clamp(1.75rem,2.4vw,3rem);
+  }
+  .hall-group-copy-grid{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+  }
+  .hall-group-copy article{
+    padding:14px 16px;
+    border-radius:22px;
+    background:linear-gradient(135deg,rgba(20,15,31,.52),rgba(67,50,74,.34));
+  }
+  .hall-group-copy strong{
+    font-size:1.06rem;
+  }
+  .hall-group-copy p{
+    font-size:.86rem;
+    line-height:1.62;
+  }
+}
+
+
+@media (min-width:1200px){
+  .hall-group-copy{
+    width:min(54vw,820px);
+  }
+  .hall-character{
+    width:clamp(250px,18vw,370px);
   }
 }
