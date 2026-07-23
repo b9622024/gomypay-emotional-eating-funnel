@@ -258,12 +258,7 @@ function CharacterLayer({ preset, progress }: { preset: CharacterStagePreset; pr
           position: "absolute",
           left: "50%",
           bottom: 0,
-          width: "min(56vw,310px)",
-          height: "72svh",
-          display: "flex",
-          alignItems: "flex-end",
-          justifyContent: "center",
-          "--character-x": `${currentX}vw`,
+          "--character-x": currentX,
           "--character-y": `${currentY}svh`,
           "--character-scale": currentScale,
           "--character-opacity": opacity,
@@ -301,6 +296,7 @@ export default function HallOfDestinyScene() {
   const [progress, setProgress] = useState(0);
   const [stageMode, setStageMode] = useState<"before" | "fixed" | "after">("before");
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [isDesktopScrollMode, setIsDesktopScrollMode] = useState(false);
 
   const applyProgress = (nextProgress: number) => {
     const sceneProgress = clamp(nextProgress);
@@ -318,9 +314,18 @@ export default function HallOfDestinyScene() {
   }, []);
 
   useEffect(() => {
+    const mediaQuery = window.matchMedia("(min-width: 900px) and (pointer: fine)");
+    const update = () => setIsDesktopScrollMode(mediaQuery.matches);
+    update();
+    mediaQuery.addEventListener?.("change", update);
+    return () => mediaQuery.removeEventListener?.("change", update);
+  }, []);
+
+  useEffect(() => {
     const scene = sceneRef.current;
     if (!scene) return;
     const stepTargets = [0.045, 0.24, 0.36, 0.51, 0.63, 0.78, 0.87, 0.945, 1];
+    const useNaturalScroll = reducedMotion || isDesktopScrollMode;
 
     const stopAnimation = () => {
       if (animationRef.current !== null) {
@@ -381,7 +386,7 @@ export default function HallOfDestinyScene() {
     };
 
     const lockScene = () => {
-      if (releasedRef.current || lockedRef.current || reducedMotion) return;
+      if (useNaturalScroll || releasedRef.current || lockedRef.current) return;
       const sceneTop = scene.getBoundingClientRect().top + window.scrollY;
       lockedRef.current = true;
       setStageMode("fixed");
@@ -410,12 +415,13 @@ export default function HallOfDestinyScene() {
       }
       const viewportHeight = viewportRef.current.height;
       const rect = scene.getBoundingClientRect();
-      if (reducedMotion) {
+      if (useNaturalScroll) {
         const scrollableDistance = Math.max(1, rect.height - viewportHeight);
         const nextProgress = clamp(-rect.top / scrollableDistance);
         applyProgress(nextProgress);
         const nextMode = rect.top <= 0 && rect.bottom > viewportHeight ? "fixed" : rect.top > 0 ? "before" : "after";
         setStageMode((current) => (current === nextMode ? current : nextMode));
+        document.body.classList.remove("scroll-world-locked");
       } else if (!releasedRef.current && rect.top <= 2 && rect.bottom > viewportHeight) {
         lockScene();
       } else if (!lockedRef.current && !releasedRef.current && rect.top > 2) {
@@ -435,19 +441,19 @@ export default function HallOfDestinyScene() {
     };
 
     const onWheel = (event: WheelEvent) => {
-      if (!lockedRef.current) return;
+      if (useNaturalScroll || !lockedRef.current) return;
       event.preventDefault();
       if (Math.abs(event.deltaY) < 12) return;
       moveStep(event.deltaY > 0 ? 1 : -1);
     };
 
     const onTouchStart = (event: TouchEvent) => {
-      if (!lockedRef.current) return;
+      if (useNaturalScroll || !lockedRef.current) return;
       lastTouchYRef.current = event.touches[0]?.clientY ?? null;
     };
 
     const onTouchMove = (event: TouchEvent) => {
-      if (!lockedRef.current) return;
+      if (useNaturalScroll || !lockedRef.current) return;
       event.preventDefault();
     };
 
@@ -462,6 +468,7 @@ export default function HallOfDestinyScene() {
     };
 
     const onClick = () => {
+      if (useNaturalScroll) return;
       moveStep(1);
     };
 
@@ -496,7 +503,7 @@ export default function HallOfDestinyScene() {
       if (rafRef.current !== null) window.cancelAnimationFrame(rafRef.current);
       document.body.classList.remove("scroll-world-active", "scroll-world-locked", "scroll-world-white-transition");
     };
-  }, [reducedMotion]);
+  }, [reducedMotion, isDesktopScrollMode]);
 
   const activeGroup = getActiveGroup(progress);
   const activeCopy = useMemo(() => {
@@ -532,8 +539,8 @@ export default function HallOfDestinyScene() {
       aria-label="第二幕：命運大廳，六種角色集結"
       style={{
         position: "relative",
-        height: reducedMotion ? "360svh" : "1320svh",
-        minHeight: reducedMotion ? "340vh" : "1240vh",
+        height: reducedMotion ? "360svh" : isDesktopScrollMode ? "640svh" : "1320svh",
+        minHeight: reducedMotion ? "340vh" : isDesktopScrollMode ? "600vh" : "1240vh",
         background: "#111021",
         color: "#fffaf3",
         isolation: "isolate",
@@ -583,7 +590,7 @@ export default function HallOfDestinyScene() {
               className={`hall-summon-slot is-${preset.group}`}
               style={
                 {
-                  "--slot-x": `${preset.x * 0.88}vw`,
+                  "--slot-x": preset.x * 0.88,
                   "--slot-y": `${preset.y + 55}svh`,
                   "--slot-color": preset.color,
                   "--slot-opacity": clamp(
@@ -638,7 +645,7 @@ export default function HallOfDestinyScene() {
           {"eyebrow" in activeCopy && activeCopy.eyebrow && <span>{activeCopy.eyebrow}</span>}
           <h2>{activeCopy.title}</h2>
           {"body" in activeCopy && activeCopy.body && <p>{activeCopy.body}</p>}
-          {"hint" in activeCopy && activeCopy.hint && <small>{activeCopy.hint}</small>}
+          {"hint" in activeCopy && activeCopy.hint && <small>{isDesktopScrollMode ? "滾動或點擊，啟動召喚儀式" : activeCopy.hint}</small>}
         </div>
 
         {activeGroupCopyOpacity > 0.02 && progress < 0.9 && (
